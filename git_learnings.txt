@@ -1,0 +1,150 @@
+http://ndpsoftware.com/git-cheatsheet.html#loc=index;
+https://services.github.com/on-demand/downloads/github-git-cheat-sheet.pdf
+
+Version Control System (VCS) is a software that helps software developers to work together and maintain a complete history of their work.
+
+WHAT YOU GET FROM VERSION CONTROL SYSTEM
+saves you from creating multiple backups of your files
+allows multiple people to work on same file
+track changes and who have made those changes
+easy to switch back to older versions when required
+makes you more productive
+
+Distributed vcs(DVCS) - GIT
+and it has centralized server and repository
+free and open source
+distributed
+data assurance
+
+SVN is a non-distributed VCS.
+SVN does not have a centralized server or repository.
+
+The content in Git is stored as metadata; SVN stores files of content.
+
+Git was developed for Linux kernel by Linus Torvalds; SVN was developed by CollabNet, Inc.
+
+Local repository consists of 3 partitions maintained by GIT[structure]
+1. working dir 
+2. index(acts as a staging area) 
+3. HEAD(which point to last commit made)
+
+features - code comparsion, code sync, Git shell
+
+Creating repos
+	Git init
+syncing repos
+	Git remote add origin <<url>>
+	Git pull origin master
+	Git push origin master
+making changes
+	Git status
+	Git add <file>
+	Git commit -m "msg"
+
+#####Parallel Development###3	
+branching 
+	Git branch <<branchname>>
+	Git checkout <feature>
+merging 
+	Git merge <<branchname>>
+
+rebasing 
+this is also a way of combining the work b/w diff branches
+used to make a linear seq of commits
+	Git checkout firstbranch
+	vim edu5 ## welcome to edureka 1 
+	vim edu6 ## welcome to edureka 2
+	git add -A
+	git commit -a -m "adding for rebasing"
+	git rebase master ## current branch firstbranch is up to date
+	
+	git checkout master
+	git rebase firstbranch ## first, rewing head to replay your work on top of it....
+	### fast-forwarded master to first branch.
+	
+git flow
+	git log  ## first 8digits
+	git checkout <<log digits>> <<filename>>> ## to revert back to the which commit u want
+
+
+
+
+
+
+GIT FAQ
+
+Diff b/w merge and rebase
+Rebase
+How to change commit history
+How to move commit history from one branch to another
+Git bash
+Diff b/w fetch and clone
+
+Reset →  unstage
+Add →   stage
+
+→ How to remove remote branch
+Git push origin --delete origin <<br11>>
+###here origin is remote name
+
+
+
+
+
+
+
+***************************************************************************************************************************
+
+workspace 					index					local repo
+	<-- git reset head <file> 				<--git reset --soft commitid
+				<-------------git reset --mixed commitid--------<<
+
+****************************************************************************************************************************
+
+git stash list
+git stash save "stash1" // stores index to stash memory
+
+git stash pop // to get index of latest stashed, back from stash memory 
+
+git stash apply stash@{0} & git stash drop stash@{0} // apply -->> stash to index ,  drop --> removes stash memory
+
+git config --global alias.lo "log --oneline --graph"
+git config --global --unset alias.lo
+
+if conflict arises in merging process
+u have to solve it (or) u have to abort from merge
+//git merge --abort
+//open that file ( effected by conflit), make changes to it
+
+
+###########
+git pull origin master
+git clone <<url>>
+## above commands will directly pull from remote repo to workspace
+
+git fetch origin master
+git merge origin/master
+
+## 
+git branch
+git branch -r // to check remote branches
+git branch -a //  to check all branches
+
+git checkout master1
+git merge master  //  will create a new merge commit on master1 logs
+git rebase master // will rebase its logs on top of the master logs without creating any merge commit
+
+From videos
+Git is a Distributed Version Control system (DVCS). It can track changes to a file and allows you to revert back to any particular change.
+
+A “bare” repository in Git just contains the version control information and no working files (no tree) and it doesn’t contain the special .git sub-directory. Instead, it contains all the contents of the .git sub-directory directly in the main directory itself.
+
+ In Git how do you revert a commit that has already been pushed and made public?
+Remove or fix the bad file in a new commit and push it to the remote repository. This is the most natural way to fix an error.
+(Or)
+git revert <name of bad commit>
+
+Git pull command pulls new changes or commits from a particular branch from your central repository and updates your target branch in your local repository.
+Git fetch is also used for the same purpose but it works in a slightly different way. When you perform a git fetch, it pulls all new commits from the desired branch and stores it in a new branch in your local repository. If you want to reflect these changes in your target branch, git fetch must be followed with a git merge.
+before completing the commits, it can be formatted and reviewed in an intermediate area known as ‘Staging Area’ or ‘Index’. 
+
