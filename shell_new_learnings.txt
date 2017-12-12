@@ -1,0 +1,103 @@
+read -a // for reading array
+read -p "enter text: " k // reads for k
+read -sp "enter pass: " k // reads password but in hidden (secure mode)
+if [ "$a" -gt "$b" ] //integer comparision (if a and b are integers)
+if [[ "$a" > "$b" ]] // a="hi", b="bye"
+
+if [ "$a" -gt 10 ] || [ "$a" -lt 55 ] // && can use
+if [ "$a" -gt 10 -a "$a" -lt 55 ] // -a for and -o for or
+if [[ "$a" -gt 10 || "$a" -lt 55 ]] // &&  for symbols twice braces
+
+echo $((9*2)) // for arithmetic operations
+ echo $(expr 20 * 2 ) // for single paranthsis +, -, /, \*
+ escape slash is req for multiplication symbol
+ 
+ ##for floting operations
+ echo "20.5+5" | bc // we can use all arithmetic symbols
+ 
+ echo "scale=2,20.5/5" | bc // for no. of floating points "scale"
+ echo "scale=2,sqrt(27)" |  bc -l // -l for calling the math library
+ echo "scale=2,3^3" | bc -l  // 27
+ 
+ 
+ ##case
+ case expression in 
+ pattern1) statements ;;
+ pattern2) statements ;;
+ esac
+ 
+ ##example
+ read -p "enter a no. : " a
+ ## echo -e "enter no. : \c" ; read a
+ #a=$1
+ case $a in 
+ 10) echo good ;; // for strings use double quotes
+ 20) echo u entered is $a is good amount ;; 
+ *) echo enter something ;;
+ esac
+ 
+ LANG=C
+ #echo -e "enter a value : \c" read a
+ read -p "enter a value"  a
+ case $a in 
+ [a-z] ) echo entered is small alphabet ;;
+ [A-Z] ) echo entered is capital alphabet ;;
+ [0-9] ) echo entered is a no. ;;
+ ? ) echo entered is a special character ;;
+ * ) echo nothing entered ;;
+ esac
+ 
+ os=("ubuntu" "windows" "kali")
+ echo "${os[@]}"
+ echo "${os[0]}"
+ echo "${!os[@]}" // prints indexes 0 1 2 
+ echo "${#os[@]}" // no.of indexes
+ unset os[2]
+ echo "${!os[@]}" // prints indexes 0 1 3
+
+string=fwerefdsfwerwererwerewerew
+echo "${string[@]}"
+
+##while loops
+n=1
+while [ $n -le 10 ] // while(( $n <= 10 ))
+do  echo "$n"  ; n=$(( n+1 )) ; done // use ;(( n++ ));
+
+while read line ; do echo $line  ; done < hello.sh
+cat hello.sh | while read p ; echo $p ; done
+while IFS=' ' read -r line ; do echo $line ; done  < hello.sh // -r prevents "/" escapes , assigning space to IFS
+
+
+n=1
+while [ $n -le 10 ] ; do echo "$n, \c" ; n=$(( n+1 )) ; done
+echo while done $n
+until [ $n -lt 1 ] ; do echo "$n, \c" ; n=$((n-1)) ; done
+echo
+///until excutes til the condition is true
+n=1 ; until (( $n > 10 )) ; do echo $n ; (( ++n )) ; done
+
+##for loops
+for i in {1..10..2} ; do echo $i ; done
+for (( i=0; i<5; i++ )) ; do echo $i ; done
+for i in * ; do if [ -d $i ] ; then echo $i ; fi done
+
+
+## select loop ---- similar to for loop but gives a menu to select
+select i in one two three four ; do echo you choosed $i ; done
+select i in one two three four ;
+ do 
+ case $i in 
+ one) echo u selected one ;;
+ two) echo u selected 2 ;;
+ three) echo u selected 3e ;;
+ four) echo u selected 4 ;;
+ *) echo selectone
+ esac
+ done
+ 
+ ## in scripts $$ is pid of that script while $0 is name of script
+ 
+ #!/bin/bash -x // to get debuggin mode
+ (or) set -x // in script // set +x // to stop debug mode
+ bash -x ./hi.sh // to execut into debug mode
+ 
