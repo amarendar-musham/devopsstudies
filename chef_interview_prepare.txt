@@ -1,0 +1,100 @@
+Chef is an automation platform that configures and manages a company infrastructure
+Chef transforms infrastructure into code 
+Chef framework is a combination of chef server, nodes and workstation .
+Chef server manages the nodes that make up the infrastructure
+
+Chef-client - is a program runs on each node
+Knife - command line tool runs on workstation
+Chef server containes configuration information called cookbooks
+
+#######################################################################
+CHEF RESOURCEES
+1. deployment // applications //like tomcat build webserver, web application (java application)
+2. webserver //nginix[open source]<-->apache, http
+3. patching //updating from java 1.8 to 1.9
+4. package management // install/uninstall/remove/update
+5. service
+6. file/directory resource
+7. user management
+8. nodes // docker container bootstrap
+
+chef-client --local-mode --runlist "recipe[tomcat7]"
+knife node run list add amarendar -z "recipe[tomcat7]"
+chef-client -z
+
+Berksfile
+source "https://supermarket.getchef.com"
+metadata
+Berksfile.lock
+DEPENDENCIES 
+GRAPH // depended cookbooks
+
+///
+node['kernel']['machine'] =~ /^i[36]86$/ ? '/usr/lib/httpd' : '/usr/lib64/httpd'
+///attribute
+default['apache']['mpm'] =
+  case node['platform']
+  when 'ubuntu', 'linuxmint'
+    'event'
+  else
+    'prefork'
+  end
+
+###################################################INTERVIEW PREPERATION chef ###################################################
+*********what is chef*****************
+***powerful automation platform that provides a way to transforms infrastructure into code.
+
+is a tool where we can write scripts that are used to automate processes
+
+architecture: it consist of
+chef server : Centralized store of infrastructure configuration
+chef Workstation : knife is used to upload conf changes to server // a local chef repo
+chef node : (systems managed by chef), chef client runs on node, retrieving configuration info from server
+
+///// knife used to communicate with nodes (ssh)
+*************
+*********what is resource******************
+A Resource represents a piece of infrastructure and its desired state, such as a package that should be installed, a service that should be running, or a file that should be generated
+
+A block of Resource can be considered as a Recipe.
+
+*************what is recipe**************
+A Recipe is a collection of Resources that describes a particular configuration or policy.
+
+*************what is a node***********
+A Node represents a server and is typically a virtual machine, container instance, or physical server – basically any compute resource in your infrastructure that is *managed by Chef*.
+
+************* How does a Cookbook differ from a Recipe in Chef?********
+a recipe is a collection of resources, and primarily configures  a software package of some piece of infrastructure
+a cookbook is groups together recipes and other info (to be more manageable )
+
+****************
+When you don’t specify a resource’s action, Chef applies the default action.
+*********
+ensures the package is installed, configures the service
+
+*************
+*************Write a service Resource that stops and then disables the httpd service from starting when the system boots in Chef.*******
+service 'httpd' do
+	action [:stop, :disable]
+end
+***************
+Chef-apply is an executable program that runs a single Recipe from the command line. It is a part of the Chef development kit and a great way to explore resources.
+********************
+run-list lets you specify which Recipes to run, and the order in which to run them. The run-list is important when you have multiple Cookbooks, and the order in which they run matters.
+*******************
+How do you apply an updated Cookbook to your node in Chef?*************
+Run knife ssh from your workstation.
+SSH directly into your server and run chef-client.
+You can also run chef-client as a daemon, or service, to check in with the Chef server on a regular interval, say every 15 or 30 minutes.
+**************
+
+**************** What is the role of Starter Kit in Chef?*************
+Starter Kit will create the necessary configuration files like chef directory, knife.rb, the ORGANIZATION-validator.pem, and USER.pem files etc. with the correct information that is required to interact with the Chef server.
+
+Now tell how to use Starter Kit, you can simply download the starter kit and then move it to the desired location on your workstation.
+*********************************************************************
+
+
+
+
