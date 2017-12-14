@@ -1,0 +1,118 @@
+knife ssh 'name:node1-centos' 'sudo chef-client' --ssh-user centos --identity-file ~/.ssh/private_key --attribute ipaddress
+
+knife ssh 'role:web' 'sudo chef-client' --ssh-user centos --identity-file ~/.ssh/private_key --attribute ipaddress
+
+
+cd ~/learn-chef
+
+
+create a file named Berksfile and add these contents.
+source 'https://supermarket.chef.io'
+cookbook 'chef-client'
+berks install
+ls ~/.berkshelf/cookbooks
+berks upload --no-ssl-verify
+
+
+Process
+
+############### workstation [knife] 
+starterkit ---  to communicate b/w server and workstation
+chefdk package -- for workstation  
+chefrepo/ ; contains cookbooks, roles folders
+.chef/ ;  contains user.pem knife.rb
+knife bootstrap ip -x user -P/-i <pass> -N node1 -r "recipe[amar]"
+knife client list // node
+knife cookbook create amar ;  write recipe ; upload // can create roles, nodes
+knife node run list add node1 "recipe[amar]"
+
+updated cookbooks & settings are pushed to chef server from workstation
+knife cookbook list // role list/ node list/ client list / emvironment list // data bag list
+## we can do these operation for above [show, edit, *from (bag) file*, delete, *download*, create, ]
+knife node run list add nodename "recipe[amar]" // 
+knife role run list add rolename "recipe[amar]" //
+************ in above commands we can add role instead of recipes
+
+
+############## client
+cd /etc/chef/
+contains client.rb , client.pem, first-boot.json
+cd /var/chef/cache
+contains "chef-client-running.pid data_collector_metadata.json"
+
+chef-client // to get update from the server
+// to see if therer any changes in cookbooks/settings
+//if changes happens, server sends latest configuration info to chef-client, chef-client applies those configuration changes to nodes
+
+(/dev/sda1)ubuntu
+18.220.145.243
+
+amazon (/dev/xvda)
+18.217.121.185
+
+redhat (/dev/sda1)
+18.216.4.48
+## for using attribute in templates (.erb files)
+Listen <%=node['amar']['Listen']%>
+## and attribute file having below
+default['amar']['Listen'] = '80'
+## override attribute (environment attribute)
+{"amar":{"Listen":"81"}}
+ 
+## using case statement in ruby
+case node["platform"]
+when "ubuntu"
+	default["package_name"] = "apache2"
+when "centos"
+	default["variable"] = "hai"
+end
+
+## using if in ruby
+{if a == "10"
+else
+end}
+## example
+if "#{node['platform']}" == "ubuntu"
+	package 'apache2'
+	service 'apache2' do
+			action [:enable, :start]
+	end
+else
+	package 'httpd'
+	service 'httpd' do
+			action [:enable, :start]
+	end
+end
+
+
+#### resources start with {do..end}
+directory //actions :create
+file // actions :create, content
+template //source : *.erb
+cookbook_file // source :filename
+bash 'description' {do..cwd "/tmp"..code <<-EOH..write code..EOH..end} // 
+user 'username' //comment, uid, home, shell, password(openssl passwd -1 ***)
+remote_file “path/to/file” //  soure <url>	/action :create
+
+##databags
+//testuser1 // a sample data bag item // can create in console/cli 
+//** comma separated
+{
+  "id": "testuser3",
+  "uid": "3100",
+  "comment": "a randomly choosed test user3",
+  "shell": "/bin/bash",
+  "password": "$1$xIZaQCPR$HqBU.uKfJSNPpR8SBw7aG/"
+}
+//// recipe
+admins = data_bag("userids") // bag name
+admins.each do |login||
+x=data_bag_item("userids",login)
+user '#{login}' do
+	------------
+	-------
+end
+end
+
+#################################
+#########################
