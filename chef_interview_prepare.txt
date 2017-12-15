@@ -18,6 +18,22 @@ CHEF RESOURCEES
 7. user management
 8. nodes // docker container bootstrap
 
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+resources --> fundamental building blocks of chef configuration
+resources are gathered into recipes
+
+recipes --> configuration files that describe resources & their desired state
+//recipes can 
+* install and configure software component
+* manage files
+* deploy applications
+* exucute other recipes
+* & more
+
+cookbooks --> recipes are stored in cookbooks, contains templates, files, custom resources, etc
+knife search node "*:*"
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
 chef-client --local-mode --runlist "recipe[tomcat7]"
 knife node run list add amarendar -z "recipe[tomcat7]"
 chef-client -z
