@@ -1,0 +1,44 @@
+Amazon EC2 --  elastic cloud compute [US East n.virginia - latest conf]
+
+1. what is AMI
+2. What are security groups, key pairs, tenancy - shared vs. dedicated
+3. elastic IP vs. public IP
+
+$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&
+
+amazon machine image -- template 
+ami - it is an image of a server -- including os & additional s/w [runs on AWS]
+preconfigured templates for creating virtual servers[ec2 instances]
+can select aim from (aws, community, market)
+
+instance type [size of instance]
+$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&
+
+acts as a virtual firewall that controls the traffic for instances
+filters incoming & outgoing traffic from instance
+provides security at the protocol & port level access
+it must have a name, easily identify
+exist within individual vpc
+
+public key + private key = Key Pair
+ec2 uses public and private key cryptography to encrypt and decrypt login info.
+public key encrypts a piece of data, 
+[while recipient uses private key to decrypt the same]
+
+%%%%%%%%%%%%%
+dedicated host - single machine
+dedicated instance - single user [accessed by]
+%%%%%%%%%%%%%
+
+$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&
+
+in AWS specific IP Address is given to each instance
+ which helps to comminicate it to the server [& can establish connection b/w machines]
+Pubic IP // new ip generated after restarting
+Elastic IP // assoicated with account, specific instance [permanent]
+you are limited to 5 EIPs per region 
+if you have EIP in account , it's not in use , then u will be charged
+
+$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&
+
+

@@ -1,0 +1,29 @@
+need to buy more server // depends on traffic
+need to monitor and maintain them
+--> setup is expensive
+
+no more buying expensive servers
+**(scalability) --> your server capacity will vary according to traffic
+your cloud provider will manage servers, hence no worries about underlying infrastructure
+
+Cloud Computing:
+it is the use of remote servers on internet to --> store, manage and process data rather than a local server(or personal computer)
+IAAS  infrastructure as a service
+SAAS  s/w as a service 
+PASS  platform as a service
+
+deployment models (public cloud), (private cloud - virtual), (hybrid)
+
+iaas --> provides virtualized computing resources over internet, no physical machine, (abstract users from machines)
+
+paas --> no control over underlying archtecture (os, storage, servers)
+cloud provides customers the ability to deploy a application using a prog. lang. 
+
+saas --> cloud provider leases applications/s/ws to clients (owned by cloud)
+
+Cloud computing advantages:
+Access anywhere, MaintenanceFree, Better security, Fast implementation, instant scalability(easy)
+
+
+
+

@@ -1,0 +1,78 @@
+AWS S3
+1. volume vs vault storage, traditional storage
+2. Cloud storage, AWS Storage options(EBS[block storage], S3&Glacier[object storage])
+3. AWS Connection storage [Storage gateway, snowball]
+4. AWS CLI
+
+$$$$$$$$$$$$$$&&&&&&&&&&&&
+volume: it's a storage device[ formatted to store directories, & files]
+vault: a storage box [stores the achive data for longer period of time]
+
+$$$$$$$$$$$$$$&&&&&&&&&&&&
+Cloud storage: fast service with low cost & low risk, 
+			   easy migration of data, easy cloud-based backup and archiving solutions
+Is a service model in which data is 
+maintained, managed, backed up remotely, made available to users over a n/which / [pay per use, monthly rate]
+
+EBS volumes & Snapshot:
+	EBS provides block level storage volumes for EC2 instances.
+	primary storage for data [that requires frequent updates for database application]
+  *EBS Snapshot, can backup data on EBS volumes to S3
+  these are incremental backups
+  *snapshots of encrypted volumes are automatically encrypted\
+  *volume created from encrypted snapshots are also automatically encrypted
+
+fdisk -l // create and attach EBS to instance, then check 
+fdisk /dev/xvdf // create new logical partition (n, e ; n, l)
+lsblk --> /dev/xvdf1
+mkfs -t ext4 /dev/xvdf1 ; mkdir /test
+mount /dev/xvdf1 /test ; df -h
+partprobe /dev/xvdf1  // uploading kernel
+// before detaching u need to umount disk
+
+ % should be in same availability zone. 
+types of EBS Volumes: general purpose (SSD) --> developement & test env
+					  provisioned IOPS (SSD) --> large database
+					  magnetic --> cold storage
+ssd(solid state disk) -- like RAM; IOPS[I/O operations per sec]
+
+%%%%%%%%%%%%%%%%%%%%%%%
+S3(bucket):simple storage service
+	used to store objects, consists of data, metadata(describes data)
+	when object added to bucket, amazon s3 generates uniq <version ID>
+	default --- only 100 buckets can be created
+simple interface , helps to store & retrieve any amount of data, at any time , from anywhere on the web
+
+types of S3 Storage : standard, standard-Infrequent access, Glacier
+ 
+ -- cross-region replication [same key(name), same metadata]
+ -- versioning (keeps multiple variants of an object in same bucket)
+S3 transfer acceleration->prefered to transfer small amount of data
+
+$$$$$$$ S3 objects can be accessed  using http from anywhere [permssions req]
+1. url of that object;2. AWS CLI (put/get);3. AWS SDK method to(put/get)
+
+can create policy, [set permissions] - json formatted
+storage --standard, standerd IA , Glacier
+
+
+$$$$$$$$$$$$$$&&&&&&&&&&&&
+snowball: h/w device, end-end encryption, used to transfer lots of data b/w corporate data center to aws.
+
+create job->connect.snowball->copyto.snowball->aws will move data to S3
+
+Storage gateway: data centre with an virtual appliance ---> replicates the data to AWS cloud like S3 or Glacier
+uses--- backup&archive, recovery, data migration replace/ expand storage
+
+[app.server--storage.gateway.VM]--aws[storage.gateway.service--volume.storage(S3)]--[**EBS snapshot**]/[**Glacier**]
+
+$$$$$$$$$$$$$$&&&&&&&&&&&&
+
+AWS CLI
+
+aws ec2 create-snapshot --volume-id <volume-id> --description "msg"
+aws configure // access-key id&secret[will generate at IAM user creation]
+++ attach policy [amazon ec2 full access]
+
+$$$$$$$$$$$$$$&&&&&&&&&&&&
+$$$$$$$$$$$$$$&&&&&&&&&&&&
