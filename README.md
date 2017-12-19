@@ -6,14 +6,14 @@
 
 3.  *cloud computing*
     *aws ec2*
-     what is AMI
-     What are security groups,
-     key pairs, tenancy - shared vs. dedicated
-     elastic IP vs. public IP
+     1. what is AMI
+     2. What are security groups,
+     3. key pairs, tenancy - shared vs. dedicated
+     4. elastic IP vs. public IP
     *aws s3* 
-      EBS, 
-      connection storage, 
-      S3
+      1. EBS, 
+      2. connection storage, 
+      3. S3
      *VPC*
       1. subnet & subnet mask
       2. VPC & benefits
