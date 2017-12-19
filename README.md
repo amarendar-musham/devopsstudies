@@ -14,3 +14,8 @@
       EBS, 
       connection storage, 
       S3
+     *VPC*
+      1. subnet & subnet mask
+      2. VPC & benefits
+      3. components, 
+      4. direct connect
