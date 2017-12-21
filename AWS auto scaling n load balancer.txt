@@ -1,0 +1,69 @@
+1. Auto Scaling
+2. load balancing
+application <--- users
+3. IAM -- identification access management
+4. MFA --  multifactor authentification
+
+$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&
+
+need to deploy more servers, and distribute traffic
+
+scale up
+scale down
+
+Launch configuration
+	my amis, which we created from the existing servers(instances)
+	rem same as ec2 instnce creation
+Auto scaling group creatino
+	-group name, size[start with(1)instances], 
+	n/w(default vpc), subnet[select all]
+	-configure scaling policy[keep intial]
+
+measured in terms of no. of the active servers, scales automatically based on the load on the farm
+
+after creating auto scaling group u can add load balancer in details section
+
+$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&
+
+1. classic load balancer -- equal distribute traffic [images only]
+2. application load balancer -- with two LB; 1 fr blog content, 1 fr images on same website
+while creating load balancer need to add instances[to be balanced]
+those instances like having (apache2 service runnig)
+
+server1[images ]
+server2[blogging section ]
+
+$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&
+
+to control who can use the your aws resources(authentication) & what resources they can use and in what ways (authorization)
+
+$$using IAM, you can create & manage users, and use permissions to allow & deny acces to aws resources
++user, access type(cli[programatic]+console)
++attach policy -- admistrator access
+
+go to dashboard
+*********login url for IAM users
+
+$$groups similar to user creation
+
+$$IAM role is an IAM entity that defines set of permissions for making AWS service requests. 
+roles not associated with users/groups, can attached to EC2 instances
++role type, +policy, 
+
+********attach in ec2-->actions[attach IAM roles]
+
+$$policies
+to assign permissions to a user, group, role, or a resource you create a policy, which is document that explicitly lists permissions
++create policy, set permissions[allow/deny]-- service, actions, ARN=*, <--generate policy
+
+$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&
+
+MFA
+second layer of security
+
+--> test user, security credintials -- assigned mfa device[virtual/hardware]- virtual , download app[google authenticate], scan QR and enter authenticate code
+
+
+$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&
+
+
