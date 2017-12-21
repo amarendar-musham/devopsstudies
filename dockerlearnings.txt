@@ -1,0 +1,197 @@
+virtualization ::::  need to allocate system resources
+containerization ::: contains only dependenies & binaries
+
+
+
+DOCKER === containerization technique [method of OS virtualization, that allow you to run an app & its dependencies in resource isolated processes]
+-----**********
+it allows you to easily package a application code, configurations & dependencies into easy to use building blocks that deliver environmental consistency, operational efficiency, developer productivity & version control
+
+Rest api --> interface b/w engine and CLI to talk with daemon and instruct what to do
+
+*****************
+
+image is template for a environment that u want to run
+(os, s/w, application) //  used to create containers
+
+container - when u run a image u will get containter // holds everything needed to run application
+---- can create from base images/ own images(created from dockerfile/commited from running containers)
+
+registry - stores images //can be done on docker hub. 	
+
+union FS[file system] ::: docker takes less space ; 
+it uses kernel of host os(base system),
+and update layers by checking existing layers.
+
+big website --  micro services[login service, product, search, basket]
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&&&&&
+
+install docker && start service
+docker -v // --version
+docker images ;; docker ps *(-a -q)* // a for +hidden / q for container ids
+## docker rmi -f ubuntu // to delete image
+docker search ubuntu ;; docker pull ubuntu
+
+docker run -dti --name container1 -p 81:80 ubuntu /bin/bash // +daemon, +terminal, +interactive // ports hostos:guest os
+##we can run in --previlaged /mode
+
+docker attach container1
+docker stop container1 // rm -f container1 // kill container1
+docker inspect container1 // gives info
+docker exec container1 service apache2 status // ls /tmp
+docker top container1 // stats can be checked
+
+
+$$$$$$$$$$$$$&&&&&&&&&&&&&
+
+dockerfile creates layers on top of the base image by executing the commands in it.
+if u want run multiple containers at a time, having same configuration then that time docker file will help
+// 1. we can build directly using 
+# docker build -t ubuntu:myimg hi // hi is folder / can usea a dot
+// 2. can execute using build in docker-compose shown below script`
+
+FROM maven:3.5-jdk-8
+COPY src /usr/src/myapp/src
+COPY pom.xml /usr/src/myapp
+RUN mvn -f /usr/src/myapp/pom.xml clean package
+ENV WILDFLY_VERSION 10.1.0.Final
+ENV WILDFLY_HOME /usr                 //like export
+RUN cd $WILDFLY_HOME && curl http://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz | tar zx && mv $WILDFLY_HOME/wildfly-$WILDFLY_VERSION $WILDFLY_HOME/wildfly
+RUN cp /usr/src/myapp/target/people-1.0-SNAPSHOT.war $WILDFLY_HOME/wildfly/standalone/deployments/people.war
+EXPOSE 8080
+CMD ["/usr/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
+
+##########Other way of creating images(from running containers)###############
+docker commit container1 ubuntu:newimg
+// we can push to docker hub [$docker push ubuntu:newimg]
+
+############ we can create tarballs for images & running containers
+#docker export cont1 > cont1.tar         //exports running containers
+#docker save ubuntu:latest > latest.tar // saves images
+$$$$$$$$$$$$$&&&&&&&&&&&&&
+
+docker link provides docker with a reference point that allows it to refer to other containers
+
+# docker run -dti --name cont2 -e MYSQL_ROOT_PASSWORD=123456 mysql
+# docker run -dti --name cont3 --link cont2:mysql -p 99:80 wordpress
+
+$$$$$$$$$$$$$&&&&&&&&&&&&&
+
+Docker compose is a tool for defining & running multi containers [for docker applications] 
+docker-compose.yml  configures application services
+******** and with a single command we can start and stops all of the services[containers] related to that application
+
+
+#### cd product
+##### Dockerfile
+FROM python:3-onbuild
+COPY . /usr/src/app
+CMD ["python", "api.py"]
+
+#docker-compose.yml
+version: '3'
+
+services:
+	product-service:
+		build: ./product              // directory having Dockerfile
+		volumes:
+			- ./product:/usr/src/app
+		ports:
+			- 5001:80
+	website:
+		image: php:apache             // we can use build / image
+		volume: 
+			- ./website:/var/www/html
+		ports:
+			- 5000:80
+		depends_on:
+			- product-service
+#######adfwerw			
+#docker-compose up -d
+
+&&&&&&&&&&&&&&&&&&&&&
+//image/build, ports, volumes: - .:/apps/test, working_dir: /apps/test, depends_on, environment, command: bundle exec puma -b 0.0.0.0
+#cat docker-compose.yml
+version: '3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - 80:80
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:
+    db_data:
+
+/// ihave written this file
+
+#############NETWORKS###############
+path : /var/lib/docker/network/files/
+
+docker network ls // list
+docker network inspect bridge // new_default
+docker network create --subnet=172.57.0.0/16  newnet
+
+docker network connect newnet cont1 // connecting a running container to a newly created network
+docker network inspect newnet
+
+docker run -dti --net newnet --ip 172.57.1.25 ubuntu // can run a conainer using a particular ip / network
+docker network inspect new net
+
+################VOLUMES###############
+path : /var/lib/volumes/new/vol/_data
+
+docker run -dti --name amar -v /test:/root ubuntu /bin/bash
+/// attaching a folder to container 
+
+docker run -dti --name amar1 -v newvol:/root ubuntu /bin/bash
+// attching newly created volume to container
+
+docker volume list
+docker volume remove testvol
+docker volume create newvol
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&&&&&
+/////docker service create --name website --publish 80:80 sixeyed/docker-swarm-walkthrough
+
+docker swarm is a technique to create and manage cluster
+
+docker swarm init --listen-addr ip:2377 // manager ip
+docker node ls // ps, rm
+
+docker swarm join ip:2377
+
+docker service create --name website --publish 80:80 sixeyed/docker-swarm-walkthrough
+docker service inspect website
+docker service rm website
+docker service tasks website
+docker service update --replicas website
+check service tasks
+docker service ps website
+--mode global /// to run the service in all nodes
+--replicas 3 
+docker service ///ls, ps, tasks, rm, scale
+docker service scale website=5 // scale replicas
+docker node update --availability drain manager-1 // active
+
+docker swarm leave --force
+
