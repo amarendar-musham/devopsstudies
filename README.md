@@ -25,6 +25,14 @@
       2. VPC & benefits
       3. components, 
       4. direct connect
+      
+    AWS auto scaling and LB, IAM, MFA
+    
+    1. Auto Scaling
+    2. load balancing
+    3. IAM -- identification access management
+    4. MFA --  multifactor authentification
+    
 4. docker
         docker containerization
         docker file
