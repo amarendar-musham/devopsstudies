@@ -36,3 +36,28 @@ docker ps -a
 docker stop container ID
 docker restart container ID
 
+
+
+RUN is an image build step, the state of the container after a RUN command will be committed to the docker image. A Dockerfile can have many RUN steps that layer on top of one another to build the image.
+
+CMD is the command the container executes by default when you launch the built image. A Dockerfile can only have one CMD. The CMD can be overridden when starting a container with docker run $image $other_command.
+
+ENTRYPOINT is also closely related to CMD and can modify the way a container starts the image.
+
+<instruction> ["executable", "param1", "param2", ...]
+
+CMD ["/bin/echo", "Hello world"]  
+ENTRYPOINT ["/bin/echo", "Hello world"] 
+
+ENV name John Dow  
+ENTRYPOINT ["/bin/bash", "-c", "echo Hello, $name"] 
+o/p: Hello, John Dow  
+%%%%%%%%%%%%%%%%%%%%%
+ENTRYPOINT ["/bin/echo", "Hello"]  
+CMD ["world"] 
+
+1.docker run -it <image>
+		Hello world  
+2.docker run -it <image> John
+		Hello John 
+%%%%%%%%%%%%%%%%%%%%%%
