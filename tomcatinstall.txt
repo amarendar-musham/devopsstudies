@@ -1,0 +1,20 @@
+ $ sudo vi /etc/sudoers
+Configure nopassword promt for user jenkinsadmin by add this line to file /etc/sudoers
+jenkinsadmin ALL=(ALL:ALL) NOPASSWD:ALL
+
+$ sudo apt-get install openjdk-7-jdk openjdk-7-jre
+$ sudo cp -p /usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/
+$ sudo apt-get install tomcat7 tomcat7-docs tomcat7-admin tomcat7-examples
+$ sudo vi /etc/default/tomcat7
+Add JAVA_HOME to this file /etc/default/tomcat7
+JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64      => Find out your exactly path of jdk
+          
+$ sudo vi /var/lib/tomcat7/conf/tomcat-users.xml
+Add user admin to this file /var/lib/tomcat7/conf/tomcat-users.xml
+          <tomcat-users>
+              <role rolename=”manager-gui”/>
+              <user username=”admin” password=”password” roles=”manager-gui,admin-gui,manager-script”/>
+          </tomcat-users>
+***Be carefull by default this tag will be commented so remove comment marks to enable configuration***
+
+          
