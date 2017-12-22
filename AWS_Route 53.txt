@@ -1,0 +1,22 @@
+ROUTE 53
+1. create hosted zone--- add a domain purchased in godaddy.in // it'll generate NS records(4), SOA
+#collabra.in NS, SOA
+
+create 2 ec2 instances in same region, add to the 
+2. create Record Set --- add those 2 ips as A records,
+// u can add those 2 instances to a load balancer---(i), elb dns
+(i)[alias elb] - A record to elb.collabra.in, 
+// can create a s3 bucket with << s3.collabra.in >>, 
+(ii)[alias s3] - A record to s3.collabra.in,
+
+Health check , 
+
+for high availability u need to have 2 instances in 2 diff region, if 1 goes down then another will be available
+
+add those two ips as same A record, 
+create record set - A(ip1)-primary
+create record set - A(ip2)-secondary -(routing policy*[failover]*)
+//generally routing policy as simple
+
+ha.collabra.in
+
