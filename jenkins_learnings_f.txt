@@ -1,0 +1,131 @@
+Jenkins is a Continuous Integration server. [opensource + plugins, community-strong] 
+
+Basically Continuous Integration is the practice of running your tests on a machine automatically everytime [someone pushes new code into the source repository.]
+
+<< whenever a developer changed his code, we need to integrate those changes & need to wait for feedback[happened after deployment]
+
+immidiate bug detection
+u can get the  fast feedback.
+no integration steps in lifecycle
+deployment system already developed[u can deploy at any time]
+
+CD[delivery continuous]: capability of deployment at any point of time
+CD[deployment]: the automation on dev, QA, PROD stage 
+
+integrated[changes up , combined into project],
+build[code compiled into executable/package],
+tested[automated test suites are run],
+archieved[versioned, stored so it can be distributed as is if desired],
+deployed[loaded onto system where developers can interact with it]
+
+--- create new project [new item, freestyle/*]
+->general
+->SCM
+->Build Triggers --- poll scm/gitscm polling[webhooks]
+->Build env
+->Build[steps]
+->Post Build actions
+
+-------------------------Maven installation-------------------------------
+cd ~ ; wget "http://redrockdigimark.com/apachemirror/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.zip"
+unzip apache-maven-3.5.2-bin.zip
+export M2_HOME=~/apache-maven-3.5.2/
+export PATH=$PATH:${M2_HOME}/bin
+
+// AND need to give the maven home path to configure system in jenkins
+// 3. Global tool conf --- maven home && java jdk [mvn -v]
+// 1. Maven integration plugin, 2-- install maven on server
+// clean install/package
+
+-----------------------------------------------------------------------------
+
+post build actions [ after build war file ]
+1. deploy to tomcat server[webapps folder]    - deploy to container
+2. scp <war> user@ip:/usr/local/apache2/tomcat8/webapps - shell
+
+-----------------------------------------------------------------------------
+upstream / downstream----------
+jobs to run after or before job build
+
+-------------------------Pipe line project-------------------------------
+
+to manage multiple upstream & downstream jobs, 
+->well graphical visualization of jobs
+*** code, durable, pausable, versatile, extensible *******
+
+step[job as a single command], node[create workspace & build], stages[build, test deploy]
+
+
+pipeline {
+    agent any // agent { docker { image:"ubuntu" } }
+   parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+				sh '''
+				uptime ; whoami ; uname -a
+				'''
+            }
+        } // test stage skipped
+        stage('QA') {
+            steps {
+                input "Does the env look ok"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying.... \n ${params.PERSON}' // default parameters --- env.JENKINS_URL, env.BUILD_ID, 
+				sh 'echo good morning'
+            }
+        }
+    }
+}
+
+-----------------------------------------------------------------------------
+
+-------------------------JFrog installation-------------------------------
+
+jfrog artifcatory oss download
+download zip, unzip, cd artifactory/bin/; sh ./artifactoryctl start ; 
+default port 8081
+
+install artifactory plugin
+configure system --> + url, [admin/password] // for maven project
+postbuild actions --> + deploy artifacts to artifactory  
+
+-----------------------------------------------------------------------------
+
+<<<<<<<<<<<<NODES>>>>>>>>>>> *should have java 8 installed********
+
+Manage jenkins -> manage nodes 
++ new node  ->  node name
+				description
+				no.of executors
+				Remote Root directory -- /home/ec2-user
+				Label - perticular jobs will be executed
+				usage - to label / all
+				Launch method - launch agent via ssh [host credentials]
+
+-----------------------------------------------------------------------------
+
+<<<<<<<<<<<<<<<<Webhooks>>>>>>>>>>>>>>>>>
+
+manage jenkins - configure system -- 
+--> Github servers + additional actions 
+		Github api url  - api.github.com
+		User/password
+		Convert to login to token & post
+
+Github + Integration services 
+--> +services - jenkins(github plugin)
+--> webhooks - payload url -> <jenkins-url>/github-webhook
+
++
+++
++++
+++++
+
+-----------------------------------------------------------------------------
