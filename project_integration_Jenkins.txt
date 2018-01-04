@@ -1,0 +1,95 @@
+sudo add-apt-repository ppa:webupd8team/java
+
+sudo apt update &&  sudo apt install -y oracle-java8-installer 
+
+
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo echo "deb https://pkg.jenkins.io/debian-stable binary/" >> /etc/apt/sources.list
+sudo apt-get update && sudo apt-get install -y jenkins
+
+
+cd ~ && wget "http://redrockdigimark.com/apachemirror/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.zip"
+sudo apt-get install -y unzip 
+unzip apache-maven-3.5.2-bin.zip
+rm apache-maven-3.5.2-bin.zip
+export M2_HOME=~/apache-maven-3.5.2/
+export PATH=$PATH:${M2_HOME}/bin
+
+
+wget https://bintray.com/jfrog/artifactory/download_file?file_path=jfrog-artifactory-oss-5.8.0.zip
+
+unzip down*
+
+cd /home/ubuntu/artifactory-oss-5.8.0/bin
+
+./artifactoryctl start
+
+
+sudo apt-get install git
+
+git plugin
+maven integration plugin
+Deploy to container Plugin
+
+Global tool configuration
+path: /home/ubuntu/apache-maven-3.5.2
+
+https://github.com/mkyong/spring3-mvc-maven-xml-hello-world/
+https://github.com/jleetutorial/maven-project/
+
+
+Execute Shell
+
+cd ~ 
+
+git --version
+
+if [ $? != 0 ] ; then 
+sudo apt-get install -y git
+fi
+
+if [ -d project_devops/ ] ; 
+then  cd project_devops/ ;
+else  git clone https://github.com/amarendar-musham/project_devops.git && cd project_devops/  ;
+fi
+
+curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh && sudo chmod 777 /var/run/docker.sock
+
+if [ $? != 0 ] ; then echo exiting without docker installation ; exit ; fi
+
+ if [ ! $(docker ps -q -a |wc -l ) == 0 ] ; then 
+docker rm -f $(docker ps -q -a ) ;
+fi
+
+docker build -t ubuntu:amar . && docker run -dti --name tomcont1 -p 9090:8080 -p 51:22 ubuntu:amar /bin/bash
+
+Deploy war to a container
+
+*****contextpath shoud be different
+**/*.war
+
+
+Using Nginx installing jenkins
+sudo vi /etc/nginx/nginx.conf
+
+location / {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_redirect off;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+sudo systemctl start nginx.service
+sudo systemctl enable nginx.service
+
+sudo firewall-cmd --zone=public --permanent --add-service=http
+sudo firewall-cmd --reload
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+sudo yum install jenkins
+
+sudo service jenkins start/stop/restart
+sudo chkconfig jenkins on
+

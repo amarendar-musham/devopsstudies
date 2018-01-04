@@ -1,0 +1,82 @@
+Manage plugins
+*Git plugin 
+*Maven Integration plugin
+*SonarQube Scanner for Jenkins
+---old version[sonarQube plugin / sonarQube scanners]
+*Docker plugin
+*S3 publisher plugin
+*HTML Publisher plugin
+
+
+in job - buildtriggers---[GitHub hook trigger for GITScm polling]
+http://54.85.81.174/github-webhook/  (push)
+output
+Started by GitHub push by amarendar-musham
+
+accessing github private repo --->
+1.Github -- settings - deploy keys,  +add key, [created using ssh-keygen on jenkins server]
+2.jenkins -- i)credentials +(ssh username with privatekey), username--jenkins, private key-- (from jenkins master ~/.ssh)
+			ii) SCM-- git >> credentials --- jenkins 
+
+java installation -- >https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
+
+Maven installation			[3.5.2]
+
+#cd /usr/local
+#wget http://www-eu.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
+#sudo tar xzf apache-maven-3.5.2-bin.tar.gz
+#sudo ln -s apache-maven-3.5.2  maven
+#sudo vi /etc/profile.d/maven.sh
+export M2_HOME=/usr/local/maven
+export PATH=${M2_HOME}/bin:${PATH}
+#source /etc/profile.d/maven.sh
+#mvn --version
+
+Global Tool Configuration-- > maven installation +path /usr/local/maven
+
+ ---------------------------------------------------------
+ 
+sonarQube servers -- 
+configuresystem -- URL, version[5.2], sonarQube account login & password 
+[for 5.3 or higher,, we need to give Server authentication token]	 
+
+sonarQube scanners --
+Global tool conf--- sonar_runner_path
+
+Execute SonarQube Scanner ---  build
+1.	Path to project properties	 // u can write properties into a file and add path
+2.analysis properties // or u can write here 1/1
+
+
+install sonarqube on jenkins server,
+configure & start the sonarqube server
+configure sonarqube in jenkins
+create sonarqube build job in jenkins
+run then sonarQube build job & view sonarQube report in jenkins
+
+ -----------------------------------------------------------
+ 
+ Docker -- configure system -- cloud +docker 
+ 
+ docker host URI -- unix:///var/run/docker.sock // tcp://127.0.0.1:2376
+ and server credentials
+ -----------------------------------------------------------
+ 
+ S3 
+		Amazon S3 profiles +s3 profiles, name, access key, secret key;
+		
+ post-build actions
+ -- publish artifacts to s3 bucket
+ 
+ 
+Email notifications
+‘Manage Jenkins’- configure system - Email notification
+SMTP server address (smtp.gmail.com) +authentication +smtp port 465, 
+
+
+
+
+
+
+
+
