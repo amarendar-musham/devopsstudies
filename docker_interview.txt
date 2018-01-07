@@ -61,3 +61,58 @@ CMD ["world"]
 2.docker run -it <image> John
 		Hello John 
 %%%%%%%%%%%%%%%%%%%%%%
+
+
+
+docker login // login to the docker public registry on your local machine
+docker tag image username/repository:tag
+ex: docker tag friendlyhello john/get-started:part1
+docker images
+docker push username/repository:tag // upload
+
+docker run -p 4000:80 username/repository:tag
+
+************
+
+FROM ubuntu:latest
+MAINTAINER <name>
+
+RUN apt-get update
+CMD ["python", "app.py"] // "echo" "hello world"
+
+ADD . /app			// http://........tar.gz /usr/src # downloads and copy || extracts and copy 
+COPY preconditions.txt /usr/tmp
+
+ENTRYPOINT service apache2 start && bash
+EXPOSE 80
+ENV var_home="/var/etc" // NAME amar
+
+USER daemon // used to set the UID|username when running img
+VOLUME /data // location on host system
+WORKDIR /app
+RUN pwd
+
+
+ONBUILD RUN rm -rf /usr/tmp
+
+**************************************
+EXPOSE 27017
+CMD ["--port 27017"] // default port to execute the entry point [mangodb]
+ENTRYPOINT usr/bin/mangodb
+RUN apt-get update \
+		&& apt-get install unzip \
+		&& \
+		for server in \
+					hi.com \
+					bye.com \
+					good.com \
+		; do \
+				echo $server \
+		done ; \
+		
+**********************************************
+
+docker cp $PWD/test.txt a09323a4:/tmp
+docker exec a09323a4 ls /tmp
+docker top a09323a4
+docker start a09323a4 // attach, stop, kill
