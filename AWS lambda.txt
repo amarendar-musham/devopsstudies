@@ -1,0 +1,52 @@
+Automated version of EC2
+
+it'll execute the background tasks
+
+AWS Lambda is  a serverless compute cloud, only be used to execute background tasks
+
+can use Lambda using AWS SDKS [s/w development kits.]
+
+AWS SDKS with IDE[eclipse/visual studio]
+
+--> eclipse IDE
+1. help--> install available s/w -- workwith(aws.amazon.com/eclipse)
+	select all tools & click finish 
+2. our aim is to create an application which will upload a file  on S3, this will be processed by lambda and in-turn will send you an email all the file's details. iF You reply to that email, it shall move tha file to a special folder.
+
+WEBSITE/email ---> S3(file system) ---> LAMBDA(background tasks)[SQS]
+LAMBDA --> SES(Emailing users)[to send mails]
+email ---> reply mail --> ROUTE 53 ---> SES[receive mails ]
+
+
+1. Active notification---- [s3 will invoke lambda function, when a file uploaded to s3]
+	S3-bucket-properties-events- + notfication
+	name: aws-lambda, events:put, sendto: lambda function, function: MyFunction
+2. SQS[simple queue service]
+	create new queue, name: hello-lambda.fifo, quick create
+	configure queue--> msg retention period 2m, save
+3. SES[simple email service]
+	add email address(verify new email address)
+	EMAIL receiving--> Verify a new domain[free nom domain]- edureka.tk
+		--> it'll give TXT && MX records, 
+	
+ROUTE 53--> 1.hosted zones(create )-  domain: edureka.tk  
+			2.freenom- manage domains, management tools(NS)
+				add NS from aws to freenom
+				[changing name servers]
+			3.create record sets,
+				MX from SES, TXT from SES
+	
+	then the domain will be verified in SES
+
+	RULE sets, create a rule, 
+		recipient(hello@edureka.tk), action (+lambda)-- MyFunction2,
+		rule name[lambda-demo]
+
+4. need to give the SQS(hello-lambda.fifo) URL in lambda function as myqueueurl
+
+5. upload the code to aws
+	
+				
+			
+	
+
