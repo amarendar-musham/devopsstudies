@@ -1,0 +1,68 @@
+﻿
+Git clone http://github.com/kellydemo7/hello-world
+
+ aws cloudformation create-stack --template-body file://ecs-cluster.template --stack-name EcsClusterStack --capabilities CAPABILITY_IAM --tags Key=Name,Value=ECS --region us-east-1 --parameters ParameterKey=KeyName,ParameterValue=demo-us-east-1 ParameterKey=EcsCluster,ParameterValue=getting-started ParameterKey=AsgMaxSize,ParameterValue=2
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:314030092439:stack/EcsClusterStack/bbc30850-f67f-11e7-adb6-50faeaee4499"
+}
+
+aws cloudformation create-stack --template-body file://ecs-jenkins-demo.template --stack-name JenkinsStack --capabilities CAPABILITY_IAM --tags Key=Name,Value=Jenkins --region us-east-1 --parameters ParameterKey=EcsStackName,ParameterValue=EcsClusterStack
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:314030092439:stack/JenkinsStack/9c333d60-f680-11e7-b3cd-500c286e1a36"
+}
+
+
+
+Execute shell
+#!/bin/bash
+DOCKER_LOGIN=`aws ecr get-login --region us-east-1`
+${DOCKER_LOGIN}
+<<<or>>
+docker login -u AWS -p eyJwYXlsb2FkIjoiNEI2Q1NRREJ1dkFhckhRdTBETVFCNFhxQURqanBDOXJtRllnckdINHFuZDVuc0RuOUM4Vi9iV1Z1Z3kySVV2OGQvMHhxOHRnd0hYaDBjZTU0eDFNYWlnY3BhYVFFb1RaTFVhSFUyZzFVVm1reTJLQWVlR0dUeEE3SHh0ZVFHZHhPQW5NT25JZ3g5M2RqL1pkWlN2U2s3dGdDaGpnZWExOGIxbzBVS1N6bmJQaDJHTE0yM3VxWWI3dnVyY1RDVkhzZFhZcjBlcmlTbXVmaEFJeTFVZjAwa2NVakJVVEtLQkVta0tKbDdXbU1HY1UyWDM3c3kzRkZpbHJneEt2eENHd0NDNWtKMDVLeS9RRWNIMVoyS0NPbWZqUXgyMVBLcExKSERlbTdpNUNTNHc2RWE5bk43Q0F4VVVSWEI4cDhBRldmME96UWZNKzF0UG1vUVdYTEs4NFlQVVo5ZEptQ2YzaEpBS3hmbVF3THNBRTlsL055SWlqREtqcmxTQldPbGdBckhqd2RsQ0hDZjJLV0pZaEtoUTRkTjRPaEZvdGlENXFmVVZsbFBvbGlSTFpUTmtKbXl1Z0RSSzBSRUJJQ09hSWYxY2JIeUVyRHNTbWp4T0xYNllDeXFaTDJmNitjUWIzcldDTlp0ZDVBZ3JTN2hDY3RHQ1hKRFYrRmljclFyR0orMHZrRzA4VzhnYk01MWh1dzh4RWhQNE1uNm80cnZKUFRTa3h1alFFVTl0cGdoR0ZrQ1ZzR3h4YzZyNko4WDQ3VW84RlQ1ejhlcFRFdk9Zek56MnI4ajIxVXVINGw4NWFjZmxld1VybFUvMmQ3Yk5Rc2l3cHdRUlUyYzZOR21TRllMOWZDbDhMblo0VVRlRWRzR0RRMTNFcjhPMTduYko5bzB4dUVVZDNkMFN3bTVVdENCTXl3c09ySkNZaFVKQlJrK09IRjY4dW9JT2twZTFXc2JVWjl3VkoremJMWTRWQStsQStnWkFwSUFsR3lwd1QvOUlQVHZCNGpLdlFsdURRV3lpVk42YTJEV3pRSTI2T01OYlRKMEs1Ykp6QjNEb3VxeStTd21ISld1NzNhazNGWHZjSFZWb1hNaTZOd3RqY3lDejNpMnhqczRPLzZsK1IrNmZWaEV4N0trckVHMXZ3aFUzT2U0bGZxLzJ3MW5nSERDWE51aitKb2V3Zml4Ymx6bEljZThQeHV1NkFZQU5temxxYk44SWYzZG04eFhoMnVDVm43aXdyMWhsS3Z4VkFzVzZWNmtXNDJFUEdQRlo5bGY2eHRpNlFwdjNZWTV0aElQeGRzdWFJQWtnb055TW04Tm5sWENJVlYzeS9uYUZZR3Jha2NLeEpZMnMvZGN4WXprVWgvdWNMSWtZK2UrWHJmdVF3Y0EvTmlMd0RKRWxCTGhTRWptQUwrbm1IdnM0WnZKakRLdmxqWGl3SVMyMVZocFZqZzA4WTcyZ0puaU95R2haM09qZlBLeEZmZkFkYjlGemNEMWZtSHN6aWp0MWtDUEE3RlZ1amk4ck9DUGlnWEdXUnRrbjRYUzF3TkVKTFNwbE95bWt2d2UvQXkvUWlUMnB5WTFGejMvN3p0Q1p4U0xVVmlKVHpKRGdXSjE5SjhKMWN2RmpLSzNua084WkcvQS8xZ0VJemdCdWN2ODJVQktsKzJGTlpBWHp3eFVTRExWbVBxaERDdWVyS1B1dHk0LytvQ2x3QytDUGg1U0duTGJRc0t1M2FsbXZWWHJHUkdMVTlkRWpKWXBjL2FTV2I5MkVBWTNITzJiU1orWmcvS0ZEeHVwZktYSTNIWk5ZVWtmNlFYdFpJUE5ONk5wOFRTOWNQUjRISUpIRmlKSld0MFdKbmFuejJpVUhZVVluSnRuZUVyckQ3akhCSFFTY05GWXNlOTB5d2pDWnpTSUxTUjhEblRmeGhVdmVxdm5VY3pHcklhR1RYa2tzUGk0Q0tMVWtTc1JtN1ZlOEVzOVl2TjFOb096QmdYd0t4clhaRmlTWGhBTmtERnMya01nQkRFMFpJSDlINHArejRQanBleENJRnl6SmVSN29NVmpJVjhjSXJ2TnFWQUVBaW1PeUhCSVZReUFQc2Rkem1Xc0NNc1dnbDMyNlQiLCJkYXRha2V5IjoiQVFFQkFIaHdtMFlhSVNKZVJ0Sm01bjFHNnVxZWVrWHVvWFhQZTVVRmNlOVJxOC8xNHdBQUFINHdmQVlKS29aSWh2Y05BUWNHb0c4d2JRSUJBREJvQmdrcWhraUc5dzBCQndFd0hnWUpZSVpJQVdVREJBRXVNQkVFREUzT0VlYU9KUHFoS29XYjVBSUJFSUE3UGkzd2lxa1ExUmUyZXkvQmQySjIvckUyWHovRHVGY1FqcTgxalEwZlptcGRwd2xYSUlOVGdhL3ZpZEdGWDNHNS9kTE9Ob1ViOU9nNUhHZz0iLCJ2ZXJzaW9uIjoiMiIsInR5cGUiOiJEQVRBX0tFWSIsImV4cGlyYXRpb24iOjE1MTU2ODc0MTR9 -e none https://314030092439.dkr.ecr.us-east-1.amazonaws.com
+aws ecr create-repository --repository-name hello-world --region  us-east-1
+{
+    "repository": {
+        "registryId": "314030092439", 
+        "repositoryName": "hello-world", 
+        "repositoryArn": "arn:aws:ecr:us-east-1:314030092439:repository/hello-world", 
+        "createdAt": 1515643280.0, 
+        "repositoryUri": "314030092439.dkr.ecr.us-east-1.amazonaws.com/hello-world"
+    }
+}
+
+Execute shell
+
+#!/bin/bash
+#Constants
+
+REGION=us-east-1
+REPOSITORY_NAME=hello-world
+CLUSTER=getting-started
+FAMILY=`sed -n 's/.*"family": "\(.*\)",/\1/p' taskdef.json`
+NAME=`sed -n 's/.*"name": "\(.*\)",/\1/p' taskdef.json`
+SERVICE_NAME=${NAME}-service
+
+#Store the repositoryUri as a variable
+REPOSITORY_URI=`aws ecr describe-repositories --repository-names ${REPOSITORY_NAME} --region ${REGION} | jq .repositories[].repositoryUri | tr -d '"'`
+
+#Replace the build number and respository URI placeholders with the constants above
+sed -e "s;%BUILD_NUMBER%;${BUILD_NUMBER};g" -e "s;%REPOSITORY_URI%;${REPOSITORY_URI};g" taskdef.json > ${NAME}-v_${BUILD_NUMBER}.json
+#Register the task definition in the repository
+aws ecs register-task-definition --family ${FAMILY} --cli-input-json file://${WORKSPACE}/${NAME}-v_${BUILD_NUMBER}.json --region ${REGION}
+SERVICES=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .failures[]`
+#Get latest revision
+REVISION=`aws ecs describe-task-definition --task-definition ${NAME} --region ${REGION} | jq .taskDefinition.revision`
+
+#Create or update service
+if [ "$SERVICES" == "" ]; then
+  echo "entered existing service"
+  DESIRED_COUNT=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .services[].desiredCount`
+  if [ ${DESIRED_COUNT} = "0" ]; then
+    DESIRED_COUNT="1"
+  fi
+  aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION} --desired-count ${DESIRED_COUNT}
+else
+  echo "entered new service"
+  aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
+fi
+
