@@ -67,3 +67,22 @@ second layer of security
 $$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&
 
 
+
+
+
+AUTOSCALING using LOAD BALANCER & TARGET GROUPS
+
+1. create auto scaling groups
+	i) launch config, [take AMIs]
+	ii) auto scaling groups [2 for 2 diff servers(image && blog)]
+2. create Application Load balancer
+			(with 1 target group).
+		create 2nd target group.
+3. goto auto scaling
+	add auto scaling groups to target groups
+4. ELB
+	Listeners
+		add rules/edit rules
+		+ insert rule [host/path & forward to]
+		rule1: /server1/* --> target group1
+		rule2: /server2/* --> target group2
