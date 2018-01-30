@@ -96,6 +96,12 @@ NACL[access control list] -- subnet level [allow/deny], stateless (return traffi
 $$$$$$$$$$$$$$$$&&&&&&&&&&&&
 
 
+VPC CONNECTION
+1. subnets
+2. route tables for private & public [seperate for both]
+3. gateways [igw/nat]
+4.route +subnet & +gateway
+
 
 VPC PEERING 
 
