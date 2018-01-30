@@ -97,6 +97,24 @@ $$$$$$$$$$$$$$$$&&&&&&&&&&&&
 
 
 
+VPC PEERING 
+
+1. 
+10.0.0.0/16
+make a vpc having 2pub[route table PUB] & 2private[route table PRV] subnets
+11.0.0.0/16
+make another vpc having a single subnet[i.e, private]
+
+2.
+make vpc peering -- Accept Request.
+
+3.
+Route tables
+You can specify the entire IPv4 CIDR block of the peer VPC
+PUB 11.0.0.0/16 pcx-c37b9faa // cidr of ther vpc
+PRV 11.0.0.0/16 pcx-c37b9faa // cidr of ther vpc
+route table of 2nd vpc // need to do same
+
 
 
 
