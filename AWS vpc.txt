@@ -99,7 +99,7 @@ $$$$$$$$$$$$$$$$&&&&&&&&&&&&
 VPC CONNECTION
 1. subnets
 2. route tables for private & public [seperate for both]
-3. gateways [igw/nat]
+3. gateways [igw/nat] // NAT gateway -- [Elastic IP + Public subnet]
 4.route +subnet & +gateway
 
 
