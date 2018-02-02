@@ -1,0 +1,57 @@
+aws rds create-db-snapshot /
+    --db-instance-identifier mydbinstance /
+    --db-snapshot-identifier mydbsnapshot
+	
+aws rds restore-db-instance-from-db-snapshot \
+    --db-instance-identifier mynewdbinstance \
+    --db-snapshot-identifier mydbsnapshot
+	
+***********take native backup of RDS db **********************
+***********************************************************		
+option group  +option[sql server backup restore] +iam + s3 bucket
+instance +actions-modify, +database options-option group
+***********************************************************
+**************************************************************
+
+steps
+i) RDS-OPTION GROUPS- create group
+		name, description, engine(sqlserver-se/mysql), version(12.00)-2014/mysql-5.6
+ii) add option to that group
+		option -- < sql server backup restore >
+		IAM Role -- (better to create new role) & select S3 bucket
+------	
+iii) go to instances, select instance, instance actions - modify
+		database options[select <option group> that we created]
+			>apply immidiately
+
+1. S3 bucket to store ur backups
+2. IAM role to access the bucket
+3. < sql server backup restore > option added to an option group on your db instance
+
+---------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
+
+## for encrypted databases
+
+*****Initiate backup for unencrypted databases
+
+exec msdb.dbo.rds_backup_database
+@source_db_name='amardb', @s3_arn_to_backup_to='arn:aws:s3:::s3amarv/'amardb_2017_23_23.bak,
+@overwrite_S3_backup_file=1; // s3 bucketname, backup file name
+
+##@kms_master_key_arn='arn:aws:kms:region:account-id:key/key-id',
+
+account-id:ke
+********Restore unencrypted databases
+
+exec msdb.dbo.rds_restore_database 
+@restore_db_name='database_name', 
+@s3_arn_to_restore_from='arn:aws:s3:::bucket_name/file_name_and_extension'; 
+
+##@kms_master_key_arn='arn:aws:kms:region:account-id:key/key-id'; 
+
+
+*************** To check status of backup or restore
+
+exec msdb.dbo.rds_task_status @db_name='database_name'
+exec msdb..rds_task_status @task_id= 5
