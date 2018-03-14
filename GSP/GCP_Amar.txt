@@ -1,0 +1,353 @@
+*******PROJECTS, RESOURCES, AND QUOTAS*********
+
+projects are like compartments, u can manage resources
+
+All Google Cloud Platform services are associated with a project that is used to: 
+○ Track resource and quota usage 
+○ Enable billing 
+○ Manage permissions and credentials 
+○ Enable services and APIs
+
+Interact with projects using 
+ ○ Cloud Console
+ ○ gcloud command-line tool 
+ ○ Cloud Resource Manager API
+
+ 
+Resource quotas limit number of resources created
+5 networks/project
+24 CPUs/region/project 
+7000 instances per network 
+500,000 Machine Learning API requests/day 
+1,000 Machine Learning API requests/100 sec. 
+
+To see all quotas associated with you project, see: 
+https://console.cloud.google.com/iam-admin/quotas?project=<your-project-id >
+
+Replace myproject with your own project ID:
+gcloud compute project-info describe --project myproject 
+
+To check your used quota in a region, run:
+gcloud compute regions describe example-region
+
+
+For two instances to communicate over private IP, they must be in the same project on the same network 
+If not on same network, they must communicate over external IP 
+ ○ Static or ephemeral external IPs are available 
+ ○ GCE includes an internal FQDN DNS resolver
+
+Resources are either global, regional, or zone-based 
+○ Global resources can be used by any other resource, in any region/zone, in the same project 
+○ Regional resources can only be used by other resources in the same region
+○ Zone-based resources can only be used by other resources in the same zone
+
+All Compute Engine resources are either global, regional, or zonal. 
+For example, images are a global resource so they can be accessed from all other resources. 
+Static IPs are a regional resource, and only resources that are part of the same region can use the static IPs in that region.
+
+Global resources include:
+Images, Snapshots, Network, Firewall, 
+Router[to create complicated networking scenarios]
+ex: A network can be used by any instance in the same project.
+* Instance: A virtual machine instance must reside within a zone and can access global resources or resources within the same zone.
+* Disk: A Disk resource can only be accessed by other instances within the same zone.   
+Machine types are per-zone resources
+
+
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Project Resource Examples 
+● Global resource 
+	○ Firewall Rules 
+	VPC
+● Region-based resource 
+	○ IP Addresses 
+	SUBNETS
+● Zone-based resources 
+	○ Instances 
+	○ Disks
+	Machine types
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+**********Interacting with Google Cloud Platform*********
+
+* Cloud Console - Web user interface
+* Cloud SDK/Cloud Shell (command-line interfaces)
+	[ gcloud, gsutil (Cloud Storage), bq (BigQuery) ]/[Containerized version of Cloud SDK running on Compute Engine instance ]/Docker images
+* REST-based API
+
+
+************you can use gcloud to create and manage:
+
+Google Compute Engine virtual machine instances and other resources
+Google Cloud SQL instances
+Google Kubernetes Engine clusters
+Google Cloud Dataproc clusters and jobs
+Google Cloud DNS managed zones and record sets
+Google Cloud Deployment manager deployments
+
+gcloud compute/gcloud compute instances
+[related to Compute Engine]
+
+gcloud init/gcloud init --console-only
+gcloud auth login/list
+gcloud auth activate-service-account --key-file [key-file]
+gcloud config [command]/list
+gcloud config configurations [command]
+
+
+********************************************************************************
+
+**********You can use gsutil to do a wide range of bucket and object management tasks, including:
+
+Creating and deleting buckets.
+Uploading, downloading, and deleting objects.
+Listing buckets and objects.
+Moving, copying, and renaming objects.
+Editing object and bucket ACLs.
+
+gsutil help cp
+gsutil help
+gsutil help options
+gsutil version -l
+
+********************************************************************************
+
+You can use Cloud Shell to:
+● Create and manage Google Compute Engine instances
+● Create and access Google Cloud SQL databases
+● Manage Google Cloud Storage data
+● Interact with hosted or remote Git repositories, including Google Cloud
+Source Repositories
+● Build and deploy Google App Engine applications
+
+********************************************************************************
+
+Instance tags can be used to define which of the following
+networking components?
+
+Which firewall rules apply to an instance
+Which routes apply to an instance
+
+
+
+-----------------------------------------------------------------------------------
+******************INSTANCES**********************
+
+INSTANCE states**
+
+gcloud compute instances describe <instance name>
+
+PROVISIONING - Resources being reserved for the instance
+STAGING - Resources acquired, instance being prepared
+RUNNING - Instance is booting up or running
+STOPPING - Instance being stopped due to failure or shut down
+	Temporary status; instance will move to TERMINATED
+TERMINATED - Instance shut down or encountered failure (through API or
+inside the guest)	
+
+-----------------------------------------------------------------------------------
+******************NETWORKS**********************
+
+Each network belongs to only one project
+Each instance belongs to one network
+
+gcloud compute routes list
+gcloud compute routes describe vpngateway
+-----------------------------------------------------------------------------------
+******************DISKS**********************
+
+Persistent disks
+	Can add maximum of 16 standard persistent disks and up
+to 64 TB of storage per instance
+	○ You can go above 16 disks based on number of cores*
+	 Attachable to multiple instances in shared, read-only mode
+SSDs and RAM disks
+	hard disk drives (HDD) or
+	solid-state drives (SSD).
+
+Boot disks and images
+
+	Operating system images are foundation for creating root persistent disks
+Images consist of:
+○ Boot loader
+○ Operating system
+○ Block device with file system structure
+○ Software
+○ Customizations 
+
+Creating instances from images
+gcloud compute instances create <NAME> --image <IMAGE>
+
+gcloud compute instances create <NAME> --image-project <OTHER-PROJECT>
+
+gcloud compute images create <IMAGE> --source-uri <URI>
+// uri for a tar file hosted in cloud storage
+
+gcloud compute instances create <INSTANCE> --image debian-8
+
+gcloud compute instances create <INSTANCE> --image debian-8-jessie-vYYYYMMDD --image-project debian-cloud
+
+
+Exporting an image
+To create and export an image:
+
+1. gcloud compute disks snapshot [SNAPSHOT_NAME] --snapshot-names image-snapshot
+// [SNAPSHOT_NAME] is the name of the disk from which you created the snapshot.
+
+2. Use the image-snapshot snapshot to create a new disk named image-disk by running the following command:
+
+gcloud compute disks create image-disk --source-snapshot image-snapshot
+
+3.
+gcloud compute disks create temporary-disk --size [SIZE]
+
+4. 
+gcloud compute instances create [INSTANCE_NAME] --scopes storage-rw \
+    --disk name=image-disk,device-name=image-disk \
+    --disk name=temporary-disk,device-name=temporary-disk
+		
+5. gcloud compute ssh [INSTANCE_NAME]
+		
+6. sudo mkdir /mnt/tmp
+	sudo mkfs.ext4 -F /dev/disk/by-id/google-temporary-disk
+	sudo mount -o discard,defaults /dev/disk/by-id/google-temporary-disk /mnt/tmp
+	
+	sudo mkdir /mnt/image-disk
+	sudo mount /dev/disk/by-id/google-image-disk-part1 /mnt/image-disk
+	[OR]
+	sudo mount /dev/disk/by-id/google-image-disk /mnt/image-disk
+	
+sudo umount /mnt/image-disk/
+
+7. Creating a tar file of image
+	Need to create a raw disk file on your temp disk. [disk.raw]
+	sudo dd if=/dev/disk/by-id/google-image-disk of=/mnt/tmp/disk.raw bs=4096
+	
+	cd /mnt/tmp
+	sudo tar czvf myimage.tar.gz disk.raw
+	
+	*********
+	/mnt/tmp/myimage.tar.gz
+	*********
+
+8. Upload an image into Google Cloud Storage
+
+	create a bucket: gsutil mb gs://[BUCKET_NAME]
+	Copy your file to your new bucket: 
+	gsutil cp /mnt/tmp/myimage.tar.gz gs://[BUCKET_NAME]
+	
+
+GSUTIL COMMANDS
+
+gsutil cat gs://<bucket-name>/file.txt
+gsutil cp <local-file> gs://<bucket-name>/<remote-file>
+gsutil rsync -r <local-dir> gs://<bucket-name>/<remote-dir>
+mv - move files
+rm - remove files
+acl - manage ACLs,
+rb - remove bucket
+
+gsutil ls
+gsutil ls -r gs://[BUCKET_NAME]/**
+gsutil du -s gs://[BUCKET_NAME]/
+gsutil defstorageclass set [STORAGE_CLASS] gs://[BUCKET_NAME]
+gsutil cp -r gs://[SOURCE_BUCKET]/* gs://[DESTINATION_BUCKET]
+gsutil rm -r gs://[SOURCE_BUCKET]
+gsutil rm -a gs://[SOURCE_BUCKET]/**
+gsutil cp [LOCAL_OBJECT_LOCATION] gs://[DESTINATION_BUCKET_NAME]/
+gsutil cp gs://[BUCKET_NAME]/[OBJECT_NAME] [OBJECT_DESTINATION]
+gsutil rm gs://[BUCKET_NAME]/[OBJECT_NAME]
+gsutil mv gs://[BUCKET_NAME]/[OLD_OBJECT_NAME] gs://[BUCKET_NAME]/[NEW_OBJECT_NAME]
+gsutil cp gs://[SOURCE_BUCKET_NAME]/[SOURCE_OBJECT_NAME] gs://[DESTINATION_BUCKET_NAME]/[NAME_OF_COPY]
+gsutil mv gs://[SOURCE_BUCKET_NAME]/[SOURCE_OBJECT_NAME] gs://[DESTINATION_BUCKET_NAME]/[DESTINATION_OBJECT_NAME]
+gsutil rewrite -s [STORAGE_CLASS] gs://[PATH_TO_OBJECT]
+
+To view the metadata
+gsutil ls -L  gs://[BUCKET_NAME]/[OBJECT_NAME]
+
+To edit metadata
+gsutil setmeta -h "[METADATA_KEY]:[METADATA_VALUE]" gs://[BUCKET_NAME]/[OBJECT_NAME]
+
+-----------------------------------------------------------------------------------
+
+gcloud compute instance-groups managed set-autoscaling
+example-managed-instance-group \
+ --max-num-replicas 20 \
+ --target-cpu-utilization 0.75 \
+ --cool-down-period 90
+ 
+Create an instance template and managed instance group
+Configure the instance group for CPU-based scaling
+Test scaling by stressing the vCPUs on your instances
+
+gcloud compute instance-groups unmanaged \
+create <instance-group>
+
+gcloud compute instance-templates \
+create <instance-template>
+
+gcloud compute instance-groups managed \
+create <managed-instance-group> \ 
+--base-instance-name <base-name> \
+--size <size> --template <instance-template>
+
+-----------------------------------------------------------------------------------
+Autoscaling is a feature of managed instance groups
+
+gcloud compute instance-groups managed list example-group --uri --zones us-central1-f
+gcloud compute instance-groups managed set-autoscaling example-managed-instance-group \
+    --max-num-replicas 20 \
+    --target-cpu-utilization 0.75 \
+    --cool-down-period 90
+gcloud compute instance-groups managed describe example-managed-instance-group
+
+
+****************Instance groups************************
+
+You can create and manage groups of virtual machine (VM) instances 
+so that you don't have to individually control each instance in your project. 
+
+Compute Engine offers two different types of instance groups: 
+managed and unmanaged instance groups.
+
+
+Managed instance groups:
+
+It uses an instance template to create a group of identical instances. 
+	
+	* zonal managed instance group, which contains instances from the same zone.
+	* regional managed instance group, which contains instances from multiple zones across the same region.
+	
+Unmanaged instance groups:
+
+groups of dissimilar instances that you can arbitrarily add and remove from the group
+Unmanaged instance groups do not offer autoscaling,
+
+
+target proxy
+url map
+backend service 
+health check 
+
+
+
+
+
+gcloud auth list
+gcloud config list project
+gcloud config set project <PROJECT_ID>
+gcloud -h
+gcloud config --help/gcloud help config
+gcloud config list/gcloud config list --all
+
+gcloud sql instances list
+gcloud sql --help
+gcloud sql backups --help
+gcloud sql backups list --help
+
+gcloud components update
+
+gcloud compute instances --help
+gcloud compute instances create my-instance --zone us-central1-c
