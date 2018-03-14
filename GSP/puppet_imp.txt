@@ -1,0 +1,118 @@
+
+puppet
+
+resources ---> classes [group of resources can be organized]
+manifests ---> module
+/etc/puppet/manifests/site.pp
+		
+
+ensure => / action/state for resources
+puppet resource --types
+
+puppet code >> Manifests [.pp]
+default manifests -- /etc/puppet/manifests/site.pp
+
+class -- code blocks, that can be called in a code elsewhere, to reuse code
+	normal class:	include example_class
+	resource-like class:	class{'example_class':}
+	
+Module -- collection of manifests & data(such ass facts, files, templates), they have specific directory structure
+/etc/puppet/modules
+
+
+
+/etc/hosts
+10.208.8.43 noc-puppet-automation-2.c.kohls-kos-lle.internal noc-puppet-automation-2  # Added by Google
+
+10.208.8.30 noc-puppet-automation-3.c.kohls-kos-lle.internal noc-puppet-automation-3  # Added by Google
+
+------------------------------------------------------------------------------------
+#########NO NEED
+puppet resource service puppet ensure=running
+puppet module generate <USERNAME>-<MODULE_NAME> --environment <ENVIRONMENT_NAME>
+	
+	manifests, files, templates, lib, facts.d, lib, tests, spec.
+	
+puppet cert list // list --all 
+puppet cert sign throwaway.ad.com
+// u need to get + [accepted]
+sudo -u puppet puppet master --no-daemonize --verbose
+// to generate ssl certificate
+
+/etc/puppet/puppet.conf
+	/var/log/puppet
+	/var/lib/puppet/ssl
+	cert=puppet// certname=puppetmaster
+	dns_alt_names=puppet, puppetmaster, pm.ad.com 
+
+	//comment templatedir
+------------------------------------------------------------------------------------
+
+/etc/puppetlabs/code/environments/production/manifests/site.pp
+
+node 'default' {
+        include testing::new
+#       include filecopy
+        include gitinstall
+}
+
+/etc/puppetlabs/code/environments/production
+cat modules/testing/manifests/init.pp
+
+class testing {
+        file { '/tmp/test.txt':
+          ensure  => file,
+          content => 'have done',
+        }
+
+        file { '/tmp/one.sh':
+          mode   => '644',
+          ensure => present,
+          source => "puppet:///modules/testing/one.sh",
+        }
+
+        file { '/var/www/html/test.html':
+          mode   => '0644',
+          ensure => present,
+          source => "puppet:///modules/testing/test.html"
+        }
+
+        package { 'apache':
+          name   => 'httpd',
+          ensure => 'present',
+        }
+
+        service { 'apache':
+          name   => 'httpd',
+          ensure => running,
+          enable => true,
+        }
+
+
+}
+
+cat modules/testing/manifests/new.pp
+//<%=@server_name%> //  placeholder
+
+class testing::new {
+
+$port_no = "91"
+$server_name = $::fqdn
+        file { '/tmp/test.txt':
+          ensure  => file,
+          content => 'have done',
+        }
+        file { '/etc/httpd/conf/httpd.conf':
+          ensure  => file,
+          content => template('testing/httpd.conf.erb'),
+        }
+
+}
+
+
+ puppet agent -t ; 
+ puppet resource --types ; 
+ puppet parser validate <<ppfile>>
+ puppet agent -t --debug
+  puppet apply manifests/init.pp
+  puppet apply manifests/init.pp

@@ -1,0 +1,147 @@
+#elk
+#nexus (admin) - install/ snapshot
+#sonarqube
+jira administration // project + users// installation (tomcat)
+
+---------------------------------------------
+Nexus Artifact Uploader
+nexus repository manager publisher
+http://:8081 // /nexus
+admin/admin123
+service nexus 
+
+requires java8 RE
+sudo ln -s ~/bin/nexus /etc/init.d/nexus
+sudo chkconfig --add nexus
+sudo chkconfig --levels 345 nexus on 
+sudo service nexus start
+
+
+chkconfig similar to update-rc.d
+
+sudo update-rc.d nexus defaults
+sudo service nexus start
+
+maven release
+snopshot to release
+
+mvn deploy release:clean release:prepare release:perform
+
+POM.XML
+
+######plugin should be inside build tag
+###### all tags should be inside project tag
+  <plugins>
+     <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-release-plugin</artifactId>
+	      <version>2.5.2</version>
+     </plugin>
+   </plugins>
+  
+  </build>
+  
+  
+  <scm>
+    <connection>scm:git:git@github.com:GitKoti235/CloudenabledWebApp.git</connection>
+    <tag>CloudenabledWebApp-3.0</tag>
+  </scm>
+  
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <url>http://noc-puppet-automation-3.c.kohls-kos-lle.internal:8081/repository/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <url>http://noc-puppet-automation-3.c.kohls-kos-lle.internal:8081/repository/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+</project>
+
+SETTINGS.XML
+    <server>
+      <id>releases</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+    <server>
+      <id>snapshots</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+
+
+
+---------------------------------------------
+sonar -- maven + jenkins integration
+
+sonarqube plugin/ sonarqube scanner
+
+execute sonarqube/sonarqube analysis
+
+sonar.projectkey/name/version
+sonar.sources=/var/lib/jenkins/workspace/$JOB_NAME/nimbu/src/
+
+Create a configuration file in the root directory of the project: sonar-project.properties
+
+port 9000
+download zip
+unzip
+conf/sonar.properties
+	sonar.jdbc.username/password/url of db(mysql)
+mysql -uroot -p 
+create database sonar ;
+create user amar identified by amar ;
+GRANT ALL PRIVILEGES ON sonar.* TO amar ;
+
+bin/sonar.sh start
+default web pass --- > admin/admin
+-------------------------------------
+
+--------------------------------------
+
+ELK stack visualize/dashboard, discover & settings
+
+curl -XGET localhost:9200/filebeat-*/_search?pretty
+indexpattern
+
+--------------------------------------
+
+Jira -- web based issue tracking tool
+
+Tickets are raised inside projects - create issue[issue type]
+once created, tickets can be worked on by users with permissions & reassigned, resolved & closed/reopened
+
+search feature[virtually every field can be queried]
+
+setting up jira environment
+setting up a project-basic introduction
+setting up fields and screens
+setting up users, groups, notificationos & permissions
+setting up a custom workflow
+	
+steps::::
+configuring database
+intializing plugin system
+setting jira environment
+finish setup
+
+
+$ chmod a+x atlassian-jira-software-X.X.X-x64.bin
+$ sudo ./atlassian-jira-software-X.X.X-x64.bin
+
+the lifecycle of an issue is managed by a workflow
+A workflow consists of the issue statuses (e.g. Open) and the transitions between each status (e.g. Start progress). Here is the default workflow used in JIRA:
+
+https://confluence.atlassian.com/jira064/files/720417188/720417189/1/1388707435656/jira-defaultworkflow.png
+
+open/inprogress/closed/reopened/resolved
+
+
+
+Project
+
+--- name/key/lead
+
+--------------------------------------
