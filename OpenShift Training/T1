@@ -1,0 +1,186 @@
+Containers, Kubernetes, Redhat openshift
+
+Docker Persistent storage
+
+Docker file - instructions - layers
+
+
+ rdp.koenig-solutions.com
+ 172.25.90.90
+ 
+ koenig-cloud\vm112101 
+ koenig@101
+ 
+ vcenter.koenig-cloud.com
+ 
+ 
+ 
+ 
+ root user: redhat
+ user: student
+ 
+ Training: rht-vmctl status all
+		   rht-vmctl fullreset workstation/all
+		   rht-vmctl start workstation 
+		   
+		   
+		   
+sdafasdf
+
+Hostname:   workstationX.example.com
+			workstation.lab.example.com
+	 IPS:	172.25.250.254
+			172.25.250.X
+			
+			infrastructureX./infrastructure.lab.example.com
+			172.25.250.10
+			
+			ocp.lab.example.com
+			172.25.250.11
+			
+Classroom Server:
+
+		content.example.com
+		materials.example.com
+		classroom.example.com
+		172.25.254.254
+		172.25.254.254
+		
+		
+:::::::::::::::::::::::Container Technology::::::::::::::::::::
+
+Dynamic resource virtual machine...
+by using linux kernal -light weight
+
+resources, libraries. [LIBRARY- Container]
+network isolation - same ip for different containers.
+
+
+Type 1 Hypervisor - OS - hypervisor on OS
+Tyep 2 Hypervison - *Baremetal*[without OS]  - hypervison on hardware withour os
+
+
+
+ContainerIMAGE[Binary] ----> Container[Runtime]
+image + r/w = container
+
+
+
+ADV:
+	Low hardware footprint
+	Environment isolation[app-db]
+	quick deployment
+	multiple environment deployment[ubuntu, centos, redhat]
+	Re-usability
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+
+:::::::::::::::::::::::Container and Pods:::::::::::::::::::::::
+
+containers are wrapped in pods which are units of deployment and management.
+
+Pod - cluster of containers[identical] - IP
+
+Docker provides tool and daemon---- Platform form managing linux containers.
+
+Docker...........
+Docker uses a client-server architecture, 
+	client: 
+			command line tools(docker) - communicates with server using RESTful API 
+			
+	Server: 
+			which runs as daemon on OS. 
+			docker.service
+			
+
+			
+.....containers isolated... 
+linux kernel  features --- 
+	Namespace.
+	Control groups[cgroup].
+	SeLinux(Security Enhanced Linux)
+
+
+systemd =  init + cgroup
+
+NAMESPACES:
+Docker Engine uses following namespaces on linux
+
+		PID, NET[network], IPC, MNT[file system mount points], UTS[isolation of kernel & version identifiers]
+		
+SELinux:
+		mandatory access control system 
+		Multi-category security[MCS]
+		selinux enabled n 3.X linux kernel only.
+		
+...........................
+
+
+#############################################################################
+ssh root@workstation
+
+rpm -qa | grep docker
+systemctl status docker
+
+vim /etc/sysconfig/docker
+		add registry -- private registry/::: --add-registry docker.io/private:5000
+		block registry -- docker hub
+		5000 port for docker registry
+		docker certs - /etc/docker
+		
+/var/lib/docker - information about images, network, volume, containers.
+
+docker search - [for only docker.io] -- docker login[saves cache-  not authorization.]
+
+***********************
+for private one - curl https://private:5000/v2/_catalog | python -m json.tool
+python /usr/local/docker-registry-cli/browser.py infrastructure.lab.example.com:5000 list all
+***********************
+
+docker inspect <image-id> | grep -i image
+docker run -dti --name amar centos/httpd ## d - daemon[to run container in background] 
+docker inspect amar | grep -i ipaddress
+docker inspect -f '{{ .NetworkSettings.IPAddress }}' amar
+docker exec -it amar /bin/bash
+docker kill/stop
+docker ps -aq
+docker rm -f $(docker ps -a)
+docker run --name mysql-server -e MYSQL_USER=amar -e MYSQL_PASSWORD=reds -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 -d mysql:5.6
+SDN - Software Defined Network 172.17.X.X - docker0
+ip addr show docker0
+
+curl http://172.17.X.X:8080/index.html
+
+
+userdel -r student
+usermod -u 2000 student
+ls -ld /mydata
+
+#############Attaching Docker Persistent Storage############
+
+prepare host directory
+		mkdir /var/dbfiles
+		chown -R 27:27 /var/dbfiles ## use individual uid to avoid authorization to another user having same id.
+		## ownership will be based on the no.s not usernames.
+		chcon -t svirt_sandbox_file_t /var/dbfiles #  se linux context. @@ chcon - change context
+		## to see context ls -Zld /var/www/html
+
+Mount Host directory to container
+		docker run -v /var/dbfiles:/var/lib/mysql mysql # other options
+		
+
+#############Accessing Docker Network - port mapping############
+docker engine uses bridged network.
+
+docker -p[port forward] host_port:container_port
+
+################################################################
+docker save -o httpd.tar image_name
+tar -tvf httpd.tar
+docker load -i httpd.tar ## --input / "<"
+
+
+docker tag existing_image new_img
+
+
