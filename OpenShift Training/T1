@@ -164,6 +164,7 @@ prepare host directory
 		chown -R 27:27 /var/dbfiles ## use individual uid to avoid authorization to another user having same id.
 		## ownership will be based on the no.s not usernames.
 		chcon -t svirt_sandbox_file_t /var/dbfiles #  se linux context. @@ chcon - change context
+		## docker inspect <container> | grep mountlabel // to find the context
 		## to see context ls -Zld /var/www/html
 
 Mount Host directory to container
