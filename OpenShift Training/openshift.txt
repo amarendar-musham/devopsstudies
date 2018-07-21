@@ -1,0 +1,721 @@
+Containers, Kubernetes, Redhat openshift
+
+Docker Persistent storage
+
+Docker file - instructions - layers
+
+
+ rdp.koenig-solutions.com
+ 172.25.90.90
+ 
+ koenig-cloud\vm112101 
+ koenig@101
+ 
+ vcenter.koenig-cloud.com
+ 
+ 
+ 
+ 
+ root user: redhat
+ user: student
+ 
+ Training: rht-vmctl status all
+		   rht-vmctl fullreset workstation/all
+		   rht-vmctl start workstation 
+		   
+		   
+		   
+sdafasdf
+
+Hostname:   workstationX.example.com
+			workstation.lab.example.com
+	 IPS:	172.25.250.254
+			172.25.250.X
+			
+			infrastructureX./infrastructure.lab.example.com
+			172.25.250.10
+			
+			ocp.lab.example.com
+			172.25.250.11
+			
+Classroom Server:
+
+		content.example.com
+		materials.example.com
+		classroom.example.com
+		172.25.254.254
+		172.25.254.254
+		
+		
+:::::::::::::::::::::::Container Technology::::::::::::::::::::
+
+Dynamic resource virtual machine...
+by using linux kernal -light weight
+
+resources, libraries. [LIBRARY- Container]
+network isolation - same ip for different containers.
+
+
+Type 1 Hypervisor - OS - hypervisor on OS
+Tyep 2 Hypervison - *Baremetal*[without OS]  - hypervison on hardware withour os
+
+
+
+ContainerIMAGE[Binary] ----> Container[Runtime]
+image + r/w = container
+
+
+
+ADV:
+	Low hardware footprint
+	Environment isolation[app-db]
+	quick deployment
+	multiple environment deployment[ubuntu, centos, redhat]
+	Re-usability
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+
+:::::::::::::::::::::::Container and Pods:::::::::::::::::::::::
+
+containers are wrapped in pods which are units of deployment and management.
+
+Pod - cluster of containers[identical] - IP
+
+Docker provides tool and daemon---- Platform form managing linux containers.
+
+Docker...........
+Docker uses a client-server architecture, 
+	client: 
+			command line tools(docker) - communicates with server using RESTful API 
+			
+	Server: 
+			which runs as daemon on OS. 
+			docker.service
+			
+
+			
+.....containers isolated... 
+linux kernel  features --- 
+	Namespace.
+	Control groups[cgroup].
+	SeLinux(Security Enhanced Linux)
+
+
+systemd =  init + cgroup
+
+NAMESPACES:
+Docker Engine uses following namespaces on linux
+
+		PID, NET[network], IPC, MNT[file system mount points], UTS[isolation of kernel & version identifiers]
+		
+SELinux:
+		mandatory access control system 
+		Multi-category security[MCS]
+		selinux enabled n 3.X linux kernel only.
+		
+...........................
+
+
+#############################################################################
+ssh root@workstation
+
+rpm -qa | grep docker
+systemctl status docker
+
+vim /etc/sysconfig/docker
+		add registry -- private registry/::: --add-registry docker.io/private:5000
+		block registry -- docker hub
+		5000 port for docker registry
+		docker certs - /etc/docker
+		
+/var/lib/docker - information about images, network, volume, containers.
+
+docker search - [for only docker.io] -- docker login[saves cache-  not authorization.]
+
+***********************
+for private one - curl https://private:5000/v2/_catalog | python -m json.tool
+python /usr/local/docker-registry-cli/browser.py infrastructure.lab.example.com:5000 list all
+***********************
+
+docker inspect <image-id> | grep -i image
+docker run -dti --name amar centos/httpd ## d - daemon[to run container in background] 
+docker inspect amar | grep -i ipaddress
+docker inspect -f '{{ .NetworkSettings.IPAddress }}' amar
+docker exec -it amar /bin/bash
+docker kill/stop
+docker ps -aq
+docker rm -f $(docker ps -a)
+docker run --name mysql-server -e MYSQL_USER=amar -e MYSQL_PASSWORD=reds -e MYSQL_DATABASE=items -e MYSQL_ROOT_PASSWORD=r00tpa55 -d mysql:5.6
+SDN - Software Defined Network 172.17.X.X - docker0
+ip addr show docker0
+
+curl http://172.17.X.X:8080/index.html
+
+
+userdel -r student
+usermod -u 2000 student
+ls -ld /mydata
+
+#############Attaching Docker Persistent Storage############
+
+prepare host directory
+		mkdir /var/dbfiles
+		chown -R 27:27 /var/dbfiles ## use individual uid to avoid authorization to another user having same id.
+		## ownership will be based on the no.s not usernames.
+		chcon -t svirt_sandbox_file_t /var/dbfiles #  se linux context. @@ chcon - change context
+		## to see context ls -Zld /var/www/html
+
+Mount Host directory to container
+		docker run -v /var/dbfiles:/var/lib/mysql mysql # other options
+		
+
+#############Accessing Docker Network - port mapping############
+docker engine uses bridged network.
+
+docker -p[port forward] host_port:container_port
+
+################################################################
+docker save -o httpd.tar image_name
+tar -tvf httpd.tar
+docker load -i httpd.tar ## --input / "<"
+
+
+docker tag existing_image new_img
+
+
+
+
+
+#########################################################################################################
+#########################################################################################################
+#########################################################################################################
+#########################################################################################################
+docker tag image[:tag] [registry host/][username/]name[:tag]
+
+https://hub.docker.com/r/amarendarm/newimg/
+docker diff <container>
+## C - changed; A - added
+## shows changes has been done in the containers
+## compares with the intial state of the image with current state.
+
+docker commit --help
+docker commit <container> [repository:tag]
+docker commit -a "your name" -m "messages" <container>
+
+
+FROM rhel7.3
+LABEL description="custom httpd container image"
+MAINTAINER amarendar <hi@google.com>
+RUN yum install -y httpd
+EXPOSE 80
+ENV LogLevel "info"
+ADD http://something.com/hi.pdf /var/www/html
+COPY ./src/ /var/www/html/
+USER apache
+ENTRYPOINT ["/usr/sbin/httpd"]    			### /bin/sh -c 
+CMD ["-D", "FOREGROUND"]					### provides arguments for entrypoint
+## you can over write the command while running container using the cmd 
+
+## ENTRYPOINT ["/bin/ping", "localhost"]
+
+without ENTRYPOINT, CMD will pick the default shell[entrypoint - /bin/sh]
+
+EXPOSE: enable on firewall
+Positional arguments in CMD
+
+ENTRYPOINT is there --- CMD [$1, $2]
+ENTRYPOINT not there --- CMD [$0, $1, $2]
+
+journald
+
+
+RUN sed -ri -e "/^Listen 80/c\Listen $PORT" /etc/httpd/conf/httpd.conf && \
+ chown -R apache:apache /etc/httpd/logs/ && \
+ chown -R apache:apache /run/httpd
+
+ 
+ 
+###################################################################################################3
+
+
+install openshift client - yum search atomic/install atomic-openshift-client
+
+oc login https://ocp.lab.example.com:8443 -u developer -p developer
+
+oc project <project-name> / oc new-project basic-kubernetes
+
+oc adm policy add-scc-to-user anyuid -z default
+## change the default security policy to allow containers to run as root.
+
+oc new-app --docker-image=infrastructure.lab.example.com:5000/nginx:latest \
+		   --insecure-registry=true --name=nginx
+		   
+oc status
+
+
+oc describe pod nginx-1-ypp8t
+
+oc get svc
+
+oc get pods
+
+oc describe service nginx
+
+ssh ocp curl -s http://172.30.72.75
+
+
+oc new-app --docker-image=infrastructure.lab.example.com:5000/rhscl/mysql-56-rhel7:latest \
+		   --insecure-registry=true --name=mysql-openshift \ 
+		   -e MYSQL_USER=user1 -e MYSQL_PASSWORD=mypa55 -e MYSQL_DATABASE=testdb \
+		   -e MYSQL_ROOT_PASSWORD=r00tpa55
+		   
+oc describe service/mysql-openshift
+oc edit svc mysql-openshift
+
+
+	$ocp$$ mysql -hocp -P30306 -uuser1 -pmypa55
+		show databases;
+		
+		
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+private registry - 172.25.254.254
+
+classroom.example.com - 
+node1.lab.example.com
+node2.lab.example.com
+master.lab.example.com
+
+
+
+
+route domain DNS - cloudapps.lab.example.com
+
+
+**********
+openshift master - kubernetes master services & etcd daemonn
+nodes- kubelet & kube-proxy
+
+
+
+build images with source-to-image[S2I]
+
+
+OpenShift Resources - Etcd
+
+
+OpenShift Networking 
+
+	Route - unique DNS name for a service, no pod will know other pods
+			[SDN - Docker] based on Open vSwitch, and routing provided by a distributed HAProxy farm.
+			
+[Open vSwitch concepts(name spaces) below]	
+Q router - defines subnet.
+Q dhcp - ips
+
+
+
+--------
+Persistent Volume[PV]
+
+End user can specify a pvc(persistent volume claim) with an annotation that specifies the value of the StorageClass they prefer
+
+
+
+---------
+OpenShift High availability
+
+If a pod is lost for any reason kubernetes schedules  another copy, 
+if node is lost, kubernetes schedules replacements for all its pods, 
+		
+		master will have all the configurations in the Etcd
+		
+		
+---------
+Image Streams
+
+S2I 
+An Image Stream comprises any no. of container images identified by tags.
+
+
+***********************
+***********************
+
+Stores OpenShift cluster resource definitions - Etcd
+Defines container images format - docker 
+manages & schedules app pods in OpenShift cluster  -kubernetes
+provides JBoss middleware certified container images - xPaaS
+
+n/w and storage conf -container
+OpenShift REST API - Mater
+Builds  and deploys apps from source code - S2I
+pods, kubelets, proxy - nodes
+
+------------------------
+------------------------
+
+
+hosts: servers
+remote_user: root
+vars:
+	local_docker:  "workstation.lab.example.com:5000"
+tasks:
+	-name: create /root/.ssh
+	 file:
+		path: /root/.ssh
+		mode: 0777
+		owner: root
+		group: root
+		state:: directory
+	when: inventory_hostname in groups['server name']
+	
+	
+NetworkManager service should be started and enabled on all masters and nodes. 
+	- systemctl status NetworkManager
+
+	ssh-keygen -f /root/.ssh/id_rsa -N ""
+	ssh-copy-id root@master
+	ssh-copy-id root@node1
+	
+	
+	
+	atomic-openshift-utils
+	
+	
+
+	
+	atomic-openshift-excluder unexclude
+	
+	
+atomic-openshift-installer -u -c /root/custom-installer.cfg.yaml install
+
+oc get pods
+oc set image --source=docker dc/registry-console registry-console=workstation.lab.example.com:5000/openshift3/registry-console:3.5	
+	
+oc export pod <pod_name>
+
+oc get dc [deployment config]
+oc delete pod <pod_name>
+
+
+
+
+docker0 --> hostonly
+		--> qdhcp -> local ip dist
+		--> qrouter -> NAT[IPtables]
+		
+pod[10.0.0.1] --- [ovs bridge] --- pod[10.0.0.2]
+
+
+
+openshift3.5, administrators can configure 3 SDN networks for pod
+
+
+pod[networking, DNS, load balancing, app config, migration]
+
+collection of pods managed by [Service - public ip]
+
+pod --[selector] -- service  [[[selector updates the endpoint of pod to service]]]
+
+-----------------------------
+-----------------------------
+apiversion: v1
+kind: service
+
+metadata:
+ labels:
+  app: hello-openshift
+  name: hello-openshift
+  
+ spec:
+ 
+  ports:
+  - name: 8080-tcp
+    port: 8080
+	protocol: TCP
+	targetPort: 8080
+	
+  selector:
+   app: hello-openshift
+   deploymentconfig: hello-openshift
+   
+   
+   
+----------------------   
+   [nodeport - listens outside world.]
+ [target port- pod]
+----------------------   
+ 
+apiversion: v1
+kind: service
+
+metadata:
+ ......
+ spec:
+ 
+  ports:
+  - name: 3306-tcp
+    port: 3306
+	protocol: TCP
+	targetPort: 3306
+	nodeport: 30306
+	
+  selector:
+   app: mysqldb
+   deploymentconfig: mysqldb
+   
+  type: nodeport
+  
+----------------------   
+
+
+pod IP address [from within cluseter]
+openshift service IP address [from within cluseter]
+external clients using node ports [from outside the cluster]
+
+
+
+oc login -u developer -p openshift https://master.lab.example.com:8443
+
+oc new-project network-test
+
+[HTpasswd identity provider]
+---to user new identity provider manager
+/etc/origin/master/master-config.yaml
+	provider:
+restart --- atomic-openshift-master
+------
+
+oc new-app --name amar -i php:7.0 http://workstation.lab.example.com/scaling
+
+oc get pods
+
+oc scale --replicas=3 dc amar ##dc - deployment config
+
+oc get pods -o wide
+   
+ssh node1 "curl http://pod_ip:8080"   ## won't works for workstation
+
+oc describe pod <pod_name> | grep -i port
+
+oc get svc amarf
+
+ssh node1 "curl http://svc_ip:8080" ## won't works for workstation
+
+oc describe svc amar
+	--- contains endpoint of pod.
+	--- selector: app=amar, deploymentconfig=amar
+
+******* end points get automatically updated when the pods are killed/new pods created.
+
+******* openshift routes the request to all the pods labeled app=, deploymentconfig=
+
+
+oc edit svc amar
+ ports:
+	nodePort: 30800
+ selector:
+    type: NodePort
+
+oc describe svc amar
+
+
+curl http://node1.lab.example.com:30800
+curl http://node2.lab.example.com:30800 ## works from workstation
+
+
+this will be cluster// if the replica not in a node also curl will work for that node.
+
+
+### from a pod
+oc rsh amar-1-7393
+
+bash$: curl http://materials.example.com/training.repo
+bash$: curl http://workstation.example.com
+
+
+#####################################################################
+
+CREATING Route
+#####################################################################
+
+app url: https://amar.cloudapps.lab.example.com
+files: /home/student/DO280/labs/secure-route
+
+oc get projects
+
+
+oc new-app --docker-image=workstation.lab.example.com:5000/openshift/hello-openshift    --insecure-registry=true --name=amar
+
+###########create a self-signed TLS########
+
+--- generate private key
+openssl genrsa -out hello.cloudops.lab.example.com.key 2048
+--- generate CSR
+openssl req -new -key hello.cloudapps.lab.example.com.key -out hello.cloudapps.lab.example.com.csr
+-- generate certificate
+openssl x509 -req -days 366 -in hello.cloudapps.lab.example.com.csr \
+							-signkey hello.cloudapps.lab.example.com.key \
+							-out hello.cloudapps.lab.example.com.crt
+
+---------------------------------------------------------------------------
+
+oc create route edge --service=amar --hostname=hello.cloudapps.lab.example.com \
+									--key=hello.cloudapps.lab.example.com.key \
+									--cert=hello.cloudapps.lab.example.com.crt
+									
+oc get routes ## inspect routes
+
+oc get route/amar -o yaml
+
+curl -k -vvv https://hello.cloudapps.lab.example.com
+	
+oc delete project secure-route
+oc delete route/amar
+
+oc get svc # inspect the services, will give the ip address
+
+
+
+
+-----------------------------------
+INSPECTIONS
+
+oc login
+oc projects
+oc get pods -o wide ## pod IP address
+oc get svc ## cluster IP address
+oc get routes
+
+curl http://hello.cloudapps.lab.example.com ## if it not working
+
+ssh master "curl http://pod_ip:8080" ## if it is working from master
+
+ssh master "curl http://cluster_ip:8080" ## if it is not working then it will be problem with svc.
+
+oc describe svc hello-openshift -n[namespace] ## if th endpoint is not getting.[showing none]
+
+oc describe pod <pod_name> | grep -i labels -A 2 ##  check whether the app and dc are there
+
+oc describe svc hello-openshift ## if the app name and dc[deployment config] [[in selector ]]are not same then change them....
+
+oc edit svc hello-openshift ## change it to same [the above described] -- then the ## ssh master "cluster_ip" it will work
+
+oc describe route hello-openshift
+
+oc edit route hello-openshift ## if the service/endpoint is not coming in describe ### then it may be the name of the app mentioned in route will be wrong.
+
+
+if the DNS is not still resolving... check if it already claimed to another service.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+#########
+Accessing resources from the managed OpenShift Instance
+
+nodes - services - pods - project - DC[deploymentconfig] - user
+
+
+
+
+
+sudo yum install -y atomic-openshift-clients
+
+-- tab completion
+source /etc/bash_completion.d/oc 
+
+
+oc login -u developer -p openshift master_url
+oc whoami
+oc new-project working
+oc status
+oc delete project working
+oc logout
+
+master$: oc login -u system:admin 
+master$: oc project default
+master$: oc get all
+
+
+
+
+
+$$$$$$$$$$$$$4
+
+container 
+Image
+Pod
+LABEL
+volume - simplest volume type EmptyDir
+Node 
+Service
+Route - DNS entry, points to service 
+ReplicationController - maintains no. of pods
+DeploymentConfiguration - defines the template for a pod and manages deploying new images or configuration changes.
+Build Configuration - contains description of how to build source code and a base image into new image
+	Build
+	Image Streams & tags - default tag will be "latest"
+Secret
+	/var/run/secrets/kubernetes.io/serviceaccount. - contains the token to access the API
+Project
+	all of the aabove resources[except nodes]
+	have the roles[view, edit, admin]
+	
+oc describe node <node_name>
+
+
+oc get pods
+oc exec <pod_name> cat /etc/resolv.conf
+
+oc get events
+ ## to view life cycle events in the OpenShift cluster
+ ## pod creation/deletion
+ ## pod placement scheduling
+ ## master node status
+ 
+oc export pod <pod_name>
+ ## exports existing resources and converts into configuration files(yml/json)
+
+oc export svc,dc docker-registry --as-template=docker-registry
+
+oc export svc,dc docker-registry  > docker-registry.yaml
+
+
+oc logs pod
+oc logs bc/build-name ## build configuration
+oc logs bc/amar
+
+oc rsh <pod>
+oc rsync <pod>:<pod_dir> <local_dir> -c <container>
+oc rsync  <local_dir> <pod>:<pod_dir> -c <container>
+oc port-forward <pod> [<local_port>:]<remote_port> 
+	oc port-forward <pod> 3306:3306
+	
+Trouble shoot
+	oc get events/oc describe
+	systemctl status/oc logs --- atomic-openshift-master
+	
+	--log-level=debug in OPTIONS variable in /etc/sysconfig/docker
+	journalctl -u <unit-name>
+	--log-level=4 in OPTIONS in /etc/sysconfig/atomic-openshift-master
+	
+	0- errors/warnings
+	2- normal info
+	4- debug
+	6- api level debug
+	8- api debugging info with full body of req
+	
+	/etc/sysconfig/atomic-openshift-node
+	
+	
+	
+	
+	
