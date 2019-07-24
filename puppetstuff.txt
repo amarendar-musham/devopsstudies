@@ -1,22 +1,8 @@
-pl001470.kohls.com
-pl001471.kohls.com
-pl002569.kohls.com
-pl002570.kohls.com
-pl002571.kohls.com
-pl002572.kohls.com
-pl002573.kohls.com
-
-
-leave out pl1467 and pl1904
-
 systemctl stop puppetserver
 systemctl start puppetserver
 systemctl status puppetserver
 
 tail -f /var/log/puppetlabs/puppetserver/puppetserver.log
-
-
-1p3o#CMgME.HN1]IBaHRPz4
 
 
 Purging command queue of Puppet DB
@@ -64,7 +50,7 @@ vim /root/logcheck.sh
 #! /bin/bash
 function count { wc -l /var/log/puppetlabs/puppetserver/puppetserver.log | awk '{print $1}' ; }
 
-function sendmailto { domain=`facter fqdn` ; > t ; mail -s "The log file has stopped, need attention: $domain EOM" QCoE-ToolsSupport@kohls.com < t ; }
+function sendmailto { domain=`facter fqdn` ; > t ; mail -s "The log file has stopped, need attention: $domain EOM" XXXX < t ; }
 function check { old=`count` ; sleep $1 ; new=`count` ; if [ $old -eq $new ] ; then sendmailto  ; else echo good  ; fi ; }
 
 check "5m" >> /var/log/logcheck.log
@@ -72,4 +58,4 @@ check "5m" >> /var/log/logcheck.log
 
  sed -i "s/facter fqdn/hostname/g" logcheck.sh
 
-=0QY9Qw7hR9tAiHoF
+
