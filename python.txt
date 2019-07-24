@@ -1,0 +1,204 @@
+data types/... - int, float, double - no declaration
+data structures - lists & tuples - indexes, sets, dictionaries: key pair values
+
+tuple - final list.... no modifications can be done  - (1,2,3,4,556)
+tuple item doesn't support item assignement... 
+
+my_list = [1, "hello", 3.4], ["mouse",[8,4,3]] - nested list
+
+n_list = ["happy",[2,0,1,5]]; print(n_list[0][1]) # output: a, print(n_list[1][3]) # output: 5; print(n_list[-1][-3]) # output: 0
+
+indexes.. - 0,1,2,3,4 ~~ -5,-4,-3,-2,-1
+
+slice list: my_list = ["programiz"]; my_list = ["programiz"] ; print(my_list[0][2:5]) : ogr
+
+odd = [1,3,5] ; odd.append(7) ; odd.extend([9,11,13])
+
+pop(), remove(), methods to remove values from list odd.pop((1))
+
+clear() method is to empty the list list.clear()
+
+del my_list ; del my_list[1:5]
+
+my_list = ['p','r','o','b','l','m'] ; del my_list[2:5] >>> print(my_list) ## ['p', 'r', 'm']
+
+print(type(range(4,5))) 
+print(type(list(range(4,5))))
+
+enumarate gives index values
+
+qwerty = [2,5,4,3,4]
+>>> for x in enumerate(qwerty):
+...     print(x)
+...
+(0, 2)
+(1, 5)
+(2, 4)
+(3, 3)
+(4, 4)
+
+Un-ordered... 
+sets : my_set = {1,2,3,4,4} : removes duplicates...
+
+dict_log = {"name":"amar","location": "hyd", "age": "dont ask"}
+print(dict_log) ; print(dict_log.keys()) ; print(dict_log.values())
+dict_log["name"] = "hi"
+
+
+is/ is not/ in / not in
+
+
+if True == True and False == False:
+    if 2 > 3:
+	    print("hello")
+	else: 
+	    print("....")
+elif Truee == True:
+	pass
+	
+	
+if 15 not in  [2,3,4,5]:
+    print(eligible)
+	
+
+for x in dict_log:
+	print(x) ## keys only
+	
+for x,y in dict_log.items():
+	print(x,y)
+	
+for x,y,z in [[1,2,3],[4,5,6],[7,8,9]]:
+	print(x,y,z)
+
+
+range() - start, ending, steps
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+
+functions
+
+def function_name(parameters):
+	"""docstring"""
+	statements
+	
+ex: 
+
+def greet(name):
+	print("hello", +name+".Good morning!")
+
+	
+
+def sum(*no):
+    sum = 0
+    for i in no:
+        sum = sum + i
+    print(sum)
+
+sum(1,3,4)
+
+	
+*args, **kwargs # key with args
+
+def adder(*num):
+--------------- one (*) regular args., two(**) key pair values
+
+def intro(**data):
+    for key,value in data.items():
+        print("{}:{}".format(key,value))
+		print(key,value)
+
+
+intro(Fname="amar",sname="musham",Emp=234)
+print(end="\n\n\n\n")
+intro(Fname="amar",sname="musham",Emp=234,cont="tew")
+
+---------------------------------------------------------
+anonymous functions - lambda functions
+lambda arguments:expression
+
+lamda expressions.....
+
+double = lambda x: x * 2 ## nearly same as 
+
+def double(x):
+	return x *2
+
+-------------------
+
+filter() - sort out from a list
+
+remainder = lambda x: x % 2
+print(remainder(6))
+
+ex: lambda x,y:
+
+
+----------------------------
+
+exception handling:
+
+try:
+	print("")
+	break
+except:
+	print("Oops!",sys.exc_info()[0],"occured")
+
+try:
+    print(3/2)
+    raise TypeError("i want to hack")
+except ZeroDivisionError:
+    print("exception ...")
+except:
+		print("i can handle any error")
+		
+---------------------------
+
+Mult-threading
+
+import threading,time
+
+def greet(username):
+	"""function to welcome"""
+	
+	print("welcome {}".format(username))
+	
+	
+	
+t1 = threading.Thread(target=greet,args=(10,))
+t1 = threading.Thread(target=goodbye,args=(10,))
+
+t1.start() ## starting thread 1
+t2.start()
+
+t1.join() ## wait until t1 is completely executed...
+t2.join()
+
+print("done!")
+
+-----------------------------
+
+classes and objects:
+
+class Myclass:
+	" backerwr "
+	a = 10
+	def func(self):
+		print("hello")
+		
+print(Myclass.a)
+print(Myclass.func) 
+obj = Myclass()
+print(Myclass.func)
+print(obj.func)
+
+
+
+class baseclass:
+class derivedclass(baseclass):
+
+isinstance()
+issubclass()
+
