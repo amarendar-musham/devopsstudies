@@ -1,0 +1,75 @@
+pl001470.kohls.com
+pl001471.kohls.com
+pl002569.kohls.com
+pl002570.kohls.com
+pl002571.kohls.com
+pl002572.kohls.com
+pl002573.kohls.com
+
+
+leave out pl1467 and pl1904
+
+systemctl stop puppetserver
+systemctl start puppetserver
+systemctl status puppetserver
+
+tail -f /var/log/puppetlabs/puppetserver/puppetserver.log
+
+
+1p3o#CMgME.HN1]IBaHRPz4
+
+
+Purging command queue of Puppet DB
+0 0,4,12,21 * * * /usr/local/bin/purge_command_queue.sh > /tmp/purge_command_queue.log 2>&1
+
+
+
+where splunk picking the status
+continuously monitoring the puppet servers
+need to make a crontab for alerting - > when log file not updating.
+
+/etc/puppetlabs/puppet/puppet.conf
+
+#ca = false
+storeconfigs = false
+#storeconfigs_backend=puppetdb
+#reports = puppetdb
+
+
+tail -f /var/log/puppetlabs/puppetserver/puppetserver.log
+tail -f /var/log/webhook/access.log
+need to stop and start puppetserver && webhook
+systemctl status webhook
+
+
+function count { wc -l /var/log/puppetlabs/puppetserver/puppetserver.log | awk '{print $1}' ; }
+
+function check { old=`count` ; sleep $1 ; new=`count` ; if [ $old -eq $new ] ; then domain=`facter fqdn` ; echo "The log file has stopped, need attention" ; else echo good  ; fi ; }
+
+check 2
+
+#Puppet reports folder cleanup
+0,30 * * * * /bin/find /opt/puppetlabs/server/data/puppetserver/reports -mmin +100 -type f -exec rm {} \;
+
+
+
+cat /root/logcheck.sh ; echo ; domain=`facter fqdn` ; echo $domain
+
+touch /var/log/logcheck.log
+
+*/10 * * * * /bin/sh /root/logcheck.sh >/dev/null 2>&1
+crontab -e
+vim /root/logcheck.sh 
+
+#! /bin/bash
+function count { wc -l /var/log/puppetlabs/puppetserver/puppetserver.log | awk '{print $1}' ; }
+
+function sendmailto { domain=`facter fqdn` ; > t ; mail -s "The log file has stopped, need attention: $domain EOM" QCoE-ToolsSupport@kohls.com < t ; }
+function check { old=`count` ; sleep $1 ; new=`count` ; if [ $old -eq $new ] ; then sendmailto  ; else echo good  ; fi ; }
+
+check "5m" >> /var/log/logcheck.log
+
+
+ sed -i "s/facter fqdn/hostname/g" logcheck.sh
+
+=0QY9Qw7hR9tAiHoF
