@@ -1,0 +1,238 @@
+*******************************************************************
+*******************************************************************
+Create a Cluster
+
+minikube is an implementation, can install kubernetes cluster with one node vm(master)
+
+$ minikube version
+minikube version: v1.8.1
+commit: cbda04cf6bbe65e987ae52bb393c10099ab62014
+
+$ minikube start
+* minikube v1.8.1 on Ubuntu 18.04
+* Using the none driver based on user configuration
+* Running on localhost (CPUs=2, Memory=2460MB, Disk=145651MB) ...
+* OS release is Ubuntu 18.04.4 LTS
+* Preparing Kubernetes v1.17.3 on Docker 19.03.6 ...
+  - kubelet.resolv-conf=/run/systemd/resolve/resolv.conf
+* Launching Kubernetes ...
+* Enabling addons: default-storageclass, storage-provisioner
+* Configuring local host environment ...
+* Waiting for cluster to come online ...
+* Done! kubectl is now configured to use "minikube"
+
+
+The client version is the kubectl version; the server version is the Kubernetes version installed on the master. The command can also used to Check that kubectl is configured to talk to your cluster
+
+$ kubectl version
+
+Client Version: version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.3", GitCommit:"06ad960bfd03b39c8310aaf92d1e7c12ce618213", GitTreeState:"clean", BuildDate:"2020-02-11T18:14:22Z", GoVersion:"go1.13.6", Compiler:"gc", Platform:"linux/amd64"}
+
+Server Version: version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.3", GitCommit:"06ad960bfd03b39c8310aaf92d1e7c12ce618213", GitTreeState:"clean", BuildDate:"2020-02-11T18:07:13Z", GoVersion:"go1.13.6", Compiler:"gc", Platform:"linux/amd64"}
+
+$ kubectl cluster-info
+Kubernetes master is running at https://172.17.0.27:8443
+KubeDNS is running at https://172.17.0.27:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+$ kubectl get nodes
+NAME       STATUS   ROLES    AGE     VERSION
+minikube   Ready    master   5m22s   v1.17.3
+
+*******************************************************************
+*******************************************************************
+Deploy an App
+
+Kubectl uses the Kubernetes API to interact with the cluster.
+
+A Pod is the basic execution unit of a Kubernetes application
+
+kubectl version
+kubectl get nodes
+kubectl get nodes --help
+kubectl create deployment <deployment-name> --image=<image-name>
+kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1
+
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-bootcamp   1/1     1            1           90s
+
+pods - private network 
+
+kubectl proxy, this allows our curl commands to work using localhost:8001.(Need to start proxy in a seperate terminal)
+proxy creates connection b/w our host and the k8s cluster. And it enables direct access to the k8s API from these terminals. 
+
+$ kubectl proxy
+Starting to serve on 127.0.0.1:8001
+
+
+$ curl http://localhost:8001/version
+{
+  "major": "1",
+  "minor": "17",
+  "gitVersion": "v1.17.3",  "gitCommit": "06ad960bfd03b39c8310aaf92d1e7c12ce618213",
+  "gitTreeState": "clean",  "buildDate": "2020-02-11T18:07:13Z",
+  "goVersion": "go1.13.6",
+  "compiler": "gc",  "platform": "linux/amd64"
+}
+
+
+API server will automatically create an endpoint for each pod, based on the pod name, that is also accessible through the proxy
+
+$ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+$ echo Name of the Pod: $POD_NAME
+Name of the Pod: kubernetes-bootcamp-69fbc6f4cf-l7qwv
+
+*******************************************************************
+*******************************************************************
+Explore Your App
+
+kubectl get - list resources
+kubectl describe - show detailed information about a resource
+kubectl logs - print the logs from a container in a pod
+kubectl exec - execute a command on a container in a pod
+
+kubectl get pods
+kubectl describe pods
+
+(kubectl proxy should run in other terminal)- The url is the route to the API of the Pod.
+$ curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-529pr | v=1
+
+kubectl logs $POD_NAME
+
+To execute the commands directly in the container...
+$ kubectl exec $POD_NAME env
+
+kubectl exec -ti $POD_NAME bash
+
+*******************************************************************
+*******************************************************************'
+Expose Your App Publicly
+
+Each Pod has a unique IP address, those IPs are not exposed outside the cluster without a Service. Services allow your applications to receive traffic
+A Service routes traffic across a set of Pods. It allows pods to die and replicate in Kubernetes without impacting your application
+
+services can be exposed in different ways by specifying a type in the ServiceSpec:
+
+ClusterIP (default) - Exposes the Service on an internal IP in the cluster. This type makes the Service only reachable from within the cluster.
+NodePort - Exposes the Service on the same port of each selected Node in the cluster using NAT. Makes a Service accessible from outside the cluster using <NodeIP>:<NodePort>. Superset of ClusterIP.
+LoadBalancer - Creates an external load balancer in the current cloud (if supported) and assigns a fixed, external IP to the Service. Superset of NodePort.
+ExternalName - Exposes the Service using an arbitrary name (specified by externalName in the spec) by returning a CNAME record with the name. No proxy is used. This type requires v1.7 or higher of kube-dns.
+
+kubectl get pods
+kubectl get services
+kubectl expose deployment/kubernetes-bootcamp --type="NodePort" --port 8080
+
+$ kubectl get services
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes            ClusterIP   10.96.0.1        <none>       443/TCP          2m17s
+kubernetes-bootcamp   NodePort    10.100.181.165   <none>       8080:32004/TCP   31s
+
+$ kubectl describe services/kubernetes-bootcamp
+Name:                     kubernetes-bootcamp
+Namespace:                default
+Labels:                   run=kubernetes-bootcamp
+Annotations:              <none>
+Selector:                 run=kubernetes-bootcamp
+Type:                     NodePort
+IP:                       10.100.181.165
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  32004/TCP
+Endpoints:                172.18.0.5:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+$ export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+$ echo NODE_PORT=$NODE_PORT
+NODE_PORT=32004
+
+$ curl $(minikube ip):$NODE_PORT            ## minikub ip = IP of the node.
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-f5kjs | v=1
+
+kubectl describe deployment ## gives the label name. 
+
+kubectl get pods -l run=kubernetes-bootcamp   ## -l flag is used to represent the label i.e., run=kubernetes-bootcamp
+kubectl get services -l run=kubernetes-bootcamp
+
+kubectl label pod $POD_NAME app=v1
+kubectl describe pods $POD_NAME 
+
+kubectl get pods -l app=v1
+
+kubectl delete service -l run=kubernetes-bootcamp
+kubectl get services
+curl $(minikube ip):$NODE_PORT - curl: (7) Failed to connect to 172.17.0.82 port 32004: Connection refused
+
+$ kubectl exec -ti $POD_NAME curl localhost:8080    ## localhost:8080 - node.js app is running it.
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-765bf4c7b4-f5kjs | v=1
+
+*******************************************************************
+*******************************************************************
+Scale Your App
+
+In the previous modules we created a Deployment, and then exposed it publicly via a Service.
+Services will monitor continuously the running Pods using endpoints, to ensure the traffic is sent only to available Pods.
+
+To see the ReplicaSet created by the Deployment, run - kubectl get rs
+
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-bootcamp   1/1     1            1           47s
+$ kubectl get rs
+NAME                             DESIRED   CURRENT   READY   AGE
+kubernetes-bootcamp-765bf4c7b4   1         1         1   75s
+
+kubectl scale deployments/kubernetes-bootcamp --replicas=4
+kubectl get deployments
+kubectl get pods -o wide ## wide displays more info like IP addresses
+kubectl describe deployments/kubernetes-bootcamp
+
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+curl $(minikube ip):$NODE_PORT ## for every hit, it will redirect to different page.
+
+kubectl scale deployments/kubernetes-bootcamp --replicas=2
+kubectl get deployments
+kubectl get pods -o wide
+
+
+*******************************************************************
+*******************************************************************
+Rolling update your app
+
+kubectl get deployments
+kubectl get pods
+kubectl describe pods <pod-name> ## Image:          gcr.io/google-samples/kubernetes-bootcamp:v1
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+kubectl describe pods <pod-name> ## Image:          jocatalin/kubernetes-bootcamp:v2
+
+kubectl describe services/kubernetes-bootcamp ## To check exposed IP and Port
+
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+$ curl $(minikube ip):$NODE_PORT
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-7d6f8694b6-lzwvx | v=2
+
+$ kubectl rollout status deployments/kubernetes-bootcamp
+deployment "kubernetes-bootcamp" successfully rolled out
+
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=gcr.io/google-samples/kubernetes-bootcamp:v10
+
+kubectl get deployments
+kubectl get pods
+kubectl describe pods ## failed to find the image of version v10.
+kubectl rollout undo deployments/kubernetes-bootcamp ## rollout to previous state i.e., v2 
+
+kubectl get pods
+kubectl describe pods | grep -i Image
+
+
+
+
+
+
+
+
+
