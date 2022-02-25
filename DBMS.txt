@@ -1,0 +1,176 @@
+DBMS https://www.youtube.com/watch?v=BHmoFa-YSzw - 50M
+
+DBMS - Database management system
+	Organized way of managing/storing collection of logical information.
+RDBMS - Relational DBMS
+	Relational integrity. 
+	
+DBMS types:
+Relational - Tables are related to each other
+Hierarchial - Tree (Nodes=records, branches=fields)
+Network - Many to many relational based
+Object-oriented - Objects, actions can done on them
+
+languages present in DBMS: (Commands to deal with)
+DDL - Data Define - define DB schema 
+DML - Data Manipulation - data manipulation
+DCL - Data control - permissions(controls) of database
+TCL - Transaction control - database transactions
+
+Commands:
+DDL-Define - Create/Drop/Alter/Truncate
+DML-Manipulate - Insert/Update/Delete
+DCL-Control - Grant/Revoke
+TCL-Transaction - Commit/Rollback/Savepoint
+
+Aggregation: A property states that a DB modification must follow all the rules or nothing. 
+Atomicity: feature of E-R model, allows relationship-set to participate in another. 
+Abstraction: Hide irrelevant details from the users
+	--> Physical/Logical/View levels
+
+Entity-Relationship Model:
+Diagramatic approach to DB design. to make it understandable easily
+real-world objects=entities, relationships b/w them. 
+
+Entity -> real-world object having attributes(characterstics)
+Entity Type -> Collection of entities with same attributes(one/more tables)
+Entity Set -> Collection of all the entities of a particular entity type. 
+				(Ex: Set of companies/people/employees)
+Relationship Types:
+One to One
+One to Many
+Many to One
+Self-Referencing 
+
+Concurrency Control: Process of managing simulataneous operations in database. So that DB-integrity not compromized. 
+
+Normalization Forms:
+normalization is a process of organizing data by avoiding duplication and redundancy
+1NF - Each table cell should have a single value(unique records)
+2NF - 1NF + single column primary key
+3NF - 2NF + no transitive functional dependencies
+BCNF - divide your tables further till one candidate key present. 
+
+Database Keys:
+1. Candidate key - Unique columns identified in a table.(CustomerID,PANnumber)
+2. Super key - Candidate + Unique
+3. Primary key - CustomerID from table1. (No-null values)
+4. Unique key - Accepts null values(PANnumber)
+5. Alternative key - In Candidate keys, other than primary key(PANnumber)
+6. Foreign key - CustomerID from table2
+7. Composite key - Two or more columns identified uniquely(CustomerID)
+
+relationA1 having X,Y,Z attributes
+Functional dependency(X->Y): Y functionally dependent on X
+Transitive dependency(X->Z): X->Y, Y doesn't ->X, Y->Z
+
+
+2-Tier Architecture: Customer+Application+DB
+3-Tier Architecture: Customer+GUI+Application+DB (Secure)
+
+Checkpoint:
+A mechanism, all previous logs are removed from system(stored in storage disk)
+Checkpoints are those points from where the transaction log record can be used to recover all the committed data up to the point of crash. 
+
+Triggers: Fired at certain Events(No user intervention)
+Stored Procedures: Scheduled jobs with input parameters(Also nested)
+
+Hash Join: to join large tables
+Merge Join: when projection of the joined tables are sorted on join columns
+Nested Loops: inner loop + outer loop
+
+Updates Applied to databse:
+Proactive Update: before it becomes effective in real-world Env. 
+Retroactive Update: After it becomes effective in real-world Env.
+Simultaneous Update: At the same time it becomes effective. 
+
+Indexes are Data structures responsible for improve speed of data retrieval operations on a table
+Clustered Index: FAST, Alter the way records are stored. "only one index per table"
+Non-Clustered Index: Slow, create separate object in a table (points back to original table rows after searching) "many indexes per table"
+
+
+Intension: DB schema defines description of table. specified during the design, mostly remain unchanged. 
+Extension: number of tuples available in the DB at any instance time. changes when tuples create/destroy. 
+
+Cursor: DB object helps in manipulating data, row by row and represents a result set. 
+Implicit cursor - declared automatically after sql execution
+Explicit cursor - declared after sql execution when modifing more than single row. 
+
+Fill factor: % of space left on every leaf-level page(packed with data) default:100
+
+DEADLOCK is situation when two transactions wait on a resource which is locked or other transaction holds. 
+Deadlocks can be prevented by making all the transactions acquire all the locks at the same instance of time. 
+Once the deadlock occurs, cure is abort one of the transaction and remove partially completed work. 
+
+Exclusive Lock - lock on data item when a transaction is about to perform the WRITE operation
+Shared Lock - allos more than one transaction to read the data item. 
+
+
+===========================SQL================================
+||commands|| Used to delete || Rollback possible ||
+|DROP|db/table/view/table-structure| No-rollback|
+|TRUNCATE|all rows from table, preserves structure|No| Faster
+|DELETE|a row in the table|Yes
+>>>Speed = Truncate>Drop>Delete
+
+UNION command: Combines result of two or more SELECT statements consists of distinct values(No-duplicates) - Low performance. 
+UNION ALL: consists of duplicate values - better performance. 
+
+CLAUSE in SQL: used to limit the result set. (add condition) - filter rows from set of records. 
+Ex: WHERE, HAVING clause. 
+
+HAVING CLAUSE: used only with SELECT statement. used in GROUP BY clause. 
+WHERE CLAUSE: applied to each row before GROUP BY function in a query. 
+
+LIKE operator for pattern matching. 
+% (matches zero or more chars)
+SELECT * FROM students WHERE studentname LIKE 'A%' -> Amarendar
+_ (matches single char)
+SELECT * FROM students WHERE studentname LIKE 'abc_' -> abcd
+
+case manipulation functions in SQL:
+LOWER - LOWER('string')
+UPPER
+INTICAP - Amar(Standard format)
+
+JOIN - combines rows from 2 tables, based on related column b/w them. 
+INNTER JOIN - matches common values in both the tables. 
+FULL JOIN - match columns from both the left and right tables. 
+LEFT JOIN - returns all values from left table + matched records from right table. 
+RIGHT JOIN
+
+VIEW - logical part of a table. 
+CREATE VIEW view_name AS SELECT column1, column2 FROM table_name WHERE condition;
+
+CREATE OR REPLACE VIEW view_name AS column1, column2 FROM table_name WHERE condition;
+
+DROP VIEW view_name;
+
+duplicate table with data
+CREATE TABLE duplicatecustomer AS SELECT * FROM customers;
+duplicate table without data
+CREATE TABLE duplicatecustomer AS SELECT * FROM customers WHERE 1=2; ## some false condition. 
+
+To retrieve the even or odd recrods from a table using MOD function. 
+
+SELECT CustomerID FROM (SELECT rowno, CustomerID from Customers) where mod(rowno,2)=0 # Even records. 
+SELECT CustomerID FROM (SELECT rowno, CustomerID from Customers) WHERE mod(rowno,2)=1 # Odd records
+
+Remove duplicate rows from a table. 
+
+To select duplicate rows:
+SELECT CustomerNum FROM Customers WHERE 
+rowid (SELECT MAX (rowid) FROM Customers C 
+WHERE Customernum = C.Customernum)
+
+To delete duplicate records from Customers table. 
+DELETE FROM Customers WHERE rowid(SELEC MAX (rowid)
+FROM Customers C WHERE Customernum = C.Customernum)
+
+Add Email validation
+SELECT Email FROM Customers WHERE NOT 
+REGEXP_LIKE(Email, '[A-Z0-9._%+-]+@[A-Z0-9._]+.[A-Z]{2,4}', 'i');
+
+retrieve last day of next month in Oracle.
+
+SELECT LAST_DAY (ADD_MONTHS (SYSDATA,1)) from dual;

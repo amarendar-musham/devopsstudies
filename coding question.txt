@@ -1,0 +1,42 @@
+verify whether input can be a palindrome. you can switch max 2 chars in a string to make it palindrome. 
+input1=num of tests
+input2=size of string
+input3=string
+
+input:
+3
+3
+aba
+4
+abbc
+5
+abcde
+
+output:
+YES
+YES
+NO
+
+#!/bin/bash
+read T # number of tests
+for (( i=1; i<=$T; i++ )); do
+        read N[i] # size of string
+        read S[i] ## read string
+done
+
+for (( i=1; i<=$T; i++ )); do
+        size=${N[i]}
+        string=${S[i]}
+        reverse=""
+        for (( j=$size-1; j>=0; j-- )) ; do
+                reverse=$reverse${string:$j:1}
+        #       echo $reverse
+        done
+        #echo $string=$reverse
+        if [ "$string" == "$reverse" ]; then
+                echo $string=YES
+        else
+                echo $string=NO
+        fi
+
+done

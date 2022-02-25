@@ -1,0 +1,160 @@
+DBMS https://www.youtube.com/watch?v=BHmoFa-YSzw - 50M
+HTML https://www.youtube.com/watch?v=WzAgkVmVHQw - 45M
+DS https://www.youtube.com/watch?v=ZV1GwGA1QlY - 65M
+LINUX https://www.youtube.com/watch?v=p3tvtXOg5rg - 80M
+
+
+
+
+Data structure(DS)
+Specifies how to organize and manipulate data
+Defines relationship b/w different sets of data. 
+Ex: Array, Linked list, Stack, Queue
+
+1. primitive DS - Integer, Real, Boolean, Character -(Machine level)
+2. Non-primitive DS 
+	a) Linear DS - sequential manner - Array, Linkedlist, Stack, Queue
+	b) Non-linear DS - Tree, Graph
+	
+Operations on DS
+Insertion, Deletion, Traversal, Searching, Sorting
+
+Null - empty value of a variable(non-existed)
+Void - pointer with no initial size(data type identifier)(Exists but not in effect)
+
+Signed number = first bit +/-, 8-bit number range -128 to +127
+Unsingned num = all bits, 8-bit number range 0-255
+
+Static memory Allocation - compile time(assigned to Stack)[FILO]
+Dynamic memory Allocation(DMA) - Execute/Run time(assigned to Heap)
+
+DMA functions:
+Malloc() for dynamic memroy allocation.
+Calloc() for continuous DMA.
+Realloc() to resize allocated memory without losing old data. 
+Free() free memory block that had been allocated dynamically. 
+
+Hashing - converting range(key-values) into range(indexes)
+Linked list - sequence of DS. connected via links. Each link contains a connection to another link. 
+Head/Data/Next, ......
+
+Linked list types:
+Singly(1->2->3): Every node store the next node's address
+Doubly(1<->2<->3): Two references are associated with each other node. 
+Cercular(1->2->3->1): nodes connected to form a circle. 
+
+---
+Stack DS- LIFO (like items kept in a jar one by one)push/pop
+- used for recursion. 
+- can be implemented by Array/Linked list.  
+
+Stack overflow Exception - Already Stack filled, no new element can be added (Ex: memory defined Array)
+Stack underflow Exception - Stack is empty, if someone try access any elements. 
+
+---
+Queue DS - (FIFO)
+operations
+Enqueue() - add element in last. 
+Dequeue() - remove first element 
+Peek() - gives the front value, but don't remove. 
+Isempty()
+Isfull()
+Ex: printer, disk, CPU, MP3buffers
+Circular queue is full when 
+1. front==0&&rear=max-1
+2. front==rear+1
+
+---
+LRU cache can be implemented using Queue/Hash. 
+
+---
+Tree DS - real tree(root, branches/children)
+Binary Tree - every node can have at most two children. 
+Complete binary tree - nodes can have 1 or 2 children. 
+full binary tree - all nodes have 2 children. 
+skewed - left way or righ way driven children. 
+left skewed
+right skewed. 
+
+B tree - Search key can't repeatedly stored (Data stored on = leaf+internal nodes)
+B+ tree - Redundant search keys can be present (Data stored on only leaf nodes) - leaf nodes are linked, efficient search. 
+AVL tree - hieght balancing binary search tree. Height is <=1
+
+degree= no.of children/branches. 
+
+Spanning tree - a subset of Graph G, which has all verticles covered with minimum possible no. of edges. 
+
+---Graph DS
+consists of nodes/vertices and edges. 
+1. Depth-first traversal - makes depth ward motion like in N shape. 
+2. Breadth-first traversal - breadth wards motion like in Z shape. 
+
+Dijkstra's algorithm - shortest path b/w chosen node and every other nodes in a graph. 
+
+approaches to develop algorithms:
+1. Greedy - solution piece by piece, next piece(for immediate benefit) (Dijkstra/Prim)
+2. Divide and conquer - problem to sub-problem, solution combine(Binary search, merge sort)
+3. Dynamic programming - like divide&conquer, solution of sub-problem remembered and used recursively(like docker image layers)(find fibonacci, knapsack problem)
+
+Huffman's algorithm - lossless data compression
+String - AAABBC
+Interpolation search technique - start search from the middle, results in pdf. 
+
+
+-=============
+Merge sort - Divide&conquer - 8num->4+4->2+2,2+2->2, 2, 2, 2
+after dividing all the numbers sort and do merge+sort. 
+
+Selection sort - repeatedly picking small num in ascending order, and put it in the beginning. Time: O(n2), Space: O(1)
+
+Quick sort - Divide&conquer - into sub-arrays, sort with pivot(last element in sub-array). Time O(nlogn), worst-O(n2)
+
+Radix sort - for 3digit numbers, sorts 1,2,3digits individually. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
