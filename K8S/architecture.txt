@@ -1,0 +1,9 @@
+Kubernetes Master
+  etcd <-> 
+            kube-apiserver
+            kube-controllermanager
+            kube-scheduler
+           
+kubernetes node
+  kubelet
+  kube-proxy
