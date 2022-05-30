@@ -1,13 +1,13 @@
-kubeadm
-Install without using swap space (free -m, /etc/fstab, disable swap mount)
-Disable the firewall. (firewall-cmd --state)
+On all nodes: yum install docker container runtime, Ensure docker service running
+On all nodes: yum install kubelet, kubeadm, kubectl on all nodes; enable kubelet service
 
-install docker container runtime on all the nodes; Ensure docker service running
-install kubelet, kubeadm, kubectl on all nodes; enable kubelet service
-
-On all nodes: disable swap
+On all nodes: disable swap (free -m, /etc/fstab, disable swap mount)
 On all nodes: disable firewall or open appropriate ports in the firewall
+
 On all nodes: /etc/hosts, setup hostname resolving
+##/etc/hosts # { IP Domain alias}
+## ssh alias
+
 On control: kubeadm init. (root), note down "kubeadm join" command after initialization.
 
 client configuration file creation:
