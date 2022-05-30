@@ -1,3 +1,4 @@
+============================================
 Kubernetes Master
   etcd <-> 
             kube-apiserver
@@ -7,3 +8,9 @@ Kubernetes Master
 kubernetes node
   kubelet
   kube-proxy
+============================================
+
+kube-apiserver: services REST operations, connects to etcd database
+kube-scheduler: schedules pods on specific nodes based on labels, taints, tolerations set for pods. 
+etcd: key-value store that keeps the current state of cluster
+
