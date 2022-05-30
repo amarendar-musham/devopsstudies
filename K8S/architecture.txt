@@ -1,11 +1,11 @@
 ============================================
-Kubernetes Master
+Kubernetes Master ## all components runs as pod in kube-system namespace
   etcd <-> 
             kube-apiserver
             kube-controllermanager
             kube-scheduler
            
-kubernetes node
+kubernetes node ## kube-proxy runs as pod(kube-system), kubelet is a service(systemctl)
   kubelet
   kube-proxy
 ============================================
