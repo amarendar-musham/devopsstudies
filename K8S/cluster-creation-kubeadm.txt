@@ -21,6 +21,8 @@ client configuration file creation:(regular user)
  
  Alternative:
  export KUBECONFIG=/etc/kubernetes/admin.conf
+ 
+ kubectl config -h/view/get-context
 
 ===========================
 Installing a Pod network add-on (Only one pod n/w per cluster) ## Pods can communicate with use of this add-on
