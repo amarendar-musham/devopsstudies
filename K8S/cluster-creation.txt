@@ -5,3 +5,14 @@ Disable the firewall. (firewall-cmd --state)
 install docker container runtime on all the nodes; Ensure docker service running
 install kubelet, kubeadm, kubectl on all nodes; enable kubelet service
 
+On all nodes: disable swap
+On all nodes: disable firewall or open appropriate ports in the firewall
+On all nodes: /etc/hosts, setup hostname resolving
+On control: kubeadm init. (root), note down "kubeadm join" command after initialization.
+
+client configuration file creation:
+ - mkdir -p $HOME/.kube
+ - cp -l /etc/kubernetes/admin.conf $HOME/.kube/config
+ - chown $(id -u):$(id -g) $HOME/.kube/config
+ - kubectl cluster-info
+ - kubectl get nodes 
