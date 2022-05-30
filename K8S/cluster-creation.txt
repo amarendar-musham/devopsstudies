@@ -1,0 +1,7 @@
+kubeadm
+Install without using swap space (free -m, /etc/fstab, disable swap mount)
+Disable the firewall. (firewall-cmd --state)
+
+install docker container runtime on all the nodes; Ensure docker service running
+install kubelet, kubeadm, kubectl on all nodes; enable kubelet service
+
