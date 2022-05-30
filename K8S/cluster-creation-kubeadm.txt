@@ -1,3 +1,5 @@
+Ref: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+
 On all nodes: yum install docker container runtime, Ensure docker service running
 On all nodes: yum install kubelet, kubeadm, kubectl on all nodes; enable kubelet service
 
@@ -10,9 +12,25 @@ On all nodes: /etc/hosts, setup hostname resolving
 
 On control: kubeadm init. (root), note down "kubeadm join" command after initialization.
 
-client configuration file creation:
+===========================
+client configuration file creation:(regular user)
  - mkdir -p $HOME/.kube
  - cp -l /etc/kubernetes/admin.conf $HOME/.kube/config
  - chown $(id -u):$(id -g) $HOME/.kube/config
  - kubectl cluster-info
- - kubectl get nodes 
+ 
+ Alternative:
+ export KUBECONFIG=/etc/kubernetes/admin.conf
+
+===========================
+Installing a Pod network add-on (Only one pod n/w per cluster)
+kubectl apply -f <>.yaml ##  Ex: flannel/calico/Weave 
+
+Ensure namespace/kube-system - pod/coredns is running.
+ 
+ 
+=========================== 
+--- Join nodes in cluster
+kubeadm join --token<> IP:6443 --discovery-token-ca-cert-hash <> ## if no token -> kubeadm token list/create/
+
+ 
