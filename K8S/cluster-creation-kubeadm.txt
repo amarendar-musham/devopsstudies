@@ -33,7 +33,7 @@ kubectl apply -f <>.yaml ##  Ex: flannel/calico/Weave
 Ensure namespace/kube-system - pod/{coredns,flannel} is running. If it is up and running, you can start joining nodes. 
  
 =========================== 
---- Join nodes in cluster
+--- Join nodes in cluster(root)
 kubeadm join --token<> IP:6443 --discovery-token-ca-cert-hash <> ## if no token -> kubeadm token list/create/
 
  
