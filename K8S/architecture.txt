@@ -12,5 +12,15 @@ kubernetes node
 
 kube-apiserver: services REST operations, connects to etcd database
 kube-scheduler: schedules pods on specific nodes based on labels, taints, tolerations set for pods. 
+kube-controller-manager: manages current state of cluster.
 etcd: key-value store that keeps the current state of cluster
+
+---Worker Nodes
+
+kubelet: sends request to container engine to ensure pods are available
+kube-proxy: runs on everynode + uses iptables to provide an interface to connect to k8s components.
+container runtime: takes care of actually running the containers. 
+supervisord: monitors and guarantees the availability of kubelet and docker processes. 
+network agent: implements a software defined n/w+ing solution, such as weave
+logging: the CNCF project Fluentd used for unified logging in the cluster. a Fluentd agent must be installed on all k8s nodes. 
 
