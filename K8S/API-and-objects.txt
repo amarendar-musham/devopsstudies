@@ -5,3 +5,26 @@ kubectl auth can-i create pods --as <userid> --namespace <>
 :) -> service+LB
                 -> deployments{upgrades+replication}(pod:ip+volume -> \ )
                 -> PVC(persistent volume claim) -> PV
+
+kubectl api-resources
+After running "kubectl proxy", you can use "curl" to explore group info. 
+  -> curl http://localhost:8001/apis
+ 
+kubectl api-versions ; kubectl explain # explain api components 
+
+kubectl cluster-info
+## .kube/config //current configuration
+kubectl config view ## to view the above config. 
+
+## Install bash-completion for kubectl, and enable it using the command below. 
+kubectl completion bash > /etc/bash_completion.d/kubectl
+
+kubectl -h ; kubectl cluster-info -h
+
+kubectl explain pod.spec ## to list the fields used in the specification of Pod kind. 
+  ## pod.{metadata,kind,apiVersion,spec}
+kubectl explain pod.spec.containers ## list fields in container spec. 
+
+
+
+
