@@ -1,0 +1,7 @@
+kubectl auth can-i create deployments
+kubectl auth can-i create pods --as linda
+kubectl auth can-i create pods --as <userid> --namespace <>
+
+:) -> service+LB
+                -> deployments{upgrades+replication}(pod:ip+volume -> \ )
+                -> PVC(persistent volume claim) -> PV
