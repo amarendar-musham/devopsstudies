@@ -1,0 +1,35 @@
+deployments{upgrades+replication}(pod:ip+volume)
+
+kubectl create deployment --image=ngnix ngnixdepl 
+## The above command run, it creates deployment+replicaset. 
+1. deployment.apps/nginxdepl
+2. replicaset.apps/nginxdepl-<10digittoken>
+3. pod/nginxdepl-<10token>-<5token>
+
+kubectl get deployment.apps nginxdepl -o yaml | less
+  apiVersion: v1
+  kind: Deployment
+  metadata:{name,namespace,labels}
+  spec{replicas, selector.matchlabels, template:pod.spec}
+  
+kubectl create deployment -h ## --dry-run -o yaml
+
+kubectl scale deployment nginxdepl --replicas=3
+kubectl edit deployment nginxdepl # edit spec.replicas in yaml
+
+kubectl get deployments --show-labels
+kubectl label deployments nginxdepl state=demo ## add label
+
+kubectl get deployment --selector state=demo ## lists nginxdepl
+kubectl get all --selector app=nginxdepl ## pods,deployment,replicaset.
+
+kubectl run nginx --image=nginx --replicas=3
+kubectl get deployments --show-labels
+kubectl describe pod nginx-<10token>-<5token>
+kubectl label pod <> run-nginx ## removes label for a pod
+kubectl get pods --show-labels
+
+
+
+
+
