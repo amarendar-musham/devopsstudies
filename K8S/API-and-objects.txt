@@ -25,6 +25,25 @@ kubectl explain pod.spec ## to list the fields used in the specification of Pod 
   ## pod.{metadata,kind,apiVersion,spec}
 kubectl explain pod.spec.containers ## list fields in container spec. 
 
+========================================================================
+
+etcd <- api-server <->
+                    - kube-proxy -> curl(http) (here curl not takes care of TLS, so kube-proxy does)
+                    - curl(https) -> TLS ## need to parse --cert, --key, --cacert values
+                    - kubectl -> .kube/config(with TLS in it)
+                    
+kubectl proxy --port=8001 & ## '&' is important. 
+curl http://localhost:8001/version 
+curl http://localhost:8001/api/v1/namespaces/default/pods ## also pods/<pod_name>
+========================================================================
+
+etcdctl - To troubleshoot/manage etcd database
+etcdctl is version independent, etcdctl2 to talk with v2 API. 
+
+sudo yum provides */etcdctl
+sudo yum install -y etcd 
+
+etcdctl -h
 
 
 
