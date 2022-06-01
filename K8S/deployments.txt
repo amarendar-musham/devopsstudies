@@ -34,11 +34,28 @@ kubectl get pods --show-labels
 kubectl explain deployments.spec.strategy
 ## Recreate is used while you want 2versions of application.
 spec:
+  replicas: 4
   strategy:
     type: RollingUpdate
     rollingupdate:
-      maxSurge: 25%       ## 25%+desirable_pods
-      maxUnavailable: 25% ## 25%-desirable_pods
+      maxSurge: 2       ## desirable_pods+temp_pods(4+2)
+      maxUnavailable: 1 ## desirable_pods-temp_pods(4-1)
 
 ==========================================================
+kubectl create -f rollout.yaml ## deployment with rollingupdate type.
+kubectl rollout history <deployment(optional)>
+
+kubectl edit deployment/<depl_name> # change image:v2
+## Alternative kubectl set image=<> deployment/<>
+
+kubectl rollout history
+kubectl get all; kubectl describe deployments <depl_name> ## check what version of app is running(containers.image=v2)
+
+# To check what version of app applied at which time.
+kubectl rollout history deployment <> --revision=2
+kubectl rollout history deployment <> --revision=1
+
+kubectl rollout undo deployment <> --to-revision=1 ## gets app:v1, removes pods/replicaset created in app:v2
+
+
 
