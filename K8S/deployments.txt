@@ -57,5 +57,31 @@ kubectl rollout history deployment <> --revision=1
 
 kubectl rollout undo deployment <> --to-revision=1 ## gets app:v1, removes pods/replicaset created in app:v2
 
+==========================================================
+===init1.yaml
 
+kubectl create -f init1.yaml
+kubectl get pods ## status: Init:0/1
+kubect expose deployment nginx --port=80 --name=myservice
 
+==========================================================
+
+=== StatefulSets (https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+
+Statefulsets are like deployments, but provide guarantees about ordering&uniqueness of pods.
+Statefulsets are valuable if application has one of following requirements.
+  - unique network identifiers
+  - stable persistent storage
+  - ordered deployment and scaling
+  - ordered automated rolling updates. 
+  
+limitations:
+  storage must be provisioned by a PersistentVolume
+  deleting statefulset will not delete storage
+  headless service required to provide network identity for pods
+  To terminate pods in Statefulset, scale-down to "0", delete;
+  
+Refer: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+1. headless service, defined in part-1 yaml, and called in StatefulSet.spec.serviceName
+
+==========================================================
