@@ -91,3 +91,6 @@ Ref: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
 kubectl create -f daemonset-fluentd.yaml # kind:DaemonSet
 kubectl get daemonset -n kube-system
 
+===lab
+kubectl create -f lab-deployment.yaml ## kind:DaemonSet kubectl get all  ## runs on all nodes. 
+## if there are 3nodes in cluster, the above depl creates 3 pods on each node. 
