@@ -29,7 +29,16 @@ kubectl describe pod nginx-<10token>-<5token>
 kubectl label pod <> run-nginx ## removes label for a pod
 kubectl get pods --show-labels
 
+====================================Upgrades-RollingUpdate/Recreate=============================
 
+kubectl explain deployments.spec.strategy
+## Recreate is used while you want 2versions of application.
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingupdate:
+      maxSurge: 25%       ## 25%+desirable_pods
+      maxUnavailable: 25% ## 25%-desirable_pods
 
-
+==========================================================
 
