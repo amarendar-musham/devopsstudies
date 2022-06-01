@@ -85,3 +85,9 @@ Refer: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 1. headless service, defined in part-1 yaml, and called in StatefulSet.spec.serviceName
 
 ==========================================================
+===DaemonSets
+Ref: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+
+kubectl create -f daemonset-fluentd.yaml # kind:DaemonSet
+kubectl get daemonset -n kube-system
+
