@@ -1,0 +1,7 @@
+Pod-spec.volume ->\
+                 -> PVC -> PV(NFS/Cloud storage)
+                 -> configmap (can be variable type mapping)
+                 -> Secret (base64 encoding)
+kind: Pod
+spec.Containers.volumeMounts: (name:test, mountPath: /centos1)
+spec.volumes: (name: test, emptyDir: {})
