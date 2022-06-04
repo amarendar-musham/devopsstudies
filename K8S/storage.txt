@@ -48,4 +48,35 @@ kubect get cm myconfig -o yaml ## data.color=red
 kubectl create -f cm-pod.yml ## describe
 ## exec, echo $COLOR
 
+==================secrets=============================
+types of secrets(encoded, not encrypted):
+1. docker-registry
+2. TLS
+3. generic
+
+secrets are used in the way that configMaps used. 
+mounted as volumes
+imported as variables
+
+kubectl create secret generic secretstuff --from-literal=pass=pass --from-literal=user=linda
+kubectl get secrets secretstuff -o yaml
+
+Pod{spec.containers.volumeMounts.name} = secret -> \
+Pod{spec.volumes.name} = secret -> \
+Pod{spec.volumes.secret.secretName} = secretstuff. 
+
+kubectl create -f pod-secret.yml ## describe, check mounts
+exec, cat /secretstuff/{pass,user}
+
+-------
+kubectl create secret generix mysql --from-literal=password=root
+kubectl get secrets mysql -o yaml ## data.password. 
+
+kubectl create -f pod-secret-as-var.yaml ##exec, env
+
+----lab
+kubectl create -f pv.yaml && pvc.yaml && pv-pod.yaml
+
+## describe pod, check mount - pv, 
+
 
