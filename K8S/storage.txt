@@ -1,7 +1,51 @@
 Pod-spec.volume ->\
                  -> PVC -> PV(NFS/Cloud storage)
-                 -> configmap (can be variable type mapping)
+                 -> configmap (files/dir/variables)
                  -> Secret (base64 encoding)
 kind: Pod
 spec.Containers.volumeMounts: (name:test, mountPath: /centos1)
 spec.volumes: (name: test, emptyDir: {})
+
+
+kubectl create -f pv.yaml ## creates "pv-volume" PV.
+kubectl get pv pv-volume 
+
+kubectl explain pv.spec.storageClassName
+
+kubectl create -f pv-nfs.yaml ## creates nfs(pv-nfs) volume
+
+kubectl create -f pvc.yaml ; kubectl get pvc;
+kubectl create -f nfs-pvc.yaml ; kubectl get pvc
+
+kubectl create -f pv-pod.yaml# kubectl describe pv-pod
+
+kubectl create -f nfs-pv-pod.yaml ; ## describe
+
+---
+Pod{spec.containers.volumeMounts.name} --> \
+Pod{spec.volumes.pVC.claimName} --> \
+PVC{spec.accessModes.RWO/RWM} --> \
+PV{spec.accessModes.RWO/RWM} --> \
+PV{spec.nfs.server/path}
+---
+
+==================configMaps(cm)=============================
+-------files
+kubectl create cm nginx-cm --from-file nginx-custom-config.conf
+kubectl get cm nginx-cm -o yaml ## data section contains of the above config file. 
+## Pod{spec.volumes.configMap.name} = nginx-cm
+## Pod{spec.volumes.configMap.items.key} = nginx-custom-config.conf // reads from configMap{data}
+
+kubectl create -f nginx-cm.yml ## connect nginx-cm pod, and check this file for content - /etc/nginx/conf.d/default.conf
+
+--------variables
+configMap(name=myconfig,color=red)
+Pod{spec.containers.env}(name:color, valueFrom.configMapKeyRef.{name:myconfig,key:color})
+
+kubectl create cm myconfig --from-literal=color=red
+kubect get cm myconfig -o yaml ## data.color=red
+
+kubectl create -f cm-pod.yml ## describe
+## exec, echo $COLOR
+
+
