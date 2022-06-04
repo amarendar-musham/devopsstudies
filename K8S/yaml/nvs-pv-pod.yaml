@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-pv-pod
+spec:
+  volumes:
+    - name: nfs-pv
+      persistentVolumeClaim:
+        claimName: nfs-pv-claim
+  containers:
+    - name: nfs-client1
+      image: centos:latest
+      command:
+        - sleep
+        - '3600'
+      volumeMounts:
+        - name: nfs-pv
+          mountPath: "/nfsshare"
+       
+    - name: nfs-client2
+      image: centos:latest
+      command:
+        - sleep
+        - '3600'
+      volumeMounts:
+        - name: nfs-pv
+          mountPath: "/nfsshare"
