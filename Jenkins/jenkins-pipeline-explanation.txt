@@ -91,9 +91,14 @@ def generateParallelJobSteps(int numJobs, def taskType) {
 
 
 ------------------
-Anchore engine supports using Jenkins plugin "Anchore Container Image Scanner", need to provide anchore engine url and docker images list to it. scan-reports copies to /fss-pipeline/anchore_scan_reports
+Anchore engine supports using Jenkins plugin "Anchore Container Image Scanner", 
+need to provide anchore engine url and docker images list to it. 
+scan-reports copies to /fss-pipeline/anchore_scan_reports reviewed by QA
 
-The Anchore Engine is an open source project that provides a centralized service for inspection, analysis and certification of container images. The Anchore Engine is provided as a Docker container image that can be run standalone or on an orchestration platform such as Kubernetes, Docker Swarm, Rancher or Amazon ECS.
+The Anchore Engine is an open source project that provides a centralized service for 
+inspection, analysis and certification of container images. 
+The Anchore Engine is provided as a Docker container image that can be run standalone 
+or on an orchestration platform such as Kubernetes, Docker Swarm, Rancher or Amazon ECS.
 
 ------------------
 
