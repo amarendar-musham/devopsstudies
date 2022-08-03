@@ -13,7 +13,7 @@ certification testing - gradle/javascript testsuites
 publish docker images - "dind" docker image contains pre-login enabled. docker tag/push
 publish k8s scripts. - zip -r $k8s.zip ./kubernetes; send to ROAD site. 
 ------------------
-Anchore engine supports using Jenkins plugin "Anchore Container Image Scanner", need to provide anchore engine url and docker images list to it. scan-reports copies to /fss-pipeline/anchore_scan_reports
+
 
 1. Calling a different job::
 build job: name
@@ -90,8 +90,10 @@ def generateParallelJobSteps(int numJobs, def taskType) {
 }
 
 
+------------------
+Anchore engine supports using Jenkins plugin "Anchore Container Image Scanner", need to provide anchore engine url and docker images list to it. scan-reports copies to /fss-pipeline/anchore_scan_reports
 
+The Anchore Engine is an open source project that provides a centralized service for inspection, analysis and certification of container images. The Anchore Engine is provided as a Docker container image that can be run standalone or on an orchestration platform such as Kubernetes, Docker Swarm, Rancher or Amazon ECS.
 
-
-
+------------------
 
