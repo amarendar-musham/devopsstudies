@@ -1,0 +1,31 @@
+Jenkins configure Clouds::
+
+k8s url: https://<>:6443
+k8s namespace: devops-jenkins
+
+Jenkins url:
+Jenkins tunnel: <>:5000
+
+pod label: jenkins=slave
+
+---
+Pod templates::
+
+label: jnlp-main
+workspace: /fss-vol
+
+--Container template::
+	name: jnlp
+	docker image: repo location
+	working dir: /home/jenkins/agent
+	volumes: host(/fss)=mount(/fss)
+	node selector: devops-pipeline=true
+
+---
+Raw yaml for pod to resolve network issues::
+
+spec:
+  dnsConfig:
+    options:
+      - name: ndots
+        value: "1"  

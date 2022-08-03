@@ -1,0 +1,97 @@
+Jenkins pipeline:
+
+Overview:: ## {}=parallel, []=upstream. 
+cleanup, setup, image-build, {image-scan, cert-testing[provisioning-env]}, {publish-images, publish-k8s.zip}
+
+----Pipeline stages-----
+cleanup: clear workspace
+setup: checkout source - environment setup, app related
+docker image build with distribution, base images -  shell scripts. 
+docker image scan-pipeline - build{1,2,3}, integrates with Anchore engine, scan reports. 
+Provisioning environments - createOrchestration.sh && setup-pipeline.sh
+certification testing - gradle/javascript testsuites
+publish docker images - "dind" docker image contains pre-login enabled. docker tag/push
+publish k8s scripts. - zip -r $k8s.zip ./kubernetes; send to ROAD site. 
+------------------
+Anchore engine supports using Jenkins plugin "Anchore Container Image Scanner", need to provide anchore engine url and docker images list to it. scan-reports copies to /fss-pipeline/anchore_scan_reports
+
+1. Calling a different job::
+build job: name
+parameters: [ type:'stringparam' name:'ex1' value:'val1' ]
+
+2. Defining parameters::
+properties([
+	string(name:'', defaultValue:'', desc:''),
+	choice(name:'', choices:'c1\nc2', desc:'')
+	])
+
+3. Using pod template as jenkins agent::
+node('pod tmpl name') {	...
+	container('con tmpl name1') { ... }
+	container('con tmpl name2') { ... } ## "dind" to publish dockerImages (docker login "$registry" -u '' -p '')
+ }
+
+4. Using Try-catch::
+try { stage('Cleanup') { .. } }
+catch (e) {
+    echo "WARNING: Failure during cleanup detected."
+  }
+
+5. dry-run, to initialize params::
+script {
+      if ("${params.INITIALIZE_JOB_PARAMS}" == "true") {
+        currentBuild.result = 'ABORTED'
+        error('DRY RUN COMPLETED, JOB PARAMETERS INITIALIZED.')
+      }
+      currentBuild.displayName = "${RELEASE_VERSION}-${IMAGE_GROUP}-" + currentBuild.number
+    }
+
+6. stage defination::
+stage('Setup') {
+	checkout([  class:'GitSCM',
+				branches: [name:''],
+				url:'',credentials:''
+	])
+	sh """ ... """
+	----(1)call different job--- ## can call scan, testing, publish jobs in other stages...
+  }
+
+7. Use if condition to trigger another job::
+if (params.BUILD_BASE_IMAGES == "true") { ## when there is new version introduced, images have to updated. 
+    stage('Base Image Build') {
+      ----(1)call different job---
+    }
+  }
+
+8. Parallel jobs trigger::
+parallel(
+    Upload_Images: {
+      stage('Upload Images') {
+        ----(1)call different job---
+      }	},
+    Publish_Kubernetes_Scripts: {
+      stage('Publish Kubernetes Scripts') {
+        ----(1)call different job---
+      }	}
+  )
+
+9. Define a function, for loop::
+def generateStepForJob(def taskType, def envID) {
+	return { ----(1)call different job--- }
+}
+
+def generateParallelJobSteps(int numJobs, def taskType) {
+  //Generate steps for given number of jobs using loop
+  def jobSteps = [:]
+  for (int i = 1; i <= numJobs; i++) {
+    jobSteps["Provision-Job-${i}"] = generateStepForJob(taskType, i)
+  }
+  return jobSteps
+}
+
+
+
+
+
+
+
