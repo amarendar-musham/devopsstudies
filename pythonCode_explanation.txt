@@ -1,0 +1,47 @@
+-----
+
+response = requests.get('<api>', auth=('XXXX', 'XXXX'))
+
+response = session.post(update_url, data=d) ## session.{put|get}
+
+
+
+python modules::
+syntax: import X || from Y import X
+	requests
+	requests.auth/HTTPBasicAuth
+	json ## loads, dumps methods available
+	re ## regular expression ## search method
+	selenium/webdriver  # driver = webdriver.Firefox() ## get method
+
+
+Overview::
+--------START
+import statements....
+
+var1 = 'ex1'
+
+class Issue:
+	var2 = 'ex2'
+	def __init__(): # default function, exec when the class called. 
+		.....
+
+	keyvalueblocks = {   ## Dictionary defination
+		'key1':"value1", 
+		'key2':"value2",
+	}
+
+	def printsomet(self, a, b):
+		x = ''
+		...
+		return x
+
+class Ex2: ...
+
+if __name__ == "__main__":
+	 issue=Issue(json=bug_json) ## create object 
+	 issue.printsomet(a, b) ## calling the method from Issue class. 
+END--------
+
+
+===TimeZoneUtility module in Java 
