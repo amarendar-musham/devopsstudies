@@ -1,0 +1,45 @@
+def fizzBuzz(n):
+    # Write your code here
+    for x in range(15):
+        value=""
+        F=""
+        B=""
+        
+        if x % 3 == 0:
+            F = "Fizz"
+        if x % 5 == 0:
+            B = "Buzz"
+        if F == "" and B == "":
+            print(x)
+        elif F != "":
+            if B != "":
+                print("FizzBuzz")
+            else :
+                print("Fizz")
+        else :
+            print("Buzz")
+
+if __name__ == '__main__':
+    n = int(input().strip())
+
+    fizzBuzz(n)
+
+---------
+
+select company.id from Company where employees > 10000 order by id;
+
+-----------
+
+def calcMissing(readings):
+    # Write your code here
+    
+if __name__ == '__main__':
+    readings_count = int(input().strip())
+
+    readings = []
+
+    for _ in range(readings_count):
+        readings_item = input()
+        readings.append(readings_item)
+
+    calcMissing(readings)
