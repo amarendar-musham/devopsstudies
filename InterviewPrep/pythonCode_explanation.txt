@@ -4,8 +4,6 @@ response = requests.get('<api>', auth=('XXXX', 'XXXX'))
 
 response = session.post(update_url, data=d) ## session.{put|get}
 
-
-
 python modules::
 syntax: import X || from Y import X
 	requests
@@ -43,5 +41,58 @@ if __name__ == "__main__":
 	 issue.printsomet(a, b) ## calling the method from Issue class. 
 END--------
 
-
 ===TimeZoneUtility module in Java 
+
+
+.........................................................
+------Read input and search pattern ----------START
+link = input("Give the main URL : ") ## read URL
+pattern = input("Any filter : ").    ## read search item
+print("{} with filter - {}".format(link,pattern), end="\n\n\n")
+
+1. X = open('hi.txt', 'r')		## X is a file.
+2. X = ['.....', '.....', '.....']	## X is a list. 
+for line in X:
+        if re.search(pattern, line):  ## similar to grep in Bash...
+            print(line, end="")
+END-------------
+
+.........................................................
+------ Write to a file --------START
+f = open(file, mode); "f.write() followed by f.close()" ## method 1. 
+
+with open('readme.txt', 'w') as f: ## method 2. 
+    f.write('readme' + '\n')
+    
+var1 = sys.stdout
+sys.stdout = f			## method 3. 
+## run some method that prints output to stdout
+## it will write stdout to file f.
+sys.stdout = var1  ## after the work is done, reset the stdout. 
+END---------
+
+.........................................................
+
+------- Work with json --------START
+## import json and requests modules. 
+
+## create a object with json content.
+1. json_data = json.load(f)		 ##  Ex: f = open("hi.json","r")
+2. json_data = json.loads(response.text)	## Ex: response = requests.get('url',auth=('user','pass'))
+
+## read records/rows in json content. 
+for row in json_data: 		## Can be json_data["results"] or json_data["notification"]["workflowSteps"]
+
+	## To manipulate(replace something) the data you must convert json to string using dumps() method. 
+	## otherwise you can read json data as a dictionary
+	
+	print(json.dumps(row["number"]).replace('"','')+ "|" + row["status"]) 
+	
+	
+
+
+END----------
+.........................................................
+
+print(f.read()) ## similar to cat in Bash. 
+print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 //new line
