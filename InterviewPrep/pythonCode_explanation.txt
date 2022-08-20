@@ -80,6 +80,9 @@ END---------
 1. json_data = json.load(f)		 ##  Ex: f = open("hi.json","r")
 2. json_data = json.loads(response.text)	## Ex: response = requests.get('url',auth=('user','pass'))
 
+if response.status_code != 200:
+	break
+
 ## read records/rows in json content. 
 for row in json_data: 		## Can be json_data["results"] or json_data["notification"]["workflowSteps"]
 
