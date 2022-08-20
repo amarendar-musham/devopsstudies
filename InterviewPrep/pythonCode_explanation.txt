@@ -90,8 +90,13 @@ for row in json_data: 		## Can be json_data["results"] or json_data["notificatio
 	## otherwise you can read json data as a dictionary
 	
 	print(json.dumps(row["number"]).replace('"','')+ "|" + row["status"]) 
-	
-	
+
+def ex(str):
+	ls=[]
+	....get json_data
+	for i in json_data["data"]:
+		ls.append(i["Title"])	## appned the values from dictionary content of json. 
+	return sorted(ls) 		## returns sorted list. 
 
 
 END----------
