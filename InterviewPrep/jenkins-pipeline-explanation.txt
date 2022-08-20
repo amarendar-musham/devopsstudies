@@ -50,7 +50,7 @@ script {
 stage('Setup') {
 	checkout([  class:'GitSCM',
 				branches: [name:''],
-				url:'',credentials:''
+				url:'',credentialId:''  // use credential created in Jenkins.
 	])
 	sh """ ... """
 	----(1)call different job--- ## can call scan, testing, publish jobs in other stages...
