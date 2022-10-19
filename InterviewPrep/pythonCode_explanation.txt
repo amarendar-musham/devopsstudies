@@ -104,3 +104,7 @@ END----------
 
 print(f.read()) ## similar to cat in Bash. 
 print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 //new line
+
+ls = file.readlines() ## create a list with lines in a file, note: includes - "\n"
+ls = [x**2 for x in range(10) if x**2 % 2 == 0] #[0, 4, 16, 35, 64]
+
