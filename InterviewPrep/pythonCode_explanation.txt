@@ -114,5 +114,11 @@ ls = [x**2 for x in range(10) if x**2 % 2 == 0] #[0, 4, 16, 35, 64]
 str="{c},{b},{a}".format(a=5,b=9,c=7) ## 7,9,5 ## named args. 
 str="{0}{1}{0}".format("abra","cad") ## abracadabra..
 
+nums = [11, 22, 33, 44, 55]
+result = list(map(lambda x: x+5, nums)) # [16,27,38,49,60]
+res = list(filter(lambda x: x%2==0, nums)) # [22,44]
 
+## (lambda-func: return-value) (func-args)
+print((lambda x: x**2 + 5*x + 4) (-4))
+add = lambda x,y: x+y ;; print(add(3,4)) ## lambda func in a variable.
 
