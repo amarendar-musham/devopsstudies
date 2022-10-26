@@ -122,3 +122,5 @@ res = list(filter(lambda x: x%2==0, nums)) # [22,44]
 print((lambda x: x**2 + 5*x + 4) (-4))
 add = lambda x,y: x+y ;; print(add(3,4)) ## lambda func in a variable.
 
+
+a = [1,2,3,5,6] ; b = [3,5,0] ; c = list(set(a)-set(b)) ## [1, 2, 6]
