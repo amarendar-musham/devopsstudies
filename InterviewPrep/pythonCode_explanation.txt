@@ -108,7 +108,7 @@ print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 
 
 ls = "one, two, three".split(", ") # list gets created with split. 
 ls = file.readlines() ## create a list with lines in a file, note: includes - "\n"
-ls = [x**2 for x in range(10) if x**2 % 2 == 0] #[0, 4, 16, 35, 64]
+ls = [x**2 for x in range(10) if x**2 % 2 == 0] #[0, 4, 16, 35, 64] ## list comprehensions
 
 
 str="{c},{b},{a}".format(a=5,b=9,c=7) ## 7,9,5 ## named args. 
