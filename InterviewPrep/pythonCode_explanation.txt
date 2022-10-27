@@ -127,3 +127,4 @@ a = [1,2,3,5,6] ; b = [3,5,0] ; c = list(set(a)-set(b)) ## [1, 2, 6]
 
 Tuples, lists can be unpacked(a,b,c=nums; a,b,*c,d=nums) *c takes leftover elements
 Sets, dictionaries. # sets = no_duplicates, can give &(matched) |(all) -(substract) ^(unmatched) elements b/w two sets
+# if 3 in nums: # gives True; similarly: key in dict ## alt: not in
