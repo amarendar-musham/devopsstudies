@@ -6,7 +6,7 @@ response = session.post(update_url, data=d) ## session.{put|get}
 
 python modules::
 syntax: import X || from Y import X
-	requests
+	requests, re
 	requests.auth/HTTPBasicAuth
 	json ## loads, dumps methods available
 	re ## regular expression ## search method
@@ -134,3 +134,12 @@ def func(x, *args, *kwargs):
 ---- print(args) # (2,3,4) = tuple 
 ---- print(kwargs)# {'a':7,'b':8} = dictionary - keywordArg.
 func(1,2,3,4,a=7,b=8) 
+
+---import re
+^$. - start, end, anything
+{} - number of iteration in b/w
+* - {0,} // + - {1,} // ? - {0,1} - zero or one
+
+pattern = r"(.)*[A-Z]+(.)*[0-9]+(.)*" ## atleast one uppercase&number
+if re.search(pattern, password): print("pass created")
+
