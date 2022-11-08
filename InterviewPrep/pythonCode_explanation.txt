@@ -136,7 +136,7 @@ def func(x, *args, *kwargs):
 func(1,2,3,4,a=7,b=8) 
 
 ---import re; metacharacters...
-^$. - start, end, anything
+^$.| - start, end, anything, or ## () - group, [] - character class, [^a-z] - invert # anything other than a-z
 {} - number of iteration in b/w
 * - {0,} // + - {1,} // ? - {0,1} - zero or one
 
