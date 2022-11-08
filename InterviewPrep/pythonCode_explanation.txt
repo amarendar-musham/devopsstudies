@@ -135,7 +135,7 @@ def func(x, *args, *kwargs):
 ---- print(kwargs)# {'a':7,'b':8} = dictionary - keywordArg.
 func(1,2,3,4,a=7,b=8) 
 
----import re
+---import re; metacharacters...
 ^$. - start, end, anything
 {} - number of iteration in b/w
 * - {0,} // + - {1,} // ? - {0,1} - zero or one
