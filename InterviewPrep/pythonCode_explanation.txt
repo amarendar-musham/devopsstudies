@@ -147,4 +147,7 @@ special sequence: \1 = matches exp of group(1) # (abc|xyz)\1 = "abc" or "xyz" fo
 \d, \s, \w = digit, space, word chars ; \D, \S, \W = inverts(other than what they are..) 
 ## Ex: r"#\w+" = re.findall(pattern, text) gives all hashtags. 
 
+patternForEmail = r"([\w\.]+)@([\w\.]+)\.([\w\.]+)" # info@example.com
+## basic = "()@()\.()" # these groups can have (words/dots)one or more = [\w\.]+
+
 
