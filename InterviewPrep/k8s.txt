@@ -98,7 +98,7 @@ metadata{*name, label}
 spec.Containers.volumeMounts: (name:test, mountPath: /centos1)
 spec.volumes: (name: test, emptyDir: {})
 
-pod.spec.volumes types ->
+pod.spec.volumes{name, type} #types ->
  -> PVC -> PV(NFS/Cloud storage)
  -> configmap (files/dir/variables)
  -> Secret (base64 encoding)
@@ -109,3 +109,7 @@ pv.spec{capacity(storage), accessmodes(rwm), hostpath(path)/nfs(server/path)}
 
 ConfigMap ->
 kubectl create cm <cm-name> --from-file nginx.conf (or) --from-literal=user=amar --from-literal=pass=abc
+
+pod.spec.volumes.configMap{name,items.key}
+## Pod{spec.volumes.configMap.name} = nginx-cm
+## Pod{spec.volumes.configMap.items.key} = nginx-custom-config.conf // reads from configMap{data}
