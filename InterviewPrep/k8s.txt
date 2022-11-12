@@ -108,8 +108,9 @@ pvc.spec{accessModes(rwm), resources(requests,limits)}
 pv.spec{capacity(storage), accessmodes(rwm), hostpath(path)/nfs(server/path)}
 
 ConfigMap ->
-kubectl create cm <cm-name> --from-file nginx.conf (or) --from-literal=user=amar --from-literal=pass=abc
+1. kubectl create cm <cm-name> --from-file nginx.conf (or) --from-literal=user=amar --from-literal=pass=abc
+2. pod.spec.volumes.configMap{name,items.key} ## items.key is above cm-name.
+3. pod.spec.containers.volumeMounts{name(cm-name),path} ## cm-name from step2(defined volume)
+For variables(key,value): 2. pod.spec.containers.env{name, valueFrom.configMapKeyRef(cm-name,key)} ## cm-name from kubectl command.
 
-pod.spec.volumes.configMap{name,items.key}
-## Pod{spec.volumes.configMap.name} = nginx-cm
-## Pod{spec.volumes.configMap.items.key} = nginx-custom-config.conf // reads from configMap{data}
+
