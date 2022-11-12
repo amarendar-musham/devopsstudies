@@ -3,18 +3,38 @@ Kubernetes Master ## all components runs as pod in kube-system namespace
   etcd <-> (key-value store that keeps the current state of cluster)
   
             kube-apiserver (serves REST operations, connects to etcd database)
-            kube-controllermanager (manages current state of cluster)
+            kube-controllermanager (manages current state of cluster/change to desired state)
             kube-scheduler (schedules pods on specific nodes based on labels, taints, tolerations set for pods)
            
 kubernetes node ## kube-proxy runs as pod(kube-system), kubelet is a service(systemctl)
 
-  kubelet (Talks to container engine to ensure pods availability)
+  kubelet (Talks to container engine to ensure pods availability), 1. 
   kube-proxy (runs on everynode + uses iptables to provide an interface to connect to k8s components)
   
 container runtime: takes care of actually running the containers. 
 supervisord: monitors and guarantees the availability of kubelet and docker processes. 
 network agent: implements a software defined n/w+ing solution, such as weave
 logging: the CNCF project Fluentd used for unified logging in the cluster. a Fluentd agent must be installed on all k8s nodes. 
+
+Controller types::
+      Jobs - Supervises the pods running batch job, CronJobs - schedules the jobs. 
+      Services - Allow communication b/w deployments
+      Deployment - Gives declarative updates to pods/replicasets
+      ReplicaSet - Ensure no.of replicas running all the time
+      DaemonSet - Ensure that all nodes run a copy of a specific pod     
+      
+Kubelet service work:
+      1. Communicate with API-server, find any pods assigned to nodes
+      2. Do health check of pods/nodes, run pods via docker-engine
+      3. mount volume/secrets
+      >> kube-apiserver ==={podspecs(1,2,3)}===>> kubelet(ensures container health as described in podspec)
+      
+kube-proxy pod on each node work:
+      1. Talk with API-server, add/remove services
+      2. For each service, it opens a random port on local node
+      3. traffic to that port are proxied to one of the corresponding backend pods. 
+      
+      
 =================================================================================
 
 Cluster creation(kubeadm) ===
@@ -131,4 +151,19 @@ For generic:
           3. pod.spec.containers.volumeMounts{name, mountPath} # name is secret from step2.
 =================================================================================
 
+Commands===
+kubectl get {pods, nodes} -n <> --show-labels --selector env=prod
+kubectl delete pods -l env!=prod
+kubectl expose deployment helloworld --type=NodePort
+kubectl get service/helloworld -o yaml
 
+kubectl set image deployment/<dep-name> helloworld=<image-name>
+kubectl get {deployoments, rs, pods} && kubectl describe deployment <dep-name>
+kubectl rollout history deployment/<dep-name>
+kubectl rollout undo deployment/<dep-name>
+
+kubectl get {jobs, cronjobs} && kubectl edit cronjobs/<>
+
+
+
+=================================================================================
