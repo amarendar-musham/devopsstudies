@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: pod
+metadata:
+	name: pod-name
+	label: app = app-name
+spec:
+	volumes:
+		- name: pvc-name
+		  persistentVolumeClaim:
+			- claimName: pv-claim
+		- name: cm-name
+		  configMap:
+		  	- name: cm-nginx ##  cm from kubectl command.
+		  	  items:
+		  	  	- key: nginx.conf
+		  	  	  path: default.conf
+		- name: secret-name
+		  secret:
+		  	- name: secret-name
+		  	  secretName: secretstuff
+
+	containers:
+	  - name: cont1
+		image: image-name
+		ports: (name,containerPort)...
+		volumeMounts:
+			- name: pvc-name
+			  mountPath: /u01
+			- name: cm-name
+			  mountPath: /etc/nginx/conf.d/
+			- name: secret-name
+			  mountPath: /secret-stuff
+		env: 
+        	- name: COLOR
+          	  valueFrom:
+            	configMapKeyRef:
+              		name: myconfig  ## cm from kubectl command
+               		key: color
+            - name: MYSQL_ROOT_PASSWORD
+          	  valueFrom:
+              	secretKeyRef:
+              		name: mysql    ## secret from kubectl command
+              		key: password
+---
+apiVersion: v1
+kind: persistentVolumeClaim
+metadata:
+	name: pv-claim
+spec:
+	accessModes:
+		- RWM
+	resources:
+		requests:
+			- 2Gi
+		limits:
+			- 4Gi
+---
+apiVersion: v1
+kind: persistentVolume
+metadata:
+	name: pv-name
+	label: 
+		app: app-name
+spec:
+	capacity:
+		resources:
+			- 20Gi
+	accessModes:
+		- RW
+	hostpath:
+		- path: /scratch
+	/Alt/nfs:
+		- server: name
+		  path: /nfs/server-name....
