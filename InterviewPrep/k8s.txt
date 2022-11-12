@@ -152,6 +152,9 @@ For generic:
 =================================================================================
 
 Commands===
+On resources - get(list), describe(details), logs, exec(command) 
+kubectl exec -ti $POD_NAME -- /bin/bash
+
 kubectl get {pods, nodes} -n <> --show-labels --selector env=prod
 kubectl delete pods -l env!=prod
 kubectl expose deployment helloworld --type=NodePort
@@ -164,6 +167,8 @@ kubectl rollout undo deployment/<dep-name>
 
 kubectl get {jobs, cronjobs} && kubectl edit cronjobs/<>
 
+$ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+$ echo Name of the Pod: $POD_NAME #$ Name of the Pod: kubernetes-bootcamp-69fbc6f4cf-l7qwv
 
 
 =================================================================================
