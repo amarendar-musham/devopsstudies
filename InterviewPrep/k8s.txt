@@ -99,32 +99,36 @@ simple storage - >
     spec.volumes: (name: test, emptyDir: {})
 
 pod.spec.volumes{name, type} #types -> {PVC, ConfigMap, Secret}
-
+---
 PVC -> PV(NFS/Cloud storage)
       pod.spec{containers(volumeMounts), volumes(PVC.claimname)}
       pvc.spec{accessModes(rwm), resources(requests,limits)}
       pv.spec{capacity(storage), accessmodes(rwm), hostpath(path)/nfs(server/path)}
-
-ConfigMap -> (files/dir/variables)
+---
+ConfigMap -> (files/dir/variables) , var: key=value
           1. kubectl create cm <cm-name> --from-file nginx.conf (or) --from-literal=user=amar --from-literal=pass=abc
+For variables: 
+          2. pod.spec.containers.env{name, valueFrom.configMapKeyRef(cm-name,key)} ## cm-name from kubectl command.          
 For files: 
-          2. pod.spec.volumes.configMap{name,items.key} ## items.key is above cm-name.
-          3. pod.spec.containers.volumeMounts{name(cm-name),path} ## cm-name from step2(defined volume)
-For variables(key,value): 
-          2. pod.spec.containers.env{name, valueFrom.configMapKeyRef(cm-name,key)} ## cm-name from kubectl command.
+          2. pod.spec.volumes.{name, configMap.items.key} ## items.key is above cm-name.
+          3. pod.spec.containers.volumeMounts{name,path} ## name is configMap from step2(defined volume)
 
+---
 Secrets -> (vars)(base64 encode, no-encrypt)
 *** Types of secretes:  generic, TLS, docker-registry
 
           1. kubectl create secret generic secretstuff --from-literal=pass=abc --from-literal=user=amusham # tls{--key,--cert} 
           1. kubectl create secret docker-registry regcred --docker-server=<reg-server> --docker-username=<> --docker-password=<> --docker-email=<>
           kubectl get secret regcred --output=yaml  ##base64 decode data.dockerconfig
-
 For tls:          
           2. ingress.spec{host, path, backend.serviceName, tls) ## ingress.spec.tls{host, secretName}
 For docker-registry:
           2. pod.spec.imagePullSecrets.name = regcred ## regcred from kubectl command 
+For variables: 
+          2. pod.spec.containers.env{name, valueFrom.secretKeyRef(cm-name,key)} ## cm-name from kubectl command.  
+For generic:
+          2. pod.spec.volumes{name, secret.secretName}
+          3. pod.spec.containers.volumeMounts{name, mountPath} # name is secret from step2.
+=================================================================================
 
 
-
-          
