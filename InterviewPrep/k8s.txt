@@ -151,24 +151,47 @@ For generic:
           3. pod.spec.containers.volumeMounts{name, mountPath} # name is secret from step2.
 =================================================================================
 
+Services===
+Each pod has privateIP address. service allow apps to receive traffic, routes accross set of pods. 
+It allows pods to die and replicate in Kubernetes without impacting your application. It monitors the running pods using endpoints, to ensure traffic goes to only available pods
+
+Service Types:: service can be exposed in different ways
+
+ClusterIP (default) - Exposes on internalIP of cluster. It makes the app reachable from within the cluster.
+NodePort - Exposes on same port of each Node using NAT. It makes app accessible outside the cluster(<NodeIP>:<NodePort>)
+LoadBalancer - Creates an external load balancer in the current cloud and assigns a fixed, external IP to the Service.
+ExternalName(with CNAME) - Exposes the Service using an arbitrary name (specified by externalName in the spec). This type requires v1.7 or higher of kube-dns.
+
+
+
+=================================================================================
+
 Commands===
 On resources - get(list), describe(details), logs, exec(command) 
 kubectl exec -ti $POD_NAME -- /bin/bash
+kubectl exec -ti $POD_NAME curl localhost:8080  
 
 kubectl get {pods, nodes} -n <> --show-labels --selector env=prod
 kubectl delete pods -l env!=prod
-kubectl expose deployment helloworld --type=NodePort
-kubectl get service/helloworld -o yaml
 
-kubectl set image deployment/<dep-name> helloworld=<image-name>
-kubectl get {deployoments, rs, pods} && kubectl describe deployment <dep-name>
-kubectl rollout history deployment/<dep-name>
-kubectl rollout undo deployment/<dep-name>
+kubectl expose deployments/helloworld --type="NodePort" --port 8080
+kubectl {get, describe} service/helloworld -o yaml 
+kubectl {get, delete} services -l app=name
+
+kubectl scale deployments/helloworld --replicas=4 ## get {deployment,rs,pods} & describe deployments/helloworld
+
+Rolling update:
+kubectl set image deployments/helloworld helloworld=<image>:v2 ## describe pods, find out image used.
+kubectl get {deployoments, rs, pods} && kubectl describe deployment helloworld
+kubectl describe services/helloworld ## To check exposed IP and Port
+kubectl rollout status deployments/helloworld ## successful 
+kubectl set image deployments/helloworld helloworld=<image>:v10
+kubectl rollout history deployment/helloworld
+kubectl rollout undo deployments/helloworld ## rollout to previous state i.e., v2 
 
 kubectl get {jobs, cronjobs} && kubectl edit cronjobs/<>
 
 $ export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
-$ echo Name of the Pod: $POD_NAME #$ Name of the Pod: kubernetes-bootcamp-69fbc6f4cf-l7qwv
-
+$ export NODE_PORT=$(kubectl get services/helloworld -o go-template='{{(index .spec.ports 0).nodePort}}')
 
 =================================================================================
