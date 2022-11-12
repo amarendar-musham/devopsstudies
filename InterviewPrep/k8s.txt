@@ -40,3 +40,28 @@ client configuration file creation:(regular user)
 kubeadm join --token<> IP:6443 --discovery-token-ca-cert-hash <> ## if no token -> kubeadm token list/create/
 =================================================================================
 
+API and Objects ===
+Install bash-completion && kubectl completion bash > /etc/bash_completion.d/kubectl
+
+kubectl auth can-i create <pods/deployments> --as amusham --namespace <>
+kubectl api-versions
+
+Explain api components: 
+kubectl explain pod.spec ## To list the fields pod.spec  ## pod.{metadata,kind,apiVersion,spec} # pod.spec.container
+
+Flow:-> service+LB -> deployments{upgrades+replication}(pod:ip+volume) -> PVC -> PV
+
+How api works::: etcd <-> api-server <-> kubectl(~/.kube/config, includes TLS)
+kubectl & alternates::: 
+- kube-proxy -> curl(http) (here curl not takes care of TLS, so kube-proxy does) ## kubectl way
+- direct curl(https) -> TLS, parse --cert, --key, --cacert values (Less important)
+- kubectl proxy --port=8001 &
+
+curl http://localhost:8001/version 
+curl http://localhost:8001/api/v1/namespaces/default/pods/{<pod_name>}
+
+sudo yum {provides */etcdctl, install -y etcd} && etcdctl -h (control/manage DB), 
+etcdctl2 to talk with v2 API. 
+=================================================================================
+
+
