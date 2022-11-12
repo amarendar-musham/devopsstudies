@@ -28,7 +28,7 @@ On control: kubeadm init. (root), note down "kubeadm join" command after initial
 
 client configuration file creation:(regular user)
  - create(~/.kube) && cp -l /etc/kubernetes/admin.conf ~/.kube/config && chown $(id -u):$(id -g) ~/.kube/config
- - kubectl cluster-info
+ - kubectl cluster-info ; kubectl config view 
  
  Alternative: export KUBECONFIG=/etc/kubernetes/admin.conf
  kubectl config -h/view/get-context
