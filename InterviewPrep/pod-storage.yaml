@@ -34,7 +34,7 @@ spec:
 		env: 
         	- name: COLOR
           	  valueFrom:
-            	configMapKeyRef:
+            	  configMapKeyRef:
               		name: myconfig  ## cm from kubectl command
                		key: color
             - name: MYSQL_ROOT_PASSWORD
