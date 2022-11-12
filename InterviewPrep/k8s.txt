@@ -70,7 +70,8 @@ Flow part: deployments{upgrades+replication}(pod:ip+volume)
 kubectl {get, describe, create, scale(--replicas), edit, label}
 get = (--show-labels, --selector) # Ex: label/selector app=name
 
-kubectl create deployment --image=<> {} # Creates = (depl, rs, pod), depl-name={}
+kubectl create deployment --image=<> {} # Creates = (depl, rs, pod), depl-name={} 
+Alt: kubectl create -f deplX.yaml
 #1.deployments/{} 
 #2.replicaset/{}-<10d-token> 
 #3. pod/{}-<10d-token>-<5d-token> 
@@ -82,11 +83,27 @@ kubectl get deployment.apps nginxdepl -o yaml | less
   spec{replicas, selector.matchlabels, template:pod.spec, serviceName}
   
 service.spec{selector, type, port} ## service types....
-pod.spec.containers[0]{name, image, ports(name,port), volumeMounts(name,path)} 
+pod.spec.containers[0]{name, image, ports(name,port), volumeMounts(name,path), volumes(name,pvc/nfs)} 
 statefulSet.spec{++volumeClaimTemplate(metadata,spec)}
   
-Simple deployment : kubectl run --image=<> --replicas=<> ## get - depl/pod, describe - pod.
+Simple deployment : kubectl run --image=<> --replicas=<> ## get - depl/pod, describe - pod. 
 Simple service: kubect expose deployment nginx --port=80 --name=myservice
 =================================================================================
 
+Storage, secrets, configMaps ===
+
+simple storage - > 
+kind: pod
+metadata{*name, label}
+spec.Containers.volumeMounts: (name:test, mountPath: /centos1)
+spec.volumes: (name: test, emptyDir: {})
+
+pod.spec.volumes types ->
+ -> PVC -> PV(NFS/Cloud storage)
+ -> configmap (files/dir/variables)
+ -> Secret (base64 encoding)
+
+pod.spec{containers(volumeMounts), volumes(PVC.claimname)}
+pvc.spec{accessModes(rwm), resources(requests,limits)}
+pv.spec{capacity(storage), accessmodes(rwm), hostpath(path)/nfs(server/path)}
 
