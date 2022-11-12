@@ -179,6 +179,9 @@ kubectl {get, describe} service/helloworld -o yaml
 kubectl {get, delete} services -l app=name
 
 kubectl scale deployments/helloworld --replicas=4 ## get {deployment,rs,pods} & describe deployments/helloworld
+Kind: HorizontalPodAutoscaler
+kubectl -n <> get hpa ## Ex: app-hpa, reference=statefulset/app, targets=cpu,memory. maxpods/minpods/replicas. 
+kubectl -n <> describe hpa app-hpa 
 
 Rolling update:
 kubectl set image deployments/helloworld helloworld=<image>:v2 ## describe pods, find out image used.
