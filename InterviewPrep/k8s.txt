@@ -17,7 +17,7 @@ network agent: implements a software defined n/w+ing solution, such as weave
 logging: the CNCF project Fluentd used for unified logging in the cluster. a Fluentd agent must be installed on all k8s nodes. 
 =================================================================================
 
-Cluster creation - kubeadm ===
+Cluster creation(kubeadm) ===
 All nodes::
 Install(yum) : docker(container runtime), kubelet(enable-service), kubeadm, kubectl
 disable swap (free -m, /etc/fstab, disable swap mount)
@@ -47,7 +47,7 @@ kubectl auth can-i create <pods/deployments> --as amusham --namespace <>
 kubectl api-versions
 
 Explain api components: 
-kubectl explain pod.spec ## To list the fields pod.spec  ## pod.{metadata,kind,apiVersion,spec} # pod.spec.container
+kubectl explain pod.spec ## To list the fields pod.spec  ## pod.{metadata,kind,apiVersion,spec} # pod.spec.container # deployments.spe.strategy
 
 Flow:-> service+LB -> deployments{upgrades+replication}(pod:ip+volume) -> PVC -> PV
 
@@ -62,6 +62,31 @@ curl http://localhost:8001/api/v1/namespaces/default/pods/{<pod_name>}
 
 sudo yum {provides */etcdctl, install -y etcd} && etcdctl -h (control/manage DB), 
 etcdctl2 to talk with v2 API. 
+=================================================================================
+
+Deployments === 
+Flow part: deployments{upgrades+replication}(pod:ip+volume)
+
+kubectl {get, describe, create, scale(--replicas), edit, label}
+get = (--show-labels, --selector) # Ex: label/selector app=name
+
+kubectl create deployment --image=<> {} # Creates = (depl, rs, pod), depl-name={}
+#1.deployments/{} 
+#2.replicaset/{}-<10d-token> 
+#3. pod/{}-<10d-token>-<5d-token> 
+
+kubectl get deployment.apps nginxdepl -o yaml | less
+  apiVersion: v1
+  kind: Deployment
+  metadata:{*name,namespace,labels}
+  spec{replicas, selector.matchlabels, template:pod.spec, serviceName}
+  
+service.spec{selector, type, port} ## service types....
+pod.spec.containers[0]{name, image, ports(name,port), volumeMounts(name,path)} 
+statefulSet.spec{++volumeClaimTemplate(metadata,spec)}
+  
+Simple deployment : kubectl run --image=<> --replicas=<> ## get - depl/pod, describe - pod.
+Simple service: kubect expose deployment nginx --port=80 --name=myservice
 =================================================================================
 
 
