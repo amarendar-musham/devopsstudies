@@ -107,3 +107,5 @@ pod.spec{containers(volumeMounts), volumes(PVC.claimname)}
 pvc.spec{accessModes(rwm), resources(requests,limits)}
 pv.spec{capacity(storage), accessmodes(rwm), hostpath(path)/nfs(server/path)}
 
+ConfigMap ->
+kubectl create cm <cm-name> --from-file nginx.conf (or) --from-literal=user=amar --from-literal=pass=abc
