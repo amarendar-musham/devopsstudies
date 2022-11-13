@@ -47,5 +47,32 @@ web.yaml
     - web
     
 Ex: modules = copy, command, shell, file, apt/yum, service, 
-* variables are similar to html, can be used as  - {{ variable }}
+* variables are similar to html, can be used as  - {{ variable }} that are created in vars. 
+
+---
+ - hosts: all|dev|prod|ip|fqdn
+   vars: 
+    http-port: 8080
+    key: value
+    
+   tasks:
+    - name: listen port {{ http-port }}
+      lineinfile: dest=/etc/apache2/ports.conf regex="$Listen 80" line="Listen {{ http-port }}" state=present
+      notify: 
+        - restart apache2
+        
+    - name: Create multiple dirs
+      command: mkdir {{ item }}
+      with_items:
+        dir1
+        dir2
+        dir3
+        
+   handlers:
+    - name: restart apache2
+      service: name: apache2 state: restarted
+      
+ 
+    
+
 
