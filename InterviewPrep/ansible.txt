@@ -1,0 +1,51 @@
+/etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg
+
+/etc/ansible/hosts - inventory of hosts groups. 
+[localhost]
+ansible_server ansible_connection = local
+[dev]
+ansi_amazon ansible_host = ip
+[prod]
+ansi_redhat ansible_host = ip
+
+$ansible -m ping all
+cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+ssh-copy-id user@ip
+/etc/ssh/sshd_config ## permitrootlogin yes ; password_auth yes
+service sshd restart
+
+cd playbooks ; cat file.yaml ; ansible-playbook file.yaml
+- hosts: all
+  tasks: 
+    - name: create {file,directory}
+      file: path=/tmp/test state={touch,directory}
+      
+Adhoc commands===
+ansible all -m file -a state=directory path=/tmp/dir1 mode=600
+ansible dev -m yum -a "pkg=httpd state=installed"
+            -m service -a "name=httpd state=started"
+            -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+      
+
+Use when
+- hosts: all
+  user: amar
+  tasks:
+    - name: Shut down Debian flavored systems
+      ansible.builtin.command: /sbin/shutdown -t now
+      when: ansible_facts['os_family'] == "Debian"
+      
+Ansible-vault
+ansible-vault create test.yaml ## {create, view, encrypt, decrypt, edit}
+
+Ansible-roles
+ansible-galaxy init web ## web/{meta, templates, files, tasks, vars, handlers}/main.yaml
+web.yaml
+---
+ - hosts: dev
+   roles: 
+    - web
+    
+Ex: modules = copy, command, shell, file, apt/yum, service, 
+* variables are similar to html, can be used as  - {{ variable }}
+
