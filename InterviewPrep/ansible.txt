@@ -49,6 +49,7 @@ web.yaml
 Ex: modules = copy, command, shell, file, apt/yum, service, 
 * variables are similar to html, can be used as  - {{ variable }} that are created in vars. 
 
+Handlers + loop-iterate actions
 ---
  - hosts: all|dev|prod|ip|fqdn
    vars: 
