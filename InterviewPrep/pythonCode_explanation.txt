@@ -14,24 +14,19 @@ syntax: import X || from Y import X
 Overview::
 --------START
 import statements....
-
 var1 = 'ex1'
-
 class Issue:
 	var2 = 'ex2'
 	def __init__(): # default function, exec when the class called. 
 		.....
-
 	keyvalueblocks = {   ## Dictionary defination
 		'key1':"value1", 
 		'key2':"value2",
 	}
-
 	def printsomet(self, a, b):
 		x = ''
 		...
 		return x
-
 class Ex2: ...
 
 if __name__ == "__main__":
@@ -40,9 +35,8 @@ if __name__ == "__main__":
 END--------
 
 ===TimeZoneUtility module in Java 
-
-
 .........................................................
+
 ------Read input and search pattern ----------START
 link = input("Give the main URL : ") ## read URL
 pattern = input("Any filter : ").    ## read search item
@@ -54,8 +48,8 @@ for line in X:
         if re.search(pattern, line):  ## similar to grep in Bash...
             print(line, end="")
 END-------------
-
 .........................................................
+
 ------ Write to a file --------START
 f = open(file, mode); "f.write() followed by f.close()" ## method 1. 
 
@@ -68,7 +62,6 @@ sys.stdout = f			## method 3.
 ## it will write stdout to file f.
 sys.stdout = var1  ## after the work is done, reset the stdout. 
 END---------
-
 .........................................................
 
 ------- Work with json --------START
@@ -96,18 +89,15 @@ def ex(str):
 		ls.append(i["Title"])	## appned the values from dictionary content of json. 
 	return sorted(ls) 		## returns sorted list. 
 
-
 END----------
 .........................................................
 
 print(f.read()) ## similar to cat in Bash. 
 print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 //new line
 
-
 ls = "one, two, three".split(", ") # list gets created with split. 
 ls = file.readlines() ## create a list with lines in a file, note: includes - "\n"
 ls = [x**2 for x in range(10) if x**2 % 2 == 0] #[0, 4, 16, 35, 64] ## list comprehensions
-
 
 str="{c},{b},{a}".format(a=5,b=9,c=7) ## 7,9,5 ## named args. 
 str="{0}{1}{0}".format("abra","cad") ## abracadabra..
