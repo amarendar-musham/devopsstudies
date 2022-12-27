@@ -123,7 +123,7 @@ Tuples, lists can be unpacked(a,b,c=nums; a,b,*c,d=nums) *c takes leftover eleme
 Sets, dictionaries. # sets = no_duplicates, can give &(matched) |(all) -(substract) ^(unmatched) elements b/w two sets
 # if 3 in nums: # gives True; similarly: key in dict ## alt: not in
 
-def func(x, *args, *kwargs): ## args are optional
+def func(x, *args, *kwargs): ## *args are optional,
 ---- print(args) # (2,3,4) = tuple 
 ---- print(kwargs)# {'a':7,'b':8} = dictionary - keywordArg.
 func(1,2,3,4,a=7,b=8) 
