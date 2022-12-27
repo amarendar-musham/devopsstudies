@@ -7,8 +7,9 @@ pin =  b64decode(<endcode-string>).decode('ascii')
 python modules::
 syntax: import X || from Y import X
 	requests, re, json, 
-	time, ## 
-	os.path
+	time, ## time.time() = current time in seconds
+	os.path ## path.getmtime(file) ## filemoddate in seconds
+	
 	requests.auth/HTTPBasicAuth
 	selenium/webdriver  # driver = webdriver.Firefox() ## get method
 
@@ -82,6 +83,7 @@ for row in json_data: 		## Can be json_data["results"] or json_data["notificatio
 	## otherwise you can read json data as a dictionary
 	
 	print(json.dumps(row["number"]).replace('"','')+ "|" + row["status"]) 
+	print(json.dumps(payload,indent=1))
 
 def ex(str):
 	ls=[]
