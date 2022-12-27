@@ -6,12 +6,11 @@ pin =  b64decode(<endcode-string>).decode('ascii')
 
 python modules::
 syntax: import X || from Y import X
-	requests, re
+	requests, re, json, 
+	time, ## 
+	os.path
 	requests.auth/HTTPBasicAuth
-	json ## loads, dumps methods available
-	re ## regular expression ## search method
 	selenium/webdriver  # driver = webdriver.Firefox() ## get method
-
 
 Overview::
 --------START
