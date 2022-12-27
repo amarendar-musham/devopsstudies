@@ -1,0 +1,32 @@
+
+$ mysql -u root -p ## default no-passwd
+
+Create User.... and resp queries....==============
+CREATE USER 'amar'@'localhost' IDENTIFIED BY 'Welcome123!'; ## create/alter(passwd), localhost/fqdn/%(wildcard)=anyhost/
+RENAME USER 'amar'@'localhost' TO 'amar'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'amar'@'%' WITH GRANT OPTION; ## localhost/fqdn
+FLUSH PRIVILEGES; ## reload grant tables...
+========================================================
+
+$ mysql> show databases ;
+$ mysql> use abcd ; ## abcd database schema
+$ mysql> show tables ;
+$ mysql> select * from table1 ; 
+$ mysql> desc table1 ; # shows the table structure
+$ mysql> show create table table1 ## prints sql query that used to create the table table1
+$ mysql> source example.sql ; # run sql queries script
+
+create-table.sql==================================
+create table example_metrics (
+example_id int AUTO_INCREMENT,
+col1 varchar (100),
+col2 varchar (100),
+col3 int (10),
+col4 decimal (5, 2),
+example_recent tinyint default (1),
+example_updated timestamp default now(),
+primary key (example_id)     );
+========================================================
+
+update table1 set example_recent = 0 where example_id > 0;
+insert into table1 (col1, col2, col3, col4) values ('string1','string2',100,10.0); 
