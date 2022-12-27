@@ -1,7 +1,5 @@
 -----
-
 response = requests.get('<api>', auth=('XXXX', 'XXXX'))
-
 response = session.post(update_url, data=d) ## session.{put|get}
 
 python modules::
@@ -76,7 +74,7 @@ END---------
 ------- Work with json --------START
 ## import json and requests modules. 
 
-## create a object with json content.
+## create a object with json content. ##(loads|dumps) for string type data.
 1. json_data = json.load(f)		 ##  Ex: f = open("hi.json","r")
 2. json_data = json.loads(response.text)	## Ex: response = requests.get('url',auth=('user','pass'))
 
@@ -149,5 +147,8 @@ special sequence: \1 = matches exp of group(1) # (abc|xyz)\1 = "abc" or "xyz" fo
 
 patternForEmail = r"([\w\.]+)@([\w\.]+)\.([\w\.]+)" # info@example.com
 ## basic = "()@()\.()" # these groups can have (words/dots)one or more = [\w\.]+
+
+json_data = json.loads(re.sub(pattern, "", response.text, count=1)) ## find&replace only first occurrence in the json. 
+==========================================================================================================================
 
 
