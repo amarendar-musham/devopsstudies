@@ -184,3 +184,39 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() - 1) * 2)
        
 ls = [line.replace("\n","") for line in file]
  
+==========================================================================================================================
+
+from flask import Flask, render_template, jsonify, send_file, request, flash
+
+app = Flask(__name__)
+@app.route("/app")
+def home():
+	return render_template("temp.html", tables=[df.to_html(index=False)], titles=[''], t_mod = filemodtime)
+	
+@app.route("/app/run", methods=["GET","POST"])
+def run():
+	arg1 = request.args.get('arg1')
+	if not arg1:
+        	return jsonify({"Error": "Arguement 'job' is expected"})
+	else:
+		eval("py_module.run_" + arg1 + "()")
+		.....return statement.....
+		
+@app.route("/app.json")
+def json():
+	csvReader = csv.DictReader(open("csv_file","w"))	
+	for row in csvReader:
+		ls.append(row)
+	return jsonify(ls)
+
+@app.route("/download/<file>")
+def download(file):
+    path = "{}/{}".format(os.getcwd(),str(file))
+    return send_file(path, as_attachment=True)
+    
+if __name__ == '__main__':
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.run(host='0.0.0.0', port=5050,debug=True)
+    
+==========================================================================================================================
