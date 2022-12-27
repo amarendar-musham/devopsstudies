@@ -1,7 +1,8 @@
 -----
 response = requests.get('<api>', auth=('XXXX', 'XXXX'))
-response = session.post(update_url, data=d) ## session.{put|get}
-
+response = session.post(update_url, data=payload, headers=headers) ## session.{put|get}
+headers = { 'Authentication-Token' : open("base64-file","r").read().replace("\n","") }
+ 
 python modules::
 syntax: import X || from Y import X
 	requests, re
