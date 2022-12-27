@@ -14,6 +14,7 @@ syntax: import X || from Y import X
 	time, ## time.time() = current time in seconds
 	os.path ## path.getmtime(file) ## filemoddate in seconds
 	os ## file = "{}/file_name".format(os.getcwd())
+	csv, ## writer=csv.writer(file) ## writer.writerow([val1,val2,val3])
 
 	requests.auth/HTTPBasicAuth
 	selenium/webdriver  # driver = webdriver.Firefox() ## get method
