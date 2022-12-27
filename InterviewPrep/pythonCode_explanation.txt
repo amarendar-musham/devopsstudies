@@ -1,8 +1,10 @@
 -----
 response = requests.get('<api>', auth=('XXXX', 'XXXX'))
-response = session.post(update_url, data=payload, headers=headers) ## session.{put|get}
+response = requests.post(update_url, json=payload, headers=headers) ## (data|json) 
+
 headers = { 'Authentication-Token' : open("base64-file","r").read().replace("\n","") }
 pin =  b64decode(<endcode-string>).decode('ascii')
+payload = { 'a':1,'b':2 } && modpayload = { **payload, 'c':3 }
 
 python modules::
 syntax: import X || from Y import X
