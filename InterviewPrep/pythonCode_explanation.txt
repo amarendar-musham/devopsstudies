@@ -120,7 +120,7 @@ res = list(filter(lambda x: x%2==0, nums)) # [22,44]
 ## (lambda-func: return-value) (func-args)
 print((lambda x: x**2 + 5*x + 4) (-4))
 add = lambda x,y: x+y ;; print(add(3,4)) ## lambda func in a variable.
-
+ls = list(map(lambda x:x[:4].upper(), ls)) ## map passes arg(lx[x]) to lambda function, whereas x=0,1,2,3...
 
 a = [1,2,3,5,6] ; b = [3,5,0] ; c = list(set(a)-set(b)) ## [1, 2, 6]
 
