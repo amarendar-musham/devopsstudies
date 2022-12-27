@@ -173,6 +173,7 @@ f.write(df.to_html(index=False)) ## f is a html file
 import concurrent.futures
 with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() - 1) * 2) as exec:
        exec.map(method, ls) ## method(arg), method iterates through out the list, every line as a arg. 
+       ## exec.map(method, ls1, ls2) ## method(a,b) ==> method(ls1[x],ls2[x]) where x=0,1,2,3,4...
        
 ls = [line.replace("\n","") for line in file]
  
