@@ -11,7 +11,8 @@ syntax: import X || from Y import X
 	requests, re, json, logging, pandas
 	time, ## time.time() = current time in seconds
 	os.path ## path.getmtime(file) ## filemoddate in seconds
-	
+	os ## file = "{}/file_name".format(os.getcwd())
+
 	requests.auth/HTTPBasicAuth
 	selenium/webdriver  # driver = webdriver.Firefox() ## get method
 
