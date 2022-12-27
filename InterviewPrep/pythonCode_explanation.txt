@@ -18,8 +18,10 @@ syntax: import X || from Y import X
 Overview::
 --------START
 import statements....
-var1 = 'ex1'
+global var1 = 'ex1'
 class Issue:
+	global var1
+	var1 = 'ex1-update'
 	var2 = 'ex2'
 	def __init__(): # default function, exec when the class called. 
 		.....
@@ -147,4 +149,9 @@ patternForEmail = r"([\w\.]+)@([\w\.]+)\.([\w\.]+)" # info@example.com
 json_data = json.loads(re.sub(pattern, "", response.text, count=1)) ## find&replace only first occurrence in the json. 
 ==========================================================================================================================
 
-
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename="app.log",filemode="w",
+                    format="%(asctime)s - %(levelname)s - %(message)s")
+logger.inf("")
+ 
