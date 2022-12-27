@@ -164,3 +164,11 @@ df = pd.read_csv(csv_file)
 df = df.sort_volues(by=col1) ## df.to_csv(file2,index=False)
 f.write(df.to_html(index=False)) ## f is a html file
 
+==========================================================================================================================
+
+import concurrent.futures
+with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() - 1) * 2) as exec:
+       exec.map(method, ls) ## method(arg), method iterates through out the list, every line as a arg. 
+       
+ls = [line.replace("\n","") for line in file]
+ 
