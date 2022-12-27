@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang=“en”>
+<head>
+    <meta charset = “UTF-8”>
+    <meta http-equiv=“X-UA-Compatible” content=“IE=edge”>
+    <title>preflightPerformance</title>
+    <style>
+        div { width: 50%;float: left;}
+        table { border-collapse: collapse; font-family: "Times New Roman", Times, serif; }
+        th { text-align: center; height: 25px; padding: 1px; background: rgb(67, 124, 148);color:white; }
+        td { text-align: center; padding: 2px; border-bottom: 1px solid #ddd;}
+        td:nth-child(1){text-align: left}
+        tr:nth-child(even){background-color: #f2f2f2;}
+        input[type=submit]:hover{ color:#fff;background-color:#337ab7;border-color:#2e6da4 }
+    </style>
+</head>
+<body>
+<div class="div1">
+    <table>
+        {% for table in tables %}
+        <h2>{{titles[loop.index]}}</h2>
+        {{table | safe}} 
+        {% endfor %}
+    </table> 
+</div>
+<div class="div2">
+    <table>
+        </br>
+        <td><b><i>Python metrics:</i></b></td>
+        <tr> 
+            {% for i in ["PyFile", "PyTime","Download"] %}
+            <th>{{i}}</th>  
+            {% endfor %}
+        </tr> 
+        {% for file in ['file1', 'file2'] %}
+        <tr>
+            <td>{{file}}</td>
+            <td>
+               {{ csv_mod_time[file] }}
+            </td>
+            <td><form action="/download/{{file}}">
+                <input type="submit" value="Download file"/>
+            </form></td>
+        </tr>
+        {% endfor %}
+    </table> 
+ 
+    <table>
+        </br>
+        <tr><b><i>Run the Python metrics again for: </i></b></tr> 
+        <tr>{% for job in ['job1','job2','job3','job4']%}
+            <form method="post" action="/app/run?job={{job}}">
+                <input type="submit" value={{job}} onclick='value="Loading...";getElementById("trigger-msg").innerHTML = "Utility triggered for {{job}} successfully...."'/>
+            </form>
+        {% endfor %}</tr>
+        <tr><p id="trigger-msg" style="background-color: #FFFF00"> </p></tr>
+    </table>
+ 
+</div>
+</body>
+</html>
