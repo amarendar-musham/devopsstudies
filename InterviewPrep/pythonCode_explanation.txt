@@ -161,4 +161,5 @@ logger.info("")
 import pandas as pd
 df = pd.read_csv(csv_file)
 df = df.sort_volues(by=col1) ## df.to_csv(file2,index=False)
+f.write(df.to_html(index=False)) ## f is a html file
 
