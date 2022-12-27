@@ -9,6 +9,8 @@ payload = { 'a':1,'b':2 } && modpayload = { **payload, 'c':3 }
 python modules::
 syntax: import X || from Y import X
 	requests, re, json, logging, pandas
+	from datetime import datetime ## datetime.now() Used in scripts, time_took. 
+	
 	time, ## time.time() = current time in seconds
 	os.path ## path.getmtime(file) ## filemoddate in seconds
 	os ## file = "{}/file_name".format(os.getcwd())
