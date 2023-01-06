@@ -1,0 +1,30 @@
+Here are the 10 key concepts in Kubernetes that can help you understand it better:
+
+👉 Pods: Pods are the smallest deployable unit. It is a logical host for one or more containers and represents the basic execution unit in the Kubernetes cluster. A pod consists of one or more containers that are packaged together and share the same network namespace, storage resources, and other runtime characteristics.
+
+
+👉 Replication Controllers: A replication Controller is a resource that ensures that a specified number of pod replicas are running at any given time. It watches the pod replicas that it manages and creates or deletes replicas as needed to maintain the desired number of replicas.
+
+
+👉 Services: Service is a resource that provides a stable network endpoint for accessing a group of pods. It allows you to access a group of pods using a single DNS name or IP address, regardless of the individual pod IP addresses or the node on which the pods are running.
+
+
+👉 Labels and Selectors: Labels and selectors are used to identify and organize resources. Labels are key-value pairs that are attached to resources and are used to identify and classify the resource. Selectors are used to filtering resources based on their labels.
+
+
+👉 Deployments: Deployments are used to manage and update the replicas of a pod or a Replication Controller. They provide a declarative way to specify the desired state of your application, and the Kubernetes control plane takes care of ensuring that the actual state matches the desired state.
+
+
+👉 ConfigMaps and Secrets: ConfigMaps and Secrets are used to store configuration data and sensitive information, respectively. They are used to inject data into a pod at runtime, allowing you to decouple the configuration of a pod from the container image.
+
+
+👉 Namespaces: Namespaces are a way to partition resources in a cluster. They provide a way to isolate resources and resource names, allowing multiple users or teams to share the same cluster without conflicts.
+
+
+👉 Volumes: Volume is a persistent data store that can be attached to a pod. Volumes are used to persist data in a pod across container restarts, which is useful for storing application data, logs, and other information that needs to be retained even if the container is restarted or moved to a different node.
+
+
+👉 Ingress: Ingress is a resource that allows you to expose services to the outside world. It provides a way to route external traffic to the appropriate service inside the cluster based on the hostname and path of the incoming request.
+
+
+👉 DaemonSets: DaemonSet is a type of resource that ensures that a copy of a pod is running on all nodes in the cluster or on a subset of nodes. It is used to deploy system-level services or utilities that are needed on every node, such as log collection or monitoring agents.
