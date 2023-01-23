@@ -214,6 +214,10 @@ def download(file):
     path = "{}/{}".format(os.getcwd(),str(file))
     return send_file(path, as_attachment=True)
     
+@app.route("/api")
+def list_routes():
+    return ['%s' % rule for rule in app.url_map.iter_rules()]
+    
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
