@@ -1,4 +1,4 @@
-1. create service account and cluster role binding.
+1. create service account (in kube-system ns) and cluster role binding (cluster-admin role).
 apiVersion: v1
 kind: ServiceAccount
 metadata: 
