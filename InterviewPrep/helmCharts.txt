@@ -1,0 +1,36 @@
+Helm helps to manage k8s apps, [install/upgrade in different environments(prd,qa,dev) with help of configurable values(values.yaml)]
+
+Helm charts helps to define, install, upgrade. 
+
+Under a helm chart directory (ex: hello-world-chart), below content exists. ## helm create demo-nginx
+templates (templates directory)
+Values.yaml (Configurable values)
+Charts.yaml (Chart info)
+charts (charts directory)
+LICENSE, README.md
+
+Helm charts - Values.yaml -> vars used in other yaml as {{ .Values.replicacount }}, {{ .Values.image.repository }}
+
+$helm install MyfirstChart binami/wordpress ## [ReleaseName][Chart]
+$helm upgrade -f Values.yaml MyfirstChart binami/wordpress ## [Release][Chart]
+$helm list -a ## lists releases in the namespace
+$helm rollback MyfirstChart 1 ## [Release][Revision]
+$helm uninstall MyfirstChart ## [Release]
+
+-----
+helm version
+helm list ## lists releases|charts in the k8s cluster
+helm search hub wordpress	## searches in charts artifactory
+helm repo list ## lists repositories configured
+helm repo remove bitnami ## removes repo connection
+helm search repo wordpress ## no results. 
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm search repo wordpress ## expect results
+
+helm install test-helm demo-nginx/ --values demo-nginx/values.yaml ## [ReleaseN][unpack dir][Values.yaml]
+helm upgrade test-helm demo-nginx/ --values demo-nginx/values.yaml
+helm history test-helm ## find revision history. 
+helm rollback test-helm 1 ## rollback to revision1
+helm get values test-helm # current values of the chart. 
+helm uninstall test-helm 
+helm --help
