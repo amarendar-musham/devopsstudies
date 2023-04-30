@@ -34,3 +34,8 @@ helm rollback test-helm 1 ## rollback to revision1
 helm get values test-helm # current values of the chart. 
 helm uninstall test-helm 
 helm --help
+
+helm package example-chart/ .
+helm push example-chart-1.0.tgz <artifact-registry> # <cloud-key>://<region-key>.<domain>/tenancy-namespace
+helm pull <artifact-registry>/example-chart --version 0.1.0          
+helm install exv1 example-chart-1.0.tgz -n example-chart -f values.yaml
