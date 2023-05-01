@@ -204,9 +204,10 @@ architecture-work  - https://www.edureka.co/blog/kubernetes-architecture/
 deployment/replicaset-work
 
 who deletes the app:v1 after upgrade to app:v2 - Ans: delete the deployment/rs when ingress is pointed 100% to app:v2. 
-Ingress.metadata.annotations - nginx.ingress.kubernetes.io/canary=true, canary-weight=10 ## % of traffic. 
-
-Prepare intro, skill set, role in team/skill
+Ingress.metadata.annotations - nginx.ingress.kubernetes.io/canary=true, canary-weight=10 ## % of traffic. - canary-ingress.yaml
+1. kubectl apply -f app-v1.yaml & ingress-v1.yaml
+2. kubectl apply -f app-v2.yaml & canary-ingress.yaml
+3. kubectl delete -f canary-ingress.yaml ; kubectl apply -f ingress-v2.yaml
 
 Deployment strategies. 
 https://github.com/ContainerSolutions/k8s-deployment-strategies/tree/master/canary
@@ -222,3 +223,5 @@ deployment strategy = 1.rolling update???? 2.canary
 HorizontalPodAutoscaler
 
 Add services
+
+Prepare intro, skill set, role in team/skill
