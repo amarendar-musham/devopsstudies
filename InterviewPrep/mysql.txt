@@ -46,5 +46,20 @@ WHERE b.price > a.price ORDER BY stock_code asc;
 SELECT ei.employee_ID, ei.name FROM employee_information ei
 JOIN last_quarter_bonus b ON b.employee_ID = ei.employee_ID
 WHERE ei.division LIKE 'HR' AND b.bonus >= 5000;
+
+select cs.customer_name, cast(iv.total_price as decimal(12,6)) from customer cs
+join invoice iv on iv.customer_id = cs.id
+where iv.total_price < 588.375 order by iv.total_price desc;
+
+## multiple join...
+select ct.city_name, pd.product_name, round(iv.total_price,2) from city ct
+join customer cs on cs.city_id = ct.id
+join invoice iv on cs.id = iv.customer_id
+join invoice_item ivt on iv.id = ivt.invoice_id
+join product pd on ivt.product_id = pd.id
+order by iv.total_price desc, ct.city_name asc, pd.product_name asc;
+
 ========================================================
+
+
 
