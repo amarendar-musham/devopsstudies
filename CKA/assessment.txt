@@ -1,0 +1,109 @@
+alias k="kubectl"
+
+Question 1: Creating the User.....
+Ans:
+    Create private key = openssl genrsa -out johndoe.key 2048 ; 
+    create csr out of the above private key: openssl req -new -key johndoe.key -out johndoe.csr ; cat johndoe.csr | base64 | tr -d '\n' 
+    create and approve CSR = kubectl apply csr.yml ; kubectl get csr ; kubectl certificate approve johndoe-csr
+        cat > csr.yml
+            apiVersion: certificates.k8s.io/v1
+            kind: CertificateSigningRequest
+            metadata:
+                name: johndoe-csr
+            spec:
+                request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ2Z6Q0NBV2NDQVFBd09qRUxNQWtHQTFVRUJoTUNTVTR4RERBS0JnTlZCQWdNQTFSRlRERU1NQW9HQTFVRQpCd3dEU0ZsRU1ROHdEUVlEVlFRS0RBWlBjbUZqYkdVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFDcHhPUk9TSitmK2xybmtZQVpkT2Z0ZzFvYVhCc1gxaDdBZ3IwR1NybU54aWlXY0lDS3pmZEsKVm5PallidFJKcmFvUW0xQkF1eTFTa3RyUmhmaFhRN0N6WmZDTk1PenJaaXJDVkVCbkJqMkUvVmlNSU5IeFhkRQpjSHRZcTFuTDRpckJibk15UE5tVmFUMU4ya0Vac0pQMU10LzFCYVZnclozbmRmV0ZUVlNNZkhDQkwrUkdFYXNuCm9aT0NBMWNkZEt3blRWbEdkR1BCVmhqbi8zNHRWL3pkQXM5OGRGTHJjZ1dTK241Y1VBa3NlUjA3UVpkSk5VSFcKUzNERGNvQ2hvYmN0Vi9EMzZuRW1ZQ1pIUys0bUpLQm1Jd0hTdGNCSlpqM1Iyb1YwTWp0YU0yblFLWDcyL0JqVwpVWFd4OG1nTFo5N3pvdmhRUUE4elR4UFdaNklZMjNjWkFnTUJBQUdnQURBTkJna3Foa2lHOXcwQkFRc0ZBQU9DCkFRRUFoRGloRzYwUHZIY0VpdlZtVXRlM1JTdmxmRU9kUVQzNjZtVEkzcm1hM25sbUJ1U3loOXV3L0YxQkJBMTkKUnlrR3V3NzhQenFXaGNvZjJvYm41M1Vvd2Z0NGdOeDZ5S2d1dnlrYmh4OEQ3cjlRS3lJeWZpN0M3VmR6Y1hGQgpIVS9PaC9OL2hyMzZrMFcrK1NnTGRDU2x0T0tTZ1Z3MHF1R3B0RzllWm9OekVHWlpUUUJBQkdVYzFvRmFwcnJmCjQ5S0JGdHFwOUJtdzgrMEtIeDkyeGxDVGl4dm9VcWhKRmxIYkVFN281czlodUhyVmo5dkdpeG1sVFI5eWZrdXkKcVZrU1R3RklBU25yY3dkZWI1aEVKTHI0TzI0THJZZUQrMVlWcHBvU3RtUWJTbjZ0T1p0alhBMUt6UFpGZE1vdwo1V2hhVUZJeUZ0alpqeUVGUlNKdlRUNVVwZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+                signerName: kubernetes.io/kube-apiserver-client
+                expirationSeconds: 86400  # one day
+                usages:
+                - client auth
+    Add a context entry named johndoe to the kubeconfig file to represent the user:
+        kubectl get csr johndoe-csr -ojson.path='{.status.certificate}' | base64 -d > johndoe.crt
+        kubectl config set-credentials johndoe --client-key=johndoe.key --client-certificate=johndoe.crt --embed-certs=true
+        kubectl config set-context johndoe --cluster=kubernetes --user=johndoe
+    Change to the context to johndoe:
+        kubectl config use-context johndoe
+
+        k run nginx --image nginx
+        error: You must be logged in to the server (Unauthorized)
+
+    Granting Access to the User:
+        k config use-context kubernetes-admin@kubernetes
+        k create role pod-reader --verb=get,list,watch --resource=pods
+        k create rolebinding read-pods --user johndoe --role pod-reader
+        k get roles ; k get rolebindings
+
+-----------------------------------------------------------------------------------------------------------------------
+Question 2: A new application finance-audit-pod is deployed in finance namespace. Find 
+out what is wrong with it and fix the issue. 
+ NOTE: No configuration changes allowed, you can only delete or recreate the 
+pod.
+  Below command will create a scenario for us:
+   g create ns finance  ; g run  finance-audit-pod --image=busybox -n finance --
+command sleeo 180
+
+Ans: 
+    k describe pod finance-audit-pod -n finance
+    k get pod finance-audit-pod -oyaml > temp.yaml 
+        Fix the spec.containers[].command, it should have "sleep" instead of "sleeo"
+    k delete pod finance-audit-pod 
+    k apply -f temp.yaml
+    k get pods -n finance
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Question 3: Reconfigure the existing deployment front-end and add a port specification 
+named http exposing port 80/tcp of the existing container nginx.
+Create a new service named front-end-svc exposing the container port http.
+Configure the new service to also expose the individual Pods via a NodePort on 
+the nodes on which they are scheduled.
+
+Ans: 
+    k get deploy front-end > temp.yaml (Or) k edit deploy front-end
+        Add spec.template.containers[].ports: 
+                                        - containerPort:80
+                                          protocol: tcp
+    k apply -f temp.yaml
+    k expose deploy front-end --name=front-end-svc --port=80 --target-port=80 --type=NodePort
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Question 4: Create a Persistent Volume with the given specification.
+Volume Name: pv-analytics, Storage: 100Mi, Access modes: ReadWriteMany, 
+Host Path: /pv/data-analytics
+Create corresponding Persistent volume claim and Storage Policy.
+
+Ans: k apply -f pv-and-pvc.yaml ; k get pv,pvc 
+
+    cat > pv-and-pvc.yml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: pv-analytics
+spec:
+    storageClassName: manual
+    capacity:
+        storage: 100Mi
+    accessModes:
+        - ReadWriteMany
+    hostPath:
+        path: /pv/data-analytics
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-analytics
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+        
+
+
