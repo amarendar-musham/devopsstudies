@@ -1,8 +1,9 @@
 alias k="kubectl"
 
 Question 1: Creating the User.....
-Ans:
+Ans: 
     Create private key = openssl genrsa -out johndoe.key 2048 ; 
+    Note: BE-Carefull while giving the user/fqdn detials while generating CSR file. It should match with the user-name
     create csr out of the above private key: openssl req -new -key johndoe.key -out johndoe.csr ; cat johndoe.csr | base64 | tr -d '\n' 
     create and approve CSR = kubectl apply csr.yml ; kubectl get csr ; kubectl certificate approve johndoe-csr
         cat > csr.yml
@@ -37,7 +38,7 @@ Ans:
             Error from server (Forbidden): pods is forbidden: User "johndoe" cannot create resource "pods" in API group "" in the namespace "default"
         k get pods
             No resources found in default namespace.
-            
+
 -----------------------------------------------------------------------------------------------------------------------
 Question 2: A new application finance-audit-pod is deployed in finance namespace. Find 
 out what is wrong with it and fix the issue. 
