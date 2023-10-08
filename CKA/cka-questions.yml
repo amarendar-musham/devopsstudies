@@ -253,11 +253,13 @@ Q27:
       k exec -it busybox-pod -- nslookup svc-ip1 ## or svc fqdn from svc-describe ## use busybox pod for nslookup command
 
 ---
-On NetworkPolicy
-Q28:
-Q31:
-Q33: 
-
+NetworkPolicy : 
+  def: It allows traffic from/to a network. Similar to Ingress/egress rules in securityLists of cloud.
+  Components: 
+    podSelector: The rules will apply on the pods that match provided labels
+    policyTypes: Ingress or Egress # defining a type disables all traffic by default. Need explicit allow using below
+    Ingress: from.{<network-config> or ports}
+    Egress: to.{<network-config> or ports}
 
 Q37: mount secret in 2 pods using filesystem and environment variable
 refer: secret.yaml
