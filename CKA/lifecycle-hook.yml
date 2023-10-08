@@ -1,3 +1,10 @@
+ExampleTroubleshooting:
+    pod phases(life cycle): 
+      Pending(Wait = image pull, scheduling), 
+      Running(bound2node,created), 
+      Succeeded,Failed, Unknown(node communication)
+
+---
 apiVersion: v1
 kind: Pod
 metadata: 

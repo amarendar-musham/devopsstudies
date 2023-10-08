@@ -1,8 +1,16 @@
 podLevelTroubleshooting: |
       k describe pod web ## pods/nodes/deployments # 
       k logs web -f --previous ## previous pod  
-      
+      k edit pod <pod-name>
+      k get pods -Lapp -Ltier ## -L = --label-columns ; k get pods -l app=nginx
+      kubectl exec <POD-NAME> -c <CONTAINER-NAME> -- <COMMAND>
+IMP: networking commands(like nslookup) can run on BUSYBOX container
+
 Note: if deployments not scheduling pods, check pods status in kube-system ns and describe them if any crashLoopBackOff. 
+
+Toedit:
+    k get pods test-pod -oyaml > test-copy.yaml ; k delete pod test-pod ; k create -f test-copy.yaml # after edit. 
+    Can't edit pod for all-situations. Ex=To add securityContext, need to delete and recreate pod. 
 ---
 apiVersion: v1
 kind: Pod
