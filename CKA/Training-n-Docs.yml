@@ -1,0 +1,139 @@
+kubelet and Container runtime needs to interface same cgroup driver: cgroupfs/systemd, to enforce resource mgmt for pods. 
+	if systemd is selected init system, update kubelet.conf for cgroupDriver: systemd
+	(Also, kubeadm defaults to systemd driver if not set)
+
+Container runtime: containerd, CRI-O ## configs in /etc, sockets in /run or /var/run ## systemctl restart containerd/crio
+	cri = container runtime interface, cni = container network interface
+
+CNI - network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
+
+kubeconfig file contains certificate in base64 encoded format
+	(echo <>|base64 --decode), openssl x509 -in hi.csr -text prints all info. ## .csr/.crt
+
+Proxying API Server to localhost. 
+scp ControlPlane:/etc/kubernetes/admin.conf ~/admin.conf
+Onlocalhost: $ kubectl proxy --kubeconfig ~/admin.conf && http://localhost:8001/api/v1 ## access apiServer locally. 
+
+apiServer+etcd, ControllerManager+Scheduler ## apiServer is intermediate for other 3 components
+
+Manifests:
+--> Kind: ClusterConfiguration -> spec = apiServer/etcd/controllerManager/scheduler/.....
+--> Kind: KubeletConfiguration
+
+= ApiVersion, Kind(of object), metadata(name,namespace,labels), spec(desired state of object)
+
+initialNamespaces: default, kube-node-lease, kube-public, kube-system
+
+metadata.annotations: in contrast with labels, Annotations are not used to identify and select object. 
+	==> build,release,PR,branch,timestamps,user info
+
+Workloads --> workload = an application running on k8s
+Built-inWorkloads: Deployment & ReplicaSet, StatefulSet(if app records data persistently->PVC), DaemonSet, Job & CronJob # run once/schedules
+
+Ingress_spec.{host,path,backend.service(name,port)} # k get ingress -> gives some clusterIP. access app using ingress-host/path with backend service. 
+
+---
+TaintsAndTolerations: | 
+	k get nodes --show-labels
+	k taint --help # k taint nodes node1 dedicated=special-user:NoSchedule	
+	k get nodes -oyaml | grep taint -A3 > test.yaml/spec:tolerations <> k describe node node01
+	iMP = nodes will have taints defined(key:value) ; pod.spec should have tolerations(key:value) so they can be scheduled on matched taints. 
+	Example use-case, If you want to dedicate a set of nodes for a specific group. [dedicated=groupName:NoSchedule]
+
+	taints ex= kubectl taint nodes --all node-role.kubernetes.io/controle-plane- ## minus at the endofCommand removes taints from all nodes
+		i.e., controle-plane:NoSchedule, So control plane nodes also gets pod scheduled. 
+
+	k taint nodes node1 key1=value1:NoSchedule # key,operator,value,effect. Any pod that do not tolerate the taint will be evicted immidiately
+	k taint node node01 env=qa:NoSchedule && k apply -f daemonset.yaml # DaemonSet ~ ReplicaSet, creates pod on each node, but not on tainted node
+
+---
+NodeAffinity: |
+	Assign pods to nodes -> pod_spec.nodeName/nodeSelctor/affinity.nodeAffinity
+	node-affinity, schedule pods on desired nodes by matching labels with conditions ## update in pod_spec....
+	k get nodes --show-labels ## ex: kubernetes.io/hostname=node01
+	k edit deploy dep1 -n n1 ## pod_spec.affinity.nodeAffinity....matchExpression(key,operator,value)
+
+---
+INIT and SideCar Containers:
+	initContainers:
+		pod_spec.initContainers: (image=alpine/git, args= - clone <git-path>, volumeMounts.( - mountPath= /data, name= mydata) ) 
+		pod_spec.volumes: ( - name=mydata, emptyDir= {} ) # use same volume in other container also will contain the cloned git repo. 
+	sidecar-style-continers: initContainer with a tail-f command = ['sh', '-c', 'tail -f /opt/logs.txt'] ## volumeMounts(name:vol1,mountPath:/opt)
+
+---
+Probes: |
+container check using a probe = [ exec(command), grpc, httpGet, tcpSocket ] ; statuses = [Success,Failure,Unknown]
+Types: 
+	- livenessProbe, readinessProbe, startupProbe
+	- kubelet can optionally perform and react to three kinds of probes on running containers
+
+---
+ETCDsnapshot : |
+	/etc/kubernetes/manifests in master contains = etcd.yaml, kube-apiserver.yaml, kube-controller-manager.yaml, kube-scheduler.yaml
+	kubectl describe pod etcd-controlplane ## find flags from command => --cert, --key, --cacert files ## default location: /etc/kubernetes/pki/etcd
+	k get pods -n kube-system <etcd-pod-name> -oyaml ## spec.containers.command.etcd - container various params. 
+
+	ETCDCTL_API=3 etcdctl get / --prefix --keys-only
+	ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 snapshot save /root/example.db --cacert --cert --key --endpoint=
+	Restore= etcdctl snapshot restore --data-dir=/var/lib/etcd-backup etcd-backup.db ## note the data-dir here. 
+	edit file /etc/kubernetes/manifests/etcd.yaml, update spec.volumes.hostPath to new data-dir. etcd pod will re-create. 
+	etcdctl snapshot status
+
+---
+ClusterUpgrade: |
+	kubectl drain controlplane --ignore-daemonsets ## safely disables scheduling, betterthan <k cordon> command
+	sudo apt install kubeadm=1.28.2-00 ; kubeadm upgrade apply v1.28.1 ## for node=kubeadm upgrade node
+	sudo apt install kubelet=1.28.2-00 ; systemctl restart kubelet
+	kubectl uncordon controlplane
+
+	apt-cache madison kubeadm # to know the current version... 
+	apt install --allow-downgrades kubeadm=1.28.1-00 ## to downgrade use flag = --allow-downgrade
+
+	k get pods -n kube-system
+	k logs kube-apiserver -n kube-system == service kube-apiserver status && journalctl -u ex.service
+
+	k describe node node01 -> check memory/cpu usage. 
+
+---
+TroubleshootingNodes: |
+	Application agent talks to apiServer - kubelet
+	Network agent talks to apiServer - kube-proxy 
+
+	systemctl status kubelet ; service kubelet status ; ps aux | grep kubelet # restart if needed
+	k get pods -n kube-system <kube-apiserver-podname> -oyaml ## spec.containers.command.kube-apiserver
+
+	Login to each node, 
+	crictl ps | grep kube-proxy ; get-container id, ## similary we can grep for kube-scheduler on each node and see status 
+	crictl logs <container-id> ; Using iptables Proxier
+	ssh node01 iptables-save | grep p2-service # get iptables rules on each node; delete p2-service, then confirm the iptables rules are gone
+
+---
+TroubleshootingPods: |
+	Cluster architecture/installation/configuration - describe + logs of 4 components...., kubelet config/service logs... 
+	Workloads & scheduling - pod/deployment/rs/rc/service, ensure it is not cluster level issue. 
+	Services & Networking - If pod/service with curl not working, check network policy to allow container target port.
+	Storage
+	Troubleshooting
+
+---
+StaticPods: |
+	static pods are bound to 1-kubelet on 1-node = full control to kubelet on the particular node... 
+	grep staticPodPath in kubelet-config file and place pod-manifest in it. 
+	- cat static-pod.yaml | ssh node01 "tee static-pod.yaml" ; ssh node01 ## similar to scp command
+	ps -aef| grep kubelet , get kubelet/config.xml file. grep static /var/lib/kubelet/config.xml ## staticPodPath=/etc/kubernetes/manifests
+	cp static-pod.yaml /etc/kubernetes/manifests/ ; exit ; k get pods -owide --------------
+Static pod manifest location(kube-system ns): /etc/kubernetes/manifests/{etcd,kube-apiserver,kube-controller-manager,kube-scheduler}.yaml
+
+---
+Selector-and-Labels: | 
+	manifest -> apiserver -> Scheduler -> ControllerManager(replicas=RC) --> scheduler to schedule nodes on pods. 
+
+	ReplicaSets are improved version of ReplicationController. 
+	RC accepts only equality-base selector whereas RS accepts set-base selector also. 
+		## equality-base(matchLabels)  -> key,value, operator(=,!=,==) ## selector.env = prod ## k get pods -l env!=prod
+		## set-based(matchExpressions) -> key,value, operator(In, NotIn, Exists) selector.matchExpressions: - {key: env, operator:In, value: [prod,qa]}
+
+	supported areas/objects: job, deployment, replicaset, deamonset
+	field selector = k get svc,ep --all --field-selector metadata.namespace!=default ## k get pods --field-selector status.phase=Running
+
+
