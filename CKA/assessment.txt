@@ -24,14 +24,20 @@ Ans:
         kubectl config use-context johndoe
 
         k run nginx --image nginx
-        error: You must be logged in to the server (Unauthorized)
+        Error from server (Forbidden): pods is forbidden: User "johndoe" cannot create resource "pods" in API group "" in the namespace "default"
 
     Granting Access to the User:
         k config use-context kubernetes-admin@kubernetes
         k create role pod-reader --verb=get,list,watch --resource=pods
         k create rolebinding read-pods --user johndoe --role pod-reader
-        k get roles ; k get rolebindings
+        k get roles,rolebindings
+        k auth can-i get pod --as=johndoe ## sysout: yes
 
+        k run nginx --image nginx
+            Error from server (Forbidden): pods is forbidden: User "johndoe" cannot create resource "pods" in API group "" in the namespace "default"
+        k get pods
+            No resources found in default namespace.
+            
 -----------------------------------------------------------------------------------------------------------------------
 Question 2: A new application finance-audit-pod is deployed in finance namespace. Find 
 out what is wrong with it and fix the issue. 
