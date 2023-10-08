@@ -1,3 +1,9 @@
+
+CommandWay: | 
+      k create rs web-pod --image nginx:1.16 --replicas=3 
+      rs.yaml == spec.selector.matchLabels(app=web) - this will consider if any existing pods with same label while replic-create. 
+
+---
 apiVersion: apps/v1
 kind: ReplicaSet ## Same manifest works for ReplicationController also
 metadata:
@@ -22,3 +28,5 @@ spec: ## replicas, selector, pod template
           name: tomcat-container
           ports:
             - containerPort: 8080
+
+

@@ -57,3 +57,10 @@ Command: k auth can-i get pod -n nec --as=nec-user ## to verify
 Note: CLUSTER ROLES are not bind to namespaces opposite to ROLES. (similarly ClusterRoleBinding vs RoleBinding)
 
 ---
+roleCreationCommands: |
+  k create role my-role --verb=create --resource=pods -n <> ## $drc ## role creation
+  k create rolebinding --role=my-role my-role-binding --user=amar ## role binding creation
+  k auth can-i create pods --as=amar ## role check
+ClusterRoleCreate: Similar to above clusterrole and clusterrolebinding, but extra need to create service account
+  Command: k create serviceaccount <name> ; instead of binding user to a role, bind serviceaccount to clusterrole
+  

@@ -1,0 +1,38 @@
+Author: Amarendar Musham
+
+<<---------> source .bashrc <------->>
+## IMP
+alias k="kubectl" 
+alias v="vim" ## :set nu, :set autoindent 
+function ns { kubectl config set-context --current --namespace=$1 ; } 
+function context { kubectl config use-context $1 ; }
+export do="-o yaml --dry-run=client" ## official
+###
+
+export drc="--dry-run=client -oyaml"
+export drs="--dry-run=server -oyaml"
+export force="--force --grace-period 0" # k delete pod pod1 $force
+
+k config view  | grep namespace: 
+k cluster-info || k config view ## check the server configuration
+-------------
+-------------
+Key Areas
+	Volumes
+	RBAC
+	Labels,taints/tolerations
+	Etcd snapshots
+	Controlplane/kubelet debugging
+	Run pods
+	topics: Network policies, exposing services via Ingress, Etcd backup/restore, Troubleshooting nodes Not-ready
+Tips
+	know pluralities of fields
+	Edit vs Create
+	Internet Connection
+	Verifying answers ## auth can-i, $drs
+	Edit top level resources # ex: deployments, replica-sets. 
+	Use "k explain" instead of k8s documentation ## ex: k explain pod.spec[.containers.volumes] # []=optional
+	Temporary pods = --rm # immediately removes the terminated container
+	SPEED - generate pods, deployments, services yaml file from commands. 
+
+
