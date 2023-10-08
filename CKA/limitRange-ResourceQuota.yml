@@ -1,3 +1,8 @@
+Subject: |
+        LimitRange spec.(min/max/default - limit/requests - cpu/memory) per container
+        ResourceQuota spec.(hard - limit/requests - cpu/memory) per namespace(all pods)
+        Pod Quota for a namespace ResourceQuota spec.(hard - pods)
+---
 apiVersion: v1
 kind: LimitRange
 metadata:

@@ -1,0 +1,18 @@
+podLevelTroubleshooting: |
+      k describe pod web ## pods/nodes/deployments # 
+      k logs web -f --previous ## previous pod  
+      
+Note: if deployments not scheduling pods, check pods status in kube-system ns and describe them if any crashLoopBackOff. 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-pod
+  labels:
+    app: tomcat
+    tier: dev
+
+spec:
+  containers:
+    - image: vishymails/tomcatimage:1.0
+      name: tomcat-container

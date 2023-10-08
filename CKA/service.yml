@@ -1,3 +1,8 @@
+ServiceTypes: | 
+    NodePort --> nodeIP{1,2,3}: nodeport
+    LoadBalancer --> IP from nginx-controller: service-port ## get ip <== k get svc -owide(named as CLUSTER IP)
+    ClusterIP ->  needed where multiple clusters used (limit:5000nodes/cluster) -Ex: flipkart,amazon - can't use in our usual environments. 
+
 CommandWay: |
       k run my-pod --image= && k get pods
       k expose --help # Jump to examples. 
@@ -17,7 +22,4 @@ spec:
     - nodePort: 31000
       port: 80
       targetPort: 8080
-##ServiceTypes:
-## NodePort --> nodeIP{1,2,3}: nodeport
-## LoadBalancer --> IP from nginx-controller: service-port ## get ip <== k get svc -owide(named as CLUSTER IP)
-## ClusterIP ->  needed where multiple clusters used (limit:5000nodes/cluster) -Ex: flipkart,amazon - can't use in our usual environments. 
+

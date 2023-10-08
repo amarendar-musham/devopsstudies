@@ -1,8 +1,14 @@
+volumeTypes:
+    emptyDir: works as cache, if pod object deleted and recreated, it will not retain the data under volume. 
+    hostPath: creates on a node. Can be retained after pod deletion, but only on particular node where pod got created. 
+    PersistentVolume: |
+          default=> accessModes:RWO/RWM, storageClassName:slow/fast/manual
+          pv: capacity.storage: 10Gi, hostpath/nfs, 
+          pvc: resources.requests.storage: 5Gi 
+          pod: spec.volumes[].persistentVolumeClaim = pvc
 
-### default: accessModes, storageClassName 
-### pv: capacity.storage, hostpath/nfs, 
-### pvc: resources.requests.storage
-### pod: spec.volumes[].persistentVolumeClaim = pvc
+Note: pvc auto-bounds to pv on matched storage class + storage # manualbound=.spec.volumeName
+
 ---
 apiVersion: v1
 kind: PersistentVolume

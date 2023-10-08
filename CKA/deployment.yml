@@ -1,6 +1,14 @@
+Concept: with Deployments we can update application without disturbing current version of app. 
+TypesofDeployment: 
+    - Rolling and recreate deployments
+    - Blue-Green and Canary deployments. 
+
 CommandWay: |
         k create deploy deploy1 --image=nginx --replicas=3 --selector=app=nginx
         k edit deploy deploy1
+podLevelTroubleshooting: |
+      k describe pod web
+      k logs web -f --previous ## previous pod  
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -23,3 +31,21 @@ spec:
           name: tomcat-containers
           ports:
             - containerPort: 8080
+
+---
+RollingUpdate: |
+      RollingUpdate: max-unavailable:25%, max-surge:25% ## down/up deployment percentages
+      k get deploy -owide # get CONTAINERS name. i.e., tomcat-containers ## v1
+      k set image deploy/tomcat-deploy tomcat-containers=nginx:1.9.1 ## use the containers name here. ## v2
+      k rollout status deploy/tomcat-deploy ## status/history
+
+      k set image deploy/tomcat-deploy tomcat-containers=cosmos:11 ## failed to pull image
+      k rollout undo deploy/tomcat-deploy ## rolls back to nginx:1.9.1 ## v3
+      k get deploy -owide ## check updated image
+      Note: Rollout undo can't go all the way back to old versions, k8s can remember only last version of change. 
+
+      k rollout history deploy/tomcat-deploy ## gives revisions of the kubectl commands ran for rollout/back ## --revision=1 full details
+      Note: k rollout undo deploy/tomcat-deploy --to-revision=1 ## applies the kubectl command of mentioned revision
+
+      rollout uses Replicasets. RS footprint stored in etcd. 
+
