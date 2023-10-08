@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-cm
+data:
+  app.properties: |
+    server.port= 9000
+    server.servlet.context-path=/oracle 
+    oracleprops.greeting= Thank you and visit again - altered 
+    oracleprops.greeting1= New Data
+  db_hostname: "oraclehost"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cm-pod
+spec:
+  volumes:
+    - name: cm-vol
+      configMap: 
+        name: app-cm
+  containers:
+    - name: cm-pod
+      image: redis
+      volumeMounts: 
+        - name: cm-vol
+          mountPath: /etc/configmap
+
+      env:
+        - name: db_hostname
+          valueFrom:
+            configMapKeyRef:
+              name: app-cm
+              key: db_hostname
+        - name: appproperties
+          valueFrom:
+            configMapKeyRef:
+              name: app-cm
+              key: app.properties

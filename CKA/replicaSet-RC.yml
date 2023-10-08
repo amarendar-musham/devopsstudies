@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: ReplicaSet ## Same manifest works for ReplicationController also
+metadata:
+  name: tomcat-rs
+
+spec: ## replicas, selector, pod template
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels: ## Replication controller supports only equality-based labels
+      app: tomcat-pod
+    matchExpressions: ## only for ReplicaSet, RC can't support
+      - {key: tier, operator: In, values: [frontend,backend]}
+  template:
+    metadata:
+      labels:
+        app: tomcat-pod
+        tier: frontend
+    spec:
+      containers:
+        - image: vishymails/tomcatimage:1.0
+          name: tomcat-container
+          ports:
+            - containerPort: 8080

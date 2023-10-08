@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: lr-1
+  namespace: test-ns
+spec:
+  limits:
+    - max:
+        cpu: "200m"
+        memory: 0.2Gi
+      type: Container
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata: 
+  name: rq-1
+  namespace: test-ns
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+    pods: "10"
+---
+apiVersion : v1
+kind : ResourceQuota ## defining PriorityClass scope for quota. 
+metadata : 
+  name : avg-quota
+spec :
+  hard :
+    pods : "9"
+    limits.cpu : "9"
+    limits.memory : "2Gi"
+    limits.ephemeral-storage : "5Gi"
+    scopeSelector :
+      matchExpressions :
+        - operators : In
+          scope : PriorityClass
+          values : ["avg-quota"]                     
+---
+apiVersion: v1 ## utilizing the above defined scope - priorityClassName field. 
+kind: Pod
+metadata:
+  name: avg-priority-pod
+  labels:
+    name: avg-priority-pod
+spec:
+   containers :
+        - name : avg-priority-sleep20
+          image : centos:7
+          command : ["python", 
+                     "-c",
+                     "import time; print('Started ............');
+                     time.sleep(20); print('Task done')"]
+          resources:
+            requests :
+              memory : "9Gi"
+              cpu : "500m"
+      
+            limits:
+              memory: "9Gi"
+              cpu: "500m"
+   priorityClassName : avg-quota     
+
+   

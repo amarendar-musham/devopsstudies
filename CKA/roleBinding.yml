@@ -1,0 +1,59 @@
+Steps: | 
+        1. Create a Private key (.key file)
+        2. Create a ceritifate signing request (.csr file)
+        3. apply csr-manifest and k certificate approve # (Optional) k get csr <> -ojsonpath='{.status.certificate}' > <>.crt
+        4. Manifests -> create role, and create rolebinding
+## openssl genrsa -out hi.key 2048 ## generate a private-key
+## openssl req -new -key hi.key -out hi.csr ## certificate signing request
+## cat hi.csr | base64 | tr -d '\n' > spec.request...
+
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: nec-adm
+spec:
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ21EQ0NBWUFDQVFBd09qRUxNQWtHQTFVRUJoTUNTVTR4RERBS0JnTlZCQWdNQTFSbGJERU1NQW9HQTFVRQpCd3dEU0hsa01ROHdEUVlEVlFRS0RBWlBjbUZqYkdVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3CmdnRUtBb0lCQVFDWlVPVWUxRksxWjRmRCtFeEhUaUFhYzJtdVM1ckJjd1JEWXBBeHVvT1pkNUJjTjlpenZWU0MKeHg2OTRvaW9ZWjlCRHkvK0FMVkF1QWNWRFFCMHNiUjNaUjNRNFFYY3RlaVRNNGZwR0FUN1dVcWplVWZFZWl6UQpFaHlqckw4NHhEWFVZZUFpZWo3R2dkM1ZIQ2tXaXlaeHIrZVRCUThrSjRybTBNbitQWDRiVVFhZkhvS2wzdUNmClFlUU5XUTJGaUxBazM3aHlZOWJmb21kbVYxaVZjNTI4U0lLbmlSZk5LZ2JOYXRNaVU1ZDIzVGxvdTVxd0xNRDIKWWZuNTAxVGJkVzM0MG5IbTVFZytMRTVTS2JIcWQ1emJwblk4MmpDMFB2YjVoSVpzZTNGTGRaRCtnTlZNLzcwcwpybm1ZdVhyQUpGZ09DaWI2UmdVZHBtSnZ5WGRHT2d4bEFnTUJBQUdnR1RBWEJna3Foa2lHOXcwQkNRY3hDZ3dJCmNHRnpjMEF4TWpNd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFJanZPNVdhUEdxVjhIRmxmQ0xMMFJTU2ZNc0EKS3dqQkRqTXNFZDZSQk5vNzNXbVVJeG1YQUwwanNxYW5XczJFN1ZDU3RtUTRvVWhUVjNFRHFSS28xRzJBdzdFbgpkeFd4YStTVU5oSU5PZDhING5JdCszKzljeGc3Zys1YlhzNW9qRHRmR3R1OHVGSnlCZFpxdUN6SjltR2JzUlJuCmJiMEhURjduMlp0L1JNd3FYWjB1QkZXcnMwMDhDNXRaVDdtMy9kQ1IvSUt2ZzhKMUhMc3V2cEVOcmkxSWZGcW0KOXVLWnRlRGRhYUFBQjFmU3BQMHZkS2s2M1FRc0E5MkJMaHZjNjAwVy9sKzkwVzMxbUpVbUYyWVdJSzJaYmpoYQpRSCtxS1ZQRzBtSzJVVkw5VmptaGJtV3pJdG9FckswMjJJZktvbDNDOFV5ZnVOR045TE0vNldzTHA2TT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+
+## k apply -f csr.yml
+## k get csr
+## k certificate approve nec-adm
+Optional: To create kubeconfig for user (signed .crt file + private key .key file) |
+      kubectl get csr johndoe -o jsonpath='{.status.certificate}'| base64 -d > johndoe.crt 
+      kubectl config set-credentials johndoe --client-key=johndoe.key --client-certificate=johndoe.crt --embed-certs=true
+      kubectl config set-context johndoe --cluster=minikube --user=johndoe
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: nec
+  name: nec-adm
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list","create","update","delete"]
+
+## k apply -f role.yml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nec-admin
+  namespace: nec
+subjects:
+- kind: User
+  name: nec-user
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role 
+  name: nec-adm 
+  apiGroup: rbac.authorization.k8s.io
+
+## k apply -f rolebinding ## k get rolebinding -n nec ; describe
+Command: k auth can-i get pod -n nec --as=nec-user ## to verify 
+
+Note: CLUSTER ROLES are not bind to namespaces opposite to ROLES. (similarly ClusterRoleBinding vs RoleBinding)
+
+---

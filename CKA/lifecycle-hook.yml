@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: lifecycle-hook
+spec:
+  containers:
+    - name: nginx-hook
+      image: nginx
+      lifecycle:
+        postStart:
+          exec:
+            command: ['/bin/sh','-c','echo welcome Oracle > /usr/share/post-start-msg']
+        preStop:
+          exec:
+            command: ['/usr/sbin/nginx','-s','quit']
+
+            

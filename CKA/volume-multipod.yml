@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-pod
+  
+spec:
+  volumes:
+    - name: cache-vol ## cached volume = emptyDir;   data cleans up after pod restart/delete
+      emptyDir: {}
+
+    - name: test-vol ## host path on a node where pod scheduled; data can be retained on node only
+      hostPath: 
+        path: /test-vol
+
+  containers:
+    - name: producer
+      image: ubuntu
+      command: ['/bin/bash']
+      args: ['-c', 'while true; do echo "$(hostname) $(date)" >> /opt/index.html ; sleep 10; done']
+      volumeMounts:
+        - name: cache-vol
+          mountPath: /opt
+    - name: consumer ## k exec -it multi-pod --container=consumer -- /bin/sh
+      image: nginx
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: cache-vol
+          mountPath: /usr/share/nginx/html
+
+        - name: test-vol ## hosted on node
+          mountPath: /oracle-vol

@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata: 
+  name: sleep-job
+spec:
+  completions: 3
+  parallelism: 6
+  template: 
+    metadata:
+      name: sleep-pod
+    spec:
+      containers:
+        - name: job-container
+          image: centos:7
+          command: ['/bin/python']
+          args: ['-c', 'import time; print("Started") ; time.sleep(20); print("Task done")']
+      restartPolicy: Never
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata: 
+  name: cron-demo
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate: 
+    spec:
+      template:
+        metadata:
+          name: cron-demo
+        spec:
+          containers:
+            - name: cron-demo
+              image: centos:7
+              args :
+                - python
+                - -c
+                - from datetime import datetime; print('[{}] Cron Job demo for CKA Batch Oracle...'.format (datetime. now ()))
+          restartPolicy: OnFailure

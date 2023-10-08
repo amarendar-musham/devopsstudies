@@ -1,0 +1,268 @@
+Q1: Create a new pod called admin-pod with image busybox. Allow it to be able to set system_time. Container should sleep for 3200 seconds.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: admin-pod
+spec:
+  containers:
+    - name: admin-containers
+      image: busybox
+      command: ['/bin/sh','-c','sleep 3200']
+      securityContext:
+        capabilities:
+          add: ["NET_ADMIN", "SYS_TIME"]
+---
+Q3: Create a new deployment called web-proj-268 with image nginx:1.16 and one replica. Next, upgrade the deployment to version 1.17 using rolling update.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-proj-268
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: web-proj-268
+  template:
+    metadata: 
+      name: web-proj-268
+      labels:
+        app: web-proj-268
+    spec:
+      containers:
+        - name: web-proj-containers
+          image: nginx:1.16
+
+RollingUpdate-command: k set image deploy/web-proj-268 web-proj-containers=nginx:1.17 
+
+---
+Q4 : Create a new deployment web-003, scale this deployment to 3 replicas, make sure desired number of pods are always running. 
+Ans: sudo sed -i 's/\- kube-controller-manager/\- kube-controller-man/g' /etc/kubernetes/manifests/kube-controller-manager.yaml
+Explanation: deployment will fail due to controller-manager misconfiguration. Need to fix it through static manifest file present in control-plane
+Verify-command: kubectl get pods -n kube-system | grep controller ; check status
+
+---
+Q5: Upgrade cluster ## drain the node and upgrade both kubeadm and kubelet. upgrade = install+apply
+commands: | 
+    kubectl drain controlplane --ignore-daemonsets
+    sudo apt install kubeadm=1.28.1-00 ; kubeadm upgrade apply v1.28.1 || "kubeadm upgrade node" for node01
+    sudo apt install kubelet=1.28.1-00 ; systemctl restart kubelet
+    kubectl uncordon controlplane
+    ...
+    apt-cache madison kubeadm # to know the current version... 
+    apt install --allow-downgrades kubeadm=1.24.0-00 ## to downgrade use flag = --allow-downgrade
+
+---
+Q7: Create static pod on node07 called static-nginx with image nginx and you have to make sure that it is recreated/restarted automatically in case of any failure happens.
+
+Explanation: |
+  Static Pods are bound to 1-kubelet on 1-node = full control to kubelet on the particular node... 
+  grep staticPodPath in kubelet-config file and place pod-manifest in it. 
+Process: |
+  cat static-pod.yaml | ssh node01 "tee static-pod.yaml" ; ssh node01 ## similar to scp command
+  ps -aef| grep kubelet , get kubelet/config.xml file. grep static /var/lib/kubelet/config.xml 
+  ## staticPodPath=/etc/kubernetes/manifests
+  cp static-pod.yaml /etc/kubernetes/manifests/ ; exit ; k get pods -owide 
+
+---
+Q8: Create a pod called pod-multi with 2 containers as it is descripted below | 
+    Container 1 - name=container1, image=nginx
+    Container 2 - name=container2, image=busybox, command=sleep 4800
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-multi
+spec:
+  containers:
+    - name: container1
+      image: nginx
+    - name: container2
+      image: busybox
+      command:
+        - /bin/sh
+        - -c
+        - sleep 4800
+
+---
+Q9:  Create a pod called delta-pod in defence namespace belonging to the development environment(env=dev) and frontend tier (tier=front), image=nginx:1.17
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: delta-pod
+  namespace: defence
+  labels:
+    env: dev
+    tier: frontend
+spec:
+  containers:
+    - name: delta-pod
+      image: nginx:1.17
+
+---
+Q10: Get web-load-5461 pod details in json format and store it in a file at /opt/output/web-load-5461-j070822n.json
+Ans: k get pod web-load-5461  -o json > /opt/output/web-load-5461-j070822n.json
+
+---
+Q11: Backup ETCD database and save it root with name of backup "etcdbackup.db"
+Ans: etcdctl snapshot save etcdbackup.db
+
+---
+Q12: A new application finance-audit-pod is deployed in finance namespace. Find out what is wrong with it and fix the issue.
+NOTE: No configuration changes allowed, you can only delete or recreate the pod.
+toCreateScenario: k create ns finance ; k run finance-audit-pod --image=busybox -n finance --command sleep 180
+
+---
+Q13: use JSONPath query to retrieve our OS images of all K8s nodes and store it in a file ~/allNodeOSImages8.txt
+Ans: k get nodes -ojsonpath='{.items[*].status.images}' > allNodeOSImages8.txt << Wrong, Question is to get OSimages not docker images = .items[*].status.nodeInfo.osImage
+
+
+---
+Q14: Create a persistent volume with given specifications |
+    Volume Name - pv-rnd
+    storage - 100Mi
+    Access modes - ReadWriteMany
+    host path - /pv/host-data-rnd
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-rnd
+spec:
+  capacity: 
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath: 
+    path: /pv/host-data-rnd
+
+---
+Q15: Expose "audit-web-app" pod to by creating a service "audit-web-appservice" on port 30002 on nodes of given cluster.
+Note : Now given web application listens on port 8080
+toCreateScenario: k run audit-web-app --image=nginx --port=8080
+
+Ans: k expose pod audit-web-app --name audit-web-appservice --type=NodePort ## this can't give option to select port number
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: audit-web-appservice
+spec:
+  selector:
+    app: audit-web-app
+
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30002
+---
+Q16: Create a pod called pod-jxc, using details mentioned below Image=redis:alpine with below security context |  
+    Get syntax from doc...
+Ans: 
+  pod_spec:
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 3000
+      fsGroup: 2000
+
+---
+Q17: Apply taint a worked node node7 with details provided below. |
+  Create a pod called dev-pod-nginx using image=nginx, make sure workloads are not scheduled to this worker node (node7)
+  Create another pod prod-pod-nginx using image=nginx with a toleration to be scheduled on node7.
+  Details - key=env_type, value=production, operator= Equal & effect= NoSchedule 
+  
+command: k taint node node01 env_type=production:NoSchedule ; k describe node node01 | grep -i taint
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: prod-pod-nginx
+spec: 
+  containers:
+    - image: nginx
+      name: prod-containers
+  tolerations:
+    - key: env_type
+      operator: Equal
+      value: production
+      effect: NoSchedule
+      
+---
+Q18: Create a user “nec-adm". Grant nec-adm access to cluster, should have permissions to create, list, get, update, and delete pods in nec namespace
+ Private key exist in location - /vagrant/nec-adm.key and csr at /vagrant/necadm.csr
+
+toCreateScenario: k create ns nec ; | 
+  openssl genrsa -out nec-adm.key 2048
+  openssl req -new -key nec-adm.key -out nec-adm.csr
+
+---
+Q19: Create a PersistentVolume, PersistentVolumeClaim and Pod with below specifications PV-mypvl, Size-100Mi, AccessModes=ReadWritemany, Hostpath=/pv/log, Reclaim Policy=Retain |
+  PVC - name=pv-claim-l, Storage= 50Mi, Access Modes=ReadWritemany
+  Pod - name = my-nginx-pod, image Name= nginx, Volume= PersistentVolumeClaim= pv-claim-l, volume mount = /log
+
+refer: pv-Pvc-Pod.yml
+
+---
+Q20: Worker node node7 is not responding, have a look and fix the issue
+
+command: ssh node7 ; sudo sed -i 's/ca.crt/YOU_ARE_LOOKING_FOR_ME.crt/g' /var/lib/kubelet/config.yaml
+ ssh node7 \ sudo systemctl restart kubelet
+Ans: Compare kubelet/config.xml file of node07 against working node and find what's wrong/incorrect crt location. 
+
+---
+Q21: List internal IPs of all nodes of given cluster, save result to a file /root/InternalIPList
+Answer should be in a format: Internal IP of 1st Node (space) Internal IP od 2nd node (in a single line)
+
+command: k get nodes -ojsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}' 
+
+---
+Q22: Create a new deployment called nginx-deployment with an image nginx:1.16 and 5 replicas. There are 2 worker nodes in our cluster.Please make sure no pod will get deployed on node7.
+Note: Revert any changes that you do on this environment. 
+## ?? node affinity with matchexpression notin / drain, deploy, uncordon
+Ans: We should not disturb large work space, better use node-affinity in pod_spec as it only deals with particular pod. 
+
+---
+Q23: Create a replicaset (name= web-replica, image=nginx, replicas=3), there is already a pod running in our cluster. |   
+  Please make sure that total count of pods running in the cluster is not more than 3.
+
+Ans: get the label out of the exising pod = k get po --show-labels
+command: k run web-critical --image=nginx --port 8080 --labels app=web
+
+---
+Q24: We have worker 3 nodes in our cluster, create a DaemonSet (name prod-pod,image=nginx) on each node except worker node8.
+Ans: taint that node= k taint node node8
+refer: daemonset.yml
+
+---
+Q25: A pod “prod-pod” (image=nginx, port 8080) in default namespace is not running. We need fix it and bring it in running state.
+## ??
+
+---
+Q26: A pod “my-data-pod” in data namespace is not running. Fix the issue and get it in running state.
+
+ Note: All supported definition files are placed at root. |
+  To create question scenario just change pv1claim.yaml and remove namespace information (ensure data namespace was created already) and apply them
+## ??
+
+---
+Q27: 
+  NOTE: k run web-pod --image=nginx ; k expose pod web-pod --name=web-pod-svc --port 80
+      k exec -it busybox-pod -- nslookup svc-ip1 ## or svc fqdn from svc-describe ## use busybox pod for nslookup command
+
+---
+On NetworkPolicy
+Q28:
+Q31:
+Q33: 
+
+
+Q37: mount secret in 2 pods using filesystem and environment variable
+refer: secret.yaml
+
+Q42: list all workloads (resources) in a Kubernetes cluster
+Ans: k get deploy,rs,rc,sts,ds -A ## deploy, statefulsets, replicasets/replicationcontroller, daemonsets
+
+
