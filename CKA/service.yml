@@ -7,6 +7,15 @@ CommandWay: |
       k run my-pod --image= && k get pods
       k expose --help # Jump to examples. 
       k expose pod my-pod --port=80 --name=my-service --type=NodePort $drs
+
+Troubleshooting: |
+  k get svc,ep ## ep = podIP:podPort; podPort exposed in pod container spec.containers[].ports.containerPort
+  k describe ep svc-name ; k describe svc svc-name
+  k run bb --image=busybox --command sleep 4800
+  k exec bb -- nslookup <svc-IP> ## curl podIP:podPort ; curl svcIP:svcPort ; curl nodeIP:nodePort
+
+  ps aux | egrep "kubelet|kube-proxy" ; find logs in /var/log/{kubelet,kube-proxy}.log ## systemctl/service restart kubelet
+  ==== More steps in Training-n-Docs.yml
 ---
 apiVersion: v1
 kind: Service

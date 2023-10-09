@@ -4,6 +4,10 @@ podLevelTroubleshooting: |
       k edit pod <pod-name>
       k get pods -Lapp -Ltier ## -L = --label-columns ; k get pods -l app=nginx
       kubectl exec <POD-NAME> -c <CONTAINER-NAME> -- <COMMAND>
+
+      kubectl logs ${POD_NAME} ${CONTAINER_NAME}
+      kubectl logs --previous ${POD_NAME} ${CONTAINER_NAME} ## previous container crash log..
+
 IMP: networking commands(like nslookup) can run on BUSYBOX container
 
 Note: if deployments not scheduling pods, check pods status in kube-system ns and describe them if any crashLoopBackOff. 
