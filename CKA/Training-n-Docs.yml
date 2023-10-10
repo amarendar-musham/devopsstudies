@@ -30,7 +30,9 @@ metadata.annotations: in contrast with labels, Annotations are not used to ident
 Workloads --> workload = an application running on k8s
 Built-inWorkloads: Deployment & ReplicaSet, StatefulSet(if app records data persistently->PVC), DaemonSet, Job & CronJob # run once/schedules
 
-Ingress_spec.{host,path,backend.service(name,port)} # k get ingress -> gives some clusterIP. access app using ingress-host/path with backend service. 
+Ingress: | 
+	External Traffic ==> Ingress ==> Service 
+	Ingress_spec.{host,path,backend.service(name,port)} # k get ingress -> gives some clusterIP. access app using ingress-host/path with backend service. 
 
 ---
 TaintsAndTolerations: | 
