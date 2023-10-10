@@ -1,7 +1,13 @@
 ServiceTypes: | 
+    ClusterIP ->  default service type. app can be accessible with cluster IP(svcIP) and service port(svcPort). 
+              needed where multiple clusters used (limit:5000nodes/cluster) -Ex: flipkart,amazon - can't use in our usual environments.
+
     NodePort --> nodeIP{1,2,3}: nodeport
+
     LoadBalancer --> IP from nginx-controller: service-port ## get ip <== k get svc -owide(named as CLUSTER IP)
-    ClusterIP ->  needed where multiple clusters used (limit:5000nodes/cluster) -Ex: flipkart,amazon - can't use in our usual environments. 
+                  This can provision a on-demand loadbalancer on cloud provider, and maps to ExternalIP. 
+                  
+    ExternalName -> maps service to a dns. You can bring your own domain or service can be mapped to a LB IP. 
 
 CommandWay: |
       k run my-pod --image= && k get pods
