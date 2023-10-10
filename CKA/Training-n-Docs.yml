@@ -33,6 +33,10 @@ Built-inWorkloads: Deployment & ReplicaSet, StatefulSet(if app records data pers
 Ingress: | 
 	External Traffic ==> Ingress ==> Service 
 	Ingress_spec.{host,path,backend.service(name,port)} # k get ingress -> gives some clusterIP. access app using ingress-host/path with backend service. 
+	ToTry: | 
+		apply nginx-ingress-controller manifest and deploy+service+ingress from https://docs.k0sproject.io/v1.25.2+k0s.0/examples/nginx-ingress/ url
+		# do = curl <worker-external-ip>:<node-port> -H 'Host: web.example.com'
+	Note: without ingress-controller, ingress effects nothing
 
 ---
 TaintsAndTolerations: | 
