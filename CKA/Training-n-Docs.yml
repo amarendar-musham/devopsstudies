@@ -33,9 +33,11 @@ Built-inWorkloads: Deployment & ReplicaSet, StatefulSet(if app records data pers
 Ingress: | 
 	External Traffic ==> Ingress ==> Service 
 	Ingress_spec.{host,path,backend.service(name,port)} # k get ingress -> gives some clusterIP. access app using ingress-host/path with backend service. 
+	Ingress_spec.tls.{host=my.domain.com, secretName=my-tls-secret}
 	ToTry: | 
 		apply nginx-ingress-controller manifest and deploy+service+ingress from https://docs.k0sproject.io/v1.25.2+k0s.0/examples/nginx-ingress/ url
-		# do = curl <worker-external-ip>:<node-port> -H 'Host: web.example.com'
+		# do = curl <worker-external-ip>:<node-port> -H 'Host: web.example.com' ## killercoda is not cloud-managed-k8s, will not allow LB IP. 
+		Note: If cluster is cloud-managed-k8s, ingress-nginx/service gets a load balancer created. If not, it creates NodePort/ClusterIP type services
 	Note: without ingress-controller, ingress effects nothing
 
 ---
