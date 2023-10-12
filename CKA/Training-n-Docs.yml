@@ -144,4 +144,28 @@ Selector-and-Labels: |
 	supported areas/objects: job, deployment, replicaset, deamonset
 	field selector = k get svc,ep --all --field-selector metadata.namespace!=default ## k get pods --field-selector status.phase=Running
 
+Example question from killer.sh: | 
+	export do="-o yaml --dry-run=client" ; k config set-context --current --namespace=project-hamster
+	
+	k run p2-pod --image=nginx:1.21.3-alpine $do > p2.yaml
+	## add busybox container with cmd: ['sh','-c','sleep 1d'] 
+	k expose pod p2-pod --name p2-service --port=80 --target-port 3000 
+	k get pod,svc,ep
+	k get node ; ssh controlplane ; 
+		$ crictl ps | grep kube-proxy ## check kube-proxy running on all nodes
+		$ crictl logs <container-id-of-kube-proxy> ## check if using iptables Proxier
+		$ iptables-save | grep p2-service ## check iptable rules for above-exposed service. 
+		Note: |
+				Everytime a service created/deleted/altered, 
+				the kube-apiserver contacts every node's kube-proxy to update the iptables rules according to the current state. 
+	Note: |
+		1. ssh node01 iptables-save | grep p2-service > file.txt
+		2. crictl ps ~ docker ps ## crictl works for all docker subcommands
+				To get what container runtime used by k8s, k describe node node01 | egrep -i "runtime|.sock"
+
+ClusterIP range: | 
+	Cluster-ip ranges are defined in kube-apiserver.yml and kube-controller-manager.yml (/etc/kubernetes/manifests) of controlplane. 
+	To update the ranges, modify yml one after other by checking the status of container ; Ex= crictl ps | grep apiserver
+	Ensure the new ip-range by exposing a default service(cluster-IP) to a pod
+
 
