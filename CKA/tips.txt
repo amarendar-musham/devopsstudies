@@ -1,6 +1,6 @@
 Author: Amarendar Musham
 
-<<---------> source .bashrc <------->>
+<<---------> source .bashrc <------->> || k, do, context, ns 
 ## IMP
 alias k="kubectl" 
 alias v="vim" ## :set nu, :set autoindent 
