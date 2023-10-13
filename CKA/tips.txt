@@ -4,8 +4,10 @@ Author: Amarendar Musham
 ## IMP
 alias k="kubectl" 
 alias v="vim" ## :set nu, :set autoindent 
-function ns { kubectl config set-context --current --namespace=$1 ; } 
+
 function context { kubectl config use-context $1 ; }
+function ns { kubectl config set-context --current --namespace=$1 ; } 
+
 export do="-o yaml --dry-run=client" ## official
 ###
 
@@ -20,7 +22,7 @@ k cluster-info || k config view ## check the server configuration
 Key Areas
 	Volumes
 	RBAC
-	Labels,taints/tolerations
+	Labels, taints/tolerations
 	Etcd snapshots
 	Controlplane/kubelet debugging
 	Run pods
@@ -30,7 +32,7 @@ Tips
 	Edit vs Create
 	Internet Connection
 	Verifying answers ## auth can-i, $drs
-	Edit top level resources # ex: deployments, replica-sets. 
+	Edit top-level resources # ex: deployments, replica-sets. 
 	Use "k explain" instead of k8s documentation ## ex: k explain pod.spec[.containers.volumes] # []=optional
 	Temporary pods = --rm # immediately removes the terminated container
 	SPEED - generate pods, deployments, services yaml file from commands. 
