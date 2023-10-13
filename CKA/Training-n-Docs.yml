@@ -5,7 +5,9 @@ kubelet and Container runtime needs to interface same cgroup driver: cgroupfs/sy
 Container runtime: containerd, CRI-O ## configs in /etc, sockets in /run or /var/run ## systemctl restart containerd/crio
 	cri = container runtime interface, cni = container network interface
 
-CNI - network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
+CNI : network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
+CoreDNS + calico/flannel/canel : Provides network communication b/w pods, ability to ping/curl from pod to pod. 
+	- calico gives ability to add networkPolicies 
 
 kubeconfig file contains certificate in base64 encoded format
 	(echo <>|base64 --decode), openssl x509 -in hi.csr -text prints all info. ## .csr/.crt
