@@ -4,6 +4,8 @@ ExampleTroubleshooting:
       Running(bound2node,created), 
       Succeeded,Failed, Unknown(node communication)
 
+Path: Pod_spec.containers[].lifecycle.{postStart,preStop}.exec.command
+
 ---
 apiVersion: v1
 kind: Pod
