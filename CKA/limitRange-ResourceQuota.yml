@@ -2,6 +2,10 @@ Subject: |
         LimitRange spec.(min/max/default - limit/requests - cpu/memory) per container
         ResourceQuota spec.(hard - limit/requests - cpu/memory) per namespace(all pods)
         Pod Quota for a namespace ResourceQuota spec.(hard - pods)
+        k get quota
+        k create quota --help
+        k create quota my-quota --hard=cpu=1,memory=1G,pods=2,services=3,replicationcontrollers=2,resourcequotas=1,secrets=5 --dry-run=client -oyaml 
+        
 ---
 apiVersion: v1
 kind: LimitRange
