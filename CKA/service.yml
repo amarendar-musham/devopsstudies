@@ -42,5 +42,6 @@ summary:
     main-service-types: ClusterIP, NodePort
     troubleshooting: 
             describe: svc, ep 
-            ps+systemctl+config+log: kubelet, kube-proxy
+            kubelet: systemctl, ps, config, log ## /var/lib/kubectl, /var/log/kubectl.log
+            kube-proxy: (container on node VM), docker ps, docker log ## docker ~ crictl <= k get node -oyaml | egrep "runtime|sock"
     
