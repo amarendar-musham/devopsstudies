@@ -1,0 +1,67 @@
+all-contexts:  k config get-contexts -o name ; k config view	-ojsonpath='{.contexts[*].name}'
+current-context: kubectl config current-context ; cat ~/.kube/config | grep current 
+deploy-pod-on-controlplane: Add pod_spec.{tolerations,nodeSelector} ## nodeSelector alt = node-affinity
+    ## k describe node <> | grep -i taint -A1 ; k get node <> --show-labels
+pod-workload: |
+      k get deploy,sts,rs,rc,ds,job -n project-c13 | grep <pod-prefix> ## Alt: k get all -n <>
+
+Q4: |
+  Pod Ready if Service is reachable
+  readinessProbe.exec.command = wget -T2 -O- http://service-am-i-ready:80 
+  the above http URL is of not yet created service, so pod will be in not-ready state = 0/1
+
+kubectl-sorting: k get pod -A --sort-by=.metadata.creationTimestamp ## .metadata.uid
+Resource-usage: k top nodes; k top pod --containers=true ## with containers usage
+Types-of-master-components:
+        pod-type: k -n kube-system get ds,deploy ##Ex: kube-proxy, coredns, n/w plugin
+        static-pod-type: ls /etc/kubernetes/manifests ## from kubelet-config, static location.
+        Process-type: find /etc/systemd/system/ | grep kube ##Ex: kubelet 
+
+Temporarily-stop-scheduler: |
+      ssh controlplane ; cd /etc/kubernetes/manifests ; mv kube-scheduler ../ ; exit
+      k get pods -n kube-system | grep schedule
+manual-schedule: 
+  pod_spec.nodeName: controlplane1 ## assigns pod directly, no scheduler intervention
+  command: k replace -f 9.yml --force ## replace = delete+create
+
+RBAC rules: |
+  Role + RoleBinding (available in single Namespace, applied in single Namespace)
+  ClusterRole + ClusterRoleBinding (available cluster-wide, applied cluster-wide)
+  ClusterRole + RoleBinding (available cluster-wide, applied in single Namespace)
+  Role + ClusterRoleBinding (NOT POSSIBLE = available in single Namespace, applied cluster-wide)
+
+role-binding-ex: |
+  k create sa <> ;  ns project-hamster ## as role+rolebinding is namespace specific. 
+  k create role <> --verb=create --resource=secrets,configmaps ; 
+  k create rolebinding <> --serviceaccount <> --role <>
+  k auth can-i -h | grep service ## check for service account
+
+topologySpreadConstraints: Decides max number of pods on each worker node (pod_spec.topologySpreadConstraints.maxSkew)
+  Ex: replicas=3, pod1, pod2 to schedules on node1 and node2; but pod3 will orphaned untile node3 is available. stays in pending state. 
+
+
+CNIplugin: find /etc/cni/net.d/ ## gives config location and name
+Q14: Which suffix will static pods have that run on cluster1-node1? -cluster1-node1
+
+ApiResources: k api-resources --namespaced -o name 
+Container: crictl inspect b01edbe6f89ed | grep runtimeType; crictl ps;  crictl logs <>;  crictl rm -f
+
+Add_worker_to_cluster: | 
+  kubeadm token create --print-join-command # get the join command and run it on worker node
+  kubeadm token list
+
+controlplane-certificate-store: | 
+    /etc/kubernetes/pki/ for all 4 components
+    openssl x509  -noout -text -in /etc/kubernetes/pki/apiserver.crt | grep Validity -A2
+    kubeadm certs check-expiration | grep apiserver
+    kubeadm certs renew apiserver
+worker-certificate-store: ## openssl x509 -in <> -text | egrep -i "issuer|Extended key usage" -A1
+    /var/lib/kubelet/pki # for kubelet client and server keys 
+        kubelet-client-current.pem # client certificate
+        kubelet.crt ## server certificate
+
+Access-Api: ## From any pod in the cluster
+  - curl https://kubernetes.default ## it talks to kubernetes cluster
+  - curl -k https://kubernetes.default/api/v1/secrets # should show Forbidden 403
+  - token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+  - with_auth : 'curl -k https://kubernetes.default/api/v1/secrets -H "Authorization: Bearer $token"'
