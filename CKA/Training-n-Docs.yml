@@ -1,8 +1,11 @@
-kubelet and Container runtime needs to interface same cgroup driver: cgroupfs/systemd, to enforce resource mgmt for pods. 
+
+kubelet and Container runtime needs to interface same cgroup driver: |
+	cgroupfs/systemd, to enforce resource mgmt for pods. 
 	if systemd is selected init system, update kubelet.conf for cgroupDriver: systemd
 	(Also, kubeadm defaults to systemd driver if not set)
 
-Container runtime: containerd, CRI-O ## configs in /etc, sockets in /run or /var/run ## systemctl restart containerd/crio
+Container runtime: |
+	containerd, CRI-O ## configs in /etc, sockets in /run or /var/run ## systemctl restart containerd/crio
 	cri = container runtime interface, cni = container network interface
 
 CNI : network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
