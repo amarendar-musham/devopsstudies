@@ -12,7 +12,7 @@ CNI: network add-on coredns+flannel/calico. calico/flannel supports HostPort and
 CoreDNS+calico/flannel/canel: | 
 	Provides network communication b/w pods, ability to ping/curl from pod to pod. 
 	calico gives ability to add networkPolicies 
-CoreDNS configuration: k -n kube-system get configmap coredns -oyaml
+CoreDNS-configuration: k -n kube-system get configmap coredns -oyaml
 
 kubeconfig file contains certificate in base64 encoded format
 	(echo <>|base64 --decode), openssl x509 -in hi.csr -text prints all info. ## .csr/.crt
