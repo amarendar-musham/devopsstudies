@@ -1,5 +1,5 @@
-
-kubelet and Container runtime needs to interface same cgroup driver: |
+cgroup: |
+	kubelet and Container runtime needs to interface same cgroup driver
 	cgroupfs/systemd, to enforce resource mgmt for pods. 
 	if systemd is selected init system, update kubelet.conf for cgroupDriver: systemd
 	(Also, kubeadm defaults to systemd driver if not set)
