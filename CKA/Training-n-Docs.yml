@@ -4,13 +4,14 @@ cgroup: |
 	if systemd is selected init system, update kubelet.conf for cgroupDriver: systemd
 	(Also, kubeadm defaults to systemd driver if not set)
 
-Container runtime: |
+ContainerRuntime: |
 	containerd, CRI-O ## configs in /etc, sockets in /run or /var/run ## systemctl restart containerd/crio
 	cri = container runtime interface, cni = container network interface
 
-CNI : network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
-CoreDNS + calico/flannel/canel : Provides network communication b/w pods, ability to ping/curl from pod to pod. 
-	- calico gives ability to add networkPolicies 
+CNI: network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
+CoreDNS+calico/flannel/canel: | 
+	Provides network communication b/w pods, ability to ping/curl from pod to pod. 
+	calico gives ability to add networkPolicies 
 CoreDNS configuration: k -n kube-system get configmap coredns -oyaml
 
 kubeconfig file contains certificate in base64 encoded format
