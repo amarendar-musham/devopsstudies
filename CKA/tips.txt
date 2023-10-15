@@ -5,17 +5,14 @@ Author: Amarendar Musham
 alias k="kubectl" 
 alias v="vim" ## :set nu, :set autoindent 
 
-function context { kubectl config use-context $1 ; }
-function ns { kubectl config set-context --current --namespace=$1 ; } 
+	export do="-o yaml --dry-run=client" ## official
+	export now="--force --grace-period 0"
+	function context { kubectl config use-context $1 ; }
+	function ns { kubectl config set-context --current --namespace=$1 ; } 
+	function c { k config view | egrep "current-context:|namespace:" ; }
 
-export do="-o yaml --dry-run=client" ## official
+Alt: function c { k config current-context ; }
 ###
-
-export drc="--dry-run=client -oyaml"
-export drs="--dry-run=server -oyaml"
-export force="--force --grace-period 0" # k delete pod pod1 $force
-
-k config view  | grep namespace: 
 k cluster-info || k config view ## check the server configuration
 -------------
 -------------
