@@ -15,6 +15,7 @@ Note: if deployments not scheduling pods, check pods status in kube-system ns an
 Toedit:
     k get pods test-pod -oyaml > test-copy.yaml ; k delete pod test-pod ; k create -f test-copy.yaml # after edit. 
     Can't edit pod for all-situations. Ex=To add securityContext, need to delete and recreate pod. 
+    = k replace -f temp.yml --force ## deletes existing pod and creates a new one in the same place
 ---
 apiVersion: v1
 kind: Pod
