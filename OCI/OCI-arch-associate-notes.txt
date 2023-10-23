@@ -1,0 +1,532 @@
+IAM----------------------------------------Subjects(Users,group|DG|service)---Actions(Verb + resources)---Placements------------
+-----------------------------------------------------------------------------
+AuthN = Authentication = users || AuthZ = Authorization = policies
+
+ocid = ocid1.<resouce-type>.<realm>.[region][.future use].<uniq id> # ocid1.volume.oc1.eu-frankfurt-1.<> # realm = set of regions.
+
+Identity Domain - container for users/roles. Ex: default, sandbox
+
+api-signing-key = id_rsa, .pub ; API key = .pem content.... will gives oci-config ; Auth-tokens = upTo 2, to connect APIs. 
+
+IAM Policy syntax: allow [subjects] to [Actions] in [Placement] where [Conditions] ## RBAC (role based access control)
+
+allow group phx-admin to manage all-resources in tenancy where request.region='phx' || where target.compartment.id='ocid1...'
+IPaddr based access control: condition = where request.networkSource.name='corpnet' # corpnet=vcn{10.0.0.0/16} # 
+Tag based access control: condition = where target.resource.tag.<tagNamespace>.<tagKey>='<value>' # Operations.instance_type='critical' # 
+
+Subjects: Group|DynamicGroup|Service = OCID|Name
+allow objectstorage-us-phoenix-1 to manage object-family in tenancy | in compartment abcd
+
+Actions: Verb(inspect|read|use|manage) + Resource(ex:objects)
+resource type(grouping)
+1. all-resources 
+2. database-family - db-systems, db-nodes, db-homes, databases
+3. instance-family - instances, instance-images, volume-attachments, console-histories
+4. object-family - buckets, objects
+5. virtual-network-family - vcn, subnet, route-tables, security-lists, dhcp-options, and many more resources
+6. volume-family - Volumes, volume-attachments, volume-backups
+
+Compartments: To isolate and control access. 
+              Global across regions, access can be restricted wrto regions. Set quotas&budgets  on compartments. 
+Nested compartments -> Tenancy(rootComp) -> A -> B -> C
+
+CompartmentQuota & Budget:
+ServiceLimits set by Oracle && Compartment quotas set by Adminstrators(policies). 
+compartment quota policies - set|unset|zero = max-resources|To default-service-limits|no-access
+
+Policy Inheritance & attachment for Compartments: (parent comp policies inherits to child comp)
+Ex: allow group group1 to manage virtual-network-family in compartment A (For A and its child-comp)| in compartment A:B(for onlyB)
+IMP: Parent comp can only see immidiate child comp. 
+Attach policy in root comp: If only compC needs, location="in compartment A:B:C" Patch should be specified as root can't know C child comp. 
+
+DynamicGroup supported vars:  instance.compartment.id, instance.id, tag.<tagnamespace>.<tagkey>.value, and tag.<tagnamespace>.<tagkey>.value='<tagvalue>'
+DG allows Infrastructure|Stacked|Ephemeral resource principals = groups # Ex: [[Instances|Databases|Functions]]
+group1 = Any { resource.type='dbaas', resource.compartment.id='ocid'} # Any=logicalOR, All=logicalAND
+allow dynamic-group IB to manage objects in tenancy where all {target.bucket.name='Log',target.region.name='phx'}
+---------------------------------------------------------------------------------------------------------------
+
+VCN--------------------------------------------------------------------------
+cidr - classeless Inter-domain routing = n/w address/prefix or mask (mask = how many bits fixed in n/w address||8 each digit)
+Ex: 192.168.1.0/24 # 24 = 8(3) -> (192.168.1) = Network address(Fixed), (0-255) = Host address(Can vary)
+First addr = 192.168.1.1, Last addr = 192.168.1.254, Broadcast addr = 192.168.1.255
+192.168.1.44/27 -> 27bits=n/w addr, 32-27= 5bits host addr, 2power5=32 each, 0-32|32-64|... ===>> 192.168.1.32/27(It belongs here)
+
+Recommended RFC1918 Range for VCN (/16 to /30) = 10.0.0.0/16 = 256*256 IPaddr, VCN reserves first2,last1 ips on each subnet's cidr. 
+Ex: ipv4 cidr blocks for VCN1,2 = 10.0.0.0/16, 10.1.0.0/16
+vcn3:10.3.0.0/16, subnet1:10.3.0.0/24, subnet2:10.3.1.0/24
+
+vcn: 10.0.0.0/16, subnet1:10.0.1.0/24(ad1), subnet2:10.0.2.0/24(ad2), subnet3:10.0.3.0/24(ad3), subnet4:10.0.4.0/24(ad1,2,3) ## AD-specific=subnet1,2,3 ; regional=subnet4 
+-> Subnet can shrink/extend ip range. 
+-> Instances are placed in subnets logically, gets internal IPaddr&n/w config. VNIC(Virtual n/w interface Card) determines how instance connects with endpoints. 
+
+Route tables(inVCNtoSubnets): rules to connect IG|NAT|SG with IPrange. ## At VCN1 -> target-type:DRG, target:DRG1, destCidr:VCN2.
+Security Lists(VNIC/Subnet level): set of firewall rules associated with subnets. Allows defining stateful|stateless rules. Ingress(Internet->VCN), Egress(VCN/subnet->outside)
+ex: Egress rule|stateful - cidr:10.0.2.0/24 |TCP|dest:1521 = subnetB can connect to outside DB with 1521.  ## Ingress:toInside,Egress:toOutside
+stateful= auto-allows response traffic, stateless=explicitly allow response traffic. 
+IMP: Default SL: TCP/22 from authorized IP/port
+
+NetworkSecurityGroups(NSG) - (setOfVNIC/Instance/LB/DB level) 
+
+NAT gateway supports upto 20k concurrent connections to single destAddr:port # prevents in-bound traffic
+Service gateway is regional, enables access to only supported Oracle services in same region as the VCN. (If selected only PHX or iad)
+
+
+Local peering Gateway(LPG) - Within region, two VCNs with non-overlapping CIDR in same region. ~ Single DRG(local peering)
+Remote peering = DynamicRoutingGateway(DRG) - Across regions. 
+
+
+VCN1+LPG1, VCN2+LPG2, Establish peering connection(From LPG1, select LPG2). 
+Route table/VCN1: rule=destCIDR(ofvcn2), target(LPG1), target-type=LPG|DRG|IG|NAT|SG
+Route table/VCN2: rule=destCIDR(ofvcn1), target(LPG2) 
+IMP: Now we can use the ping command from VCN1, for the SecutiryList defined in VCN2. SL will have destCIDR of other VCN. 
+
+Rout table = DestCIDR(ip range|ObjectStorage) + Route target(IG|NAT|SG)
+
+IPv4 uses a 32-bit address; IPv6 uses a 128-bit address ; IPv6addr = 8 groups of 4 hexadecimal digits(colon separated)
+2001:0f68:0000:0000:0000:0000:1986:69af = 2001:0f68::1986:69af (shortend by eliminating zeros)
+
+---------------------------------------------------------------------------------------------------------------
+
+Networking-Connectivity--------------------------------------------------------------------------
+DRG(Dynamic Routing Gateway) -> mainFeature=Remote Peering Connection(RPC) ; For RPC, VCN can be in same-region|diff-region|diff-tenancy. 
+
+Ex: VCN+DRG->FastConnect+VPN || ->Azure
+
+RPC demo: VCN1=10.0.0.0/16|VCN2=192.168.0.0/16
+DRG1(Create attchments VCN1,RPC1), vcn1+RouteTable=Target(DRG)/cidr(vcn2):192.168.0.0/16/DRG1 ## Region1 ## add SecurityList to enable ping/ICMP
+DRG2(Create attchments VCN2,RPC2), vcn2+RouteTable=Target(DRG)/cidr(vcn1):10.0.0.0/16/DRG2 ## Region2
+From RPC1(ToRegion2) -> click establish connection ## will peers to RPC2(ToRegion1)
+
+Site-to-Site VPN = connect Corporate n/w to OCI. If already have Fastconnect, vpn provides redundant connection. 
+((Customer + CPEobj)) <<===IPsec===>> ((DRG + VCN))
+IPSec encryption, Verified equipment Vendors=ex:Cisco|Checkpoint|Watchgaurd|Yamaha
+1. VCN1+DRG1(attach)+RoutTable(DRG1/OnPremcidr), 
+2. Create CPE object(LibreCPE) ## Customer Premises Equipment, choose vendor from above
+3. Create IPSec connection b/w CPE & DRG = LibreCPE + DRG1 + Static route(OnPremcidr)|BGP, Configure CPE route
+With CPE configuration helper from CPE object, go and setup OnPrem which will turn IPSec status to active. 
+
+FastConnect uses BorderGatewayProtocol[BGP] to exchange routing info b/w various autonomous systems involded in conn. 
+(OnPrem DC)CPE -> Provider(ATT,Verizon,TataCommunication) -> DRG (Oracle resources)
+- support IPv6, Allowed subnet masks= /64, /96, /126, /127
+
+1. FastConnect with Oracle Provider:  CPE -> Cable & BGP(Oracle Partner) -> OCI(DRG)|Oracle cage
+2. FastConnect with Third-party Provider: CPE -> Provider -> Provider Cage(FC DC1,2 | Carrier edge) -> Oracle Cage (Oracle Edge) -> OCI resources
+3. FastConnect Colocation with Oracle: Customer DC -> Customer Cage -cable-> Oracle Cage (Oracle Edge) -> OCI resources
+
+Virtual Circuit(VC) - private peering -> DRG + VCN; public peering -> OracleEdge + ObjectStorage| Autonamous DB
+BGP session is important while establishing connection from outside to Oracle. 
+---------------------------------------------------------------------------------------------------------------
+
+Networking - Load Balancer--------------------AppLB:content-based---NwLB:preserves client-header -----------------
+
+Types:  1) AppLB(layer7)-> (layer7=http|https listerners) & (layer4=tcp listener) ; layer-4/7, + advanced proxy features such as layer-7 routing & SSL termination
+        2) NetworkLB(layer4) -> (layer4=TCP|UDP listeners) & (layer3=ICMP)|any listener protocol; layer-3/4(IP protocol) data & client-header preserving
+      
+OCI LB, load balancing policy to distribute traffic :----
+1. RoundRobin - sequencial to each server 2. IP Hash - sameClient->sameBackendServer 3. Least Connections - Backend server with least active connections. 
+     - 10-8000 MBPS  
+
+Content-based routing(app-based-LB) - Host based: Listener=host:port, Path based: routing paths. 
+Backendsets: backends=servers(Web|DB), Health check: confirms availability of backends. 
+LB -> Listener(max:16) -> Backend Set
+
+Network LB, load balancing policy to disctribute traffic to backends :---- 2(source,destIP) 3(+protocol),5(+source,destPort)
+5-Tupple hash (sourceIP & port, destIP & port, protocol), 3-Tupple hash (sourceIP, destIP, protocol), 2-Tupple hash(sourceIP, destIP); preserves-source|destIP, port. 
+     - scales up/down without bandwidth configuration. 
+If listener=tcp/22, then we can ssh with LB IPaddr. It connects to backend nodes of DB. 
+
+Public LB - reserved/ephemeral IPv4 addr. 
+---------------------------------------------------------------------------------------------------------------
+
+Networking - DNS(Domain Name System) Management----------------------------------SOA,NS,A,Rdata-------------------------
+
+Users -> domain-query ->  Recursive DNS servers -> ( RootDNS | TopLevelDomains | AuthoritativeDNS(Ex: OCI) ) -> IP. 
+
+example.com = domain(2ndLevelDomain.topLevelDomain), 
+Zone = portion of DNS namespace, StartOfAuthority[SOA] defines a zone, (Create zone, and add records). A record map physical IP; Label = www.example.com 
+Chile Zone = independent subdomains with own SOA and NS records(cloud.oracle.com) ; RDATA = resource record = domain info(metadata) for a zone. 
+Delegation = name server where DNS is hosted and managed. 
+
+privateDNs -> 1) create privatezone, give domain name + new DNSPrivateView, add A-record publicIP of any app. 
+2) add DNSPrivateView to a VCN, where you want to access the app ; 3) curl/ping inside the VCN. 
+
+Traffic Management Steering policy -> to optimize performance=LB, diff-regions=GeoLocation, backup=Failover
+After OCI zone is created, NS(NameServer) record needs to take to Domain-name registrar. Oracle provides four NS records. 
+A listening endpoint is needed(in VCN) to receive DNS queries from other VCN dns-resolvers. 
+---------------------------------------------------------------------------------------------------------------
+
+Networking Command Center Services - Other Networking Services-----------------Latency,Visualizer,Analyzer----------------
+
+Inter-region Latency dashboard :- show latency b/w different regions. 
+Network visualizer :- provides diagram of implemented topology of all VCN in a selected Region & Tenancy
+            -> Regional n/w topology = DRGs, VCNs, CPEs, and various Gateways
+            -> Virtual Cloud network topology = Subnets, VLANs, Gateways to other resources. 
+
+BYOIP = Bring your OwnIP - move CIDR blocks that have min:/24 and max:/8 -> applied as reservedIPs to Compute,LBaaS,NATGateways. 
+Owner validation at Regional Internet Registry(RIR)
+
+Network Path Analyzer :- Identifies connectivity problems with auto-configuration analysis. Only in selected Region & Tenancy. 
+    -> Analyzes routing rules, security rules ; provides hop-by-hop path visualization.(BiDirectional and UniDirectional)analysis. 
+    -> available options = OCI <--> OCI|OnPremises|Internet
+---------------------------------------------------------------------------------------------------------------
+
+OCI Compute -------------------------------BurstableInst(baseline)---ShieldedInst(secure,measured+TPM)----------------------
+
+Compute = Bare Metal & Virtual Machine instances
+Compute = Shape( A template that defines OCPUs, Memory, Storage ) + Image (Template of Virtual harddrive contains OS & Software)
+
+Image sources = Oracle Platform(Linux,Win) | Custom images(from existing OCIinstances/ BYOImage) | Marketplace(3rd-party) # Max-custom-image(400GB)
+Custom-image import/export supports: Emulation|ParaVirtualized|Native modes. 
+BYOImage = OnPremises -> qcow2 image -> ObjectStorage -> Import-custom-image -> Instance 
+Across-regions = Export image to OSS in Region1 -> Copy-image to Region2 OSS -> get URL path -> import-custome-image & Instance
+
+Shapes -> Available with AMD, Intel, and ARM-based processors
+1) Fixed Shapes = no customization (BM & VM) ; 
+2) Flexible Shapes = can customize Limits-VM -> OCPUs = 1-64 AMD, 1-32 Intel, 1-80 Ampere ; Memory = (1-64GB/OCPU) - 1TB max/AMD, 512GB/Intel&Ampere 
+     -> VM.Standard.E3.Flex(AMD), VM.Standard.E4.Flex(AMD)
+     -> VM.Standard3.Flex(Intel), VM.Optimized3.Flex(Intel)
+     -> VM.Standard.A1.Flex(Arm processor for Ampere)
+GPU shapes = hardware-accelerated workloads, Powered by A100,A10,V100, and P100 NViDIA GPUs
+
+BareMetal(entire server), Virtual Machine(On hypervisor), Dedicated Hosts(BM+VM)=whole server dedicated to single host
+
+Instance Capacity type, default boot volume size = 46GB. 
+1. On-demand capacity -> on a shared host - (default option)
+2. Preemptible capacity -> on a shared host only, but instance can be reclaimed at any time, price = 50% On-demand Instances. no-start|stop|reboot|shape-update....
+3. Capacity reservation -> on a shared host, and have it count against a capacity reservation; Can't move instance AD1 to AD2 & no update. Can attach/dettach to a instance. 
+4. Dedicated host -> Place the instance on a dedicated virtual machine host
+Note: Capacity reservation & Dedicated VM host are billed separately but VMs created in them are not billed. 
+
+sudo => yum install -y httpd ; apachectl start ; systemctl enable httpd ; apachectl configtest ; 
+firewall-cmd --permanent --zone=public --add-service=http ; firewall-cmd --reload ; echo hi >> /var/www/html/index.html
+
+Burstable Instance -> baseline CPU performance, able to burst to higherLevel for spikes. baseline utilization=12.5%/50% of CPU core[iMP: Memory doesn't burst]
+If (instance CPU utilization for past 24hr) < baseline: then allow burst. supports: VM.Standard3.Flex, VM.Standard.E3.Flex, VM.Standard.E4.Flex
+
+Compute Vertical Scaling -> change shape without rebuild, but reboot. Affects -> OCPUS|Memory|n/wBandwidth|#ofVNICs. 
+Compute Autoscaling -> Config = OSimage/metadata/shape,VNICs/storage/subnets. (MetricBased|Schedule based autoscaling)
+Instance(customImage-apache installed)-> Create Instance Config -> InstancePool -> Autoscaling Configuration [ScaleIn|ScaleOut:-Condition cpu>70%: +2instances]
+[min|max|intial Instances]. ## can attach LB
+
+Oracle Cloud Agent -> Manages plugins on VM. Ex: Bastion(SSH without publicIP), OSMS(Manages patches, updates)=OSmgmtService. 
+DG with instanceOcid, policy = (service OSMS|read instances), (DG|read instance-family, use osms-managed-instances), we can use managed groups of either linux or windows. 
+RunCommand -> policy for UserGroup(manage instance-agent-command-family), DG(use instance-agent-command-execution-family where request.instance.id=target.instance.id)
+
+Instance Console Connections(CC): SerialCC(for Linux), VNCcc(for windows) # To troubleshoot malfunctioned instances. 
+Ex: Booting issue with custome image, instance stops responding after a maintenance. 
+
+Infrastructure Maintenance: HostA--VM-->HostB
+1. Live migration -> with min disrupts, emits maintenance event, not all shapes supported. 
+2. Reboot migration(set due date), 3. Manual Migration -> terminate and recreate(Note: preserve boot volume)
+
+Shielded Instances(low-level security-image/shape) -> Secure boot(VM & BM), Measured boot(Only VM), Trusted platform module(TPM). # Measured boot enables TPM automatically. 
+--------------------------------------------------------------------------------------------------------------------------------
+
+Object Storage (OSS)-------------------------------------Auto-tiering, LCM(pattern,prefix)--------------------------------------
+
+          -> Max object size = 10TB, can't edit or append data to object. but can enable versioning 
+OSS Resources: Object+metadata, Bucket - unique name in region in tenancy, Namespace - name is unique to a tenanant. 
+Object storage endpoint = https://objectstorage.us-sanjose-1.oraclecloud.com/n/ociarchassociate/b/training/o/oci.jpg [n=namespace, b=bucket, o=object]
+iam for OSS console = allow group <> to manage objects|buckets in tenancy ; Cloud-shell = to use cloud-shell in tenancy
+create-bucket: oci os bucket create --name <> --compartment-id <ocid> ; upload: oci os object put --bucket-name <> --file ex.jpg 
+Object name prefix = folder structure for objects (oci/training/ex.jpg)
+
+If object size > 100MB: use MultiPart uploads, it retries upload of object parts not entire object. API=split parts, CLI=no-need-split 
+multipart upload-CLI = oci os object put --bucket-name <> --file ex.bin --part-size 20 --parallel-upload-count 10 # 20MB/part - ex.bin=1GB->50parts. 
+
+OS tiers = Standard(high-cost)=no-retention-period, Infrequent(cool)=min-ret-period=31days, Archive(low-cost)-min-ret-period=90d->restore before access(1hr)
+OS Auto-tiering(based on access patterns) -> bucket level [Standard <--> Infrequent] = max-performance & min-costs. 
+     -> Ex: new app data storage with no established access patterns, data storage with changing access patterns. 
+if default storage tier == archive: can't Auto-tiering.. 
+allow service objectstorage-us-phoenix-1 to manage object-family in tenancy # to use auto-tiering. 
+
+Object Lifecycle mgmt - Automated action based on defined lifecycle rules. # if Auto-tiering enabled: can't create rule to move to IFA 
+supported lcm actions: Move to Infrequent access, Move to Archieve or delete. Rule: DeleteTakesPriority
+supported resources: objects, obj versions, uncommitted/failed multipart uploads. # only delete-rules supported for Archive storage bucket. 
+Filters: Prefix-matching(=folder-path, no-wild-cards; ex: /training/oci) ; Pattern-matching(with-wild-cards, ex: *.jpg -> training/oci/ex.jpg)
+filter evaluation order: Pattern-exclusions -> pattern-inclusions -> prefix-inclusions
+-----------
+OS Replication policy: replicate objects from bucket1(source) to bucket2(dest) in same/diff region. bucket2 will be read-only. objects before policy-can't replicate. 
+dest-bucket needs manual creation. source & dest can be in Standard or Archive type. Max: only 1 Source. 
+Source(delete-policy), dest(stop-replication)=becomes r/w. dest-bucket=no-versioning=only-latest-version 
+
+Object Versioning: enable/suspend; deleted-objects canbe recovered(delete the DeleteMarker), deleted-object-versions can't be recovered. 
+
+RetentionRule/Bucket - Time-bound(1year), Indefinite ; This rule provides retention(immutable=can'tbe deleted/updated) for <1yr old objects.
+If enable RuleLock: delay-14days & irreversible, duration can be increased & we can delete rule only after deleting bucket. 
+
+Object Copy: dest-bucket in same or diff region. Overwrite-rules: 
+1. overwrite dest-obj 2. don't overwrite dest-obj 3. overwrite dest-obj only if it matches ETag 4. Copy obj only if source-obj matches ETag. 
+
+OS Logging(service logs)/Bucket -> read and write events in Opensource fluentd format, to analytics. enable, +loggroup
+Pre-authenticated requests -> Per Bucket|Object|Prefix, Access type: read|write|rw, Expiry: no-limit. 
+CreateBucket with Customer-managed-keys -> Create vault+key(AES encry), bucket(encryption-key) = assign vault key. 
+     -> iam -> Allow group <> to manage vaults|keys|key-delegate(use) in tenancy & "allow service objectstorage-us-phoenix-1 to use keys in tenancy"
+     -> Re-encrypt -> either Oracle Managed keys or Customer-managed-keys(after rotating vault keys) -> applies to both objects & buckets. 
+
+(Emit object Events) in bucket(when state changes): 
+     1. Notification -> create Topic -> Create subscription(Email|slack|Funtion|sms|https)
+     2. Events -> create Rule(Service=OSS, Event=Object-create, Actions=notification & Topic)
+----------------------------------------------------------------------------------------------------------------------------------
+
+Block Storage(AD-specific)-------------------------------Auto-Tuning(dynamic-performance,dettached)---VolumeGroup-----------------
+
+Min:50GB, Max:32TB (both block/boot volumes) ## Clone=sameAD, Backup&Restore=diffAD & diffRegion(uses OSS bucket for backups)
+
+Volume attachment types: iSCSI = (uses internal storage stack in GuestOS & n/w hardware virtualization) = doesn't use hypervisor  [iscsi commands to list lsblk]
+                               Paravirtualized = (light weight virtualization) = Hyperviser APIs used by VM to access remote storage. [no-commands to list in lsblk]
+Volume access types: Node01 -> SharedBlockVolume <- Node02 ; RW access, RW Shearable access, RO Shearable access. 
+                          For RW Shearable: Configure clustered filesystem to prevent data corruption for shared volume(Max 8instances can connect)
+Boot Volume: (default: 46.6GB/Linux, 47GB/windows) - boot-disk = sda, block-volume-disk = sdb
+
+Commands: List BV(disk+partitions,mountpoints): lsblk ; ex: sdb(disk) -> sdb1(part), sdb2(part) along with mount points if any. 
+            List using device path: ll /dev/oracleoci/oraclevd*  - shows devicePath mapping to disk. devicePatch given during volume attach.
+            Create new Partition: fdisk /dev/oracleoci/oraclevdb (n:new partition, p:primary, 1:sector, w:write), 
+            Format filesystem: mkfs -t ext4 /dev/oracleoci/oraclevdb1 (filesystem for logicalpartition)
+            Mount: mkdir -p /mnt/volume1 ; mount /dev/oracleoci/oraclevdb1 /mnt/volume1 ; lsblk = sdb1 -> /mnt/volume1 # add entry -> /etc/fstab (helps mount after reboot)
+
+-----RW Shearable type volume attached for instance-1 and instance-2; to prevent data corruption, setup cluster-----
+Open ports in SL of VCN -> (TCP|UDP)/3260, (TCP|UDP)/7777 ; add ports in local Filesystem = firewall-cmd --add-port=tcp/3260 [--zone=public --permanent], --reload 
+sudo=> dnf install -y ocfs2-tools ; o2cb add-cluster ociocfs2 ; o2cb add-node ociocfs2 instance-1 --ip 10.0.0.21 # add node2 as well. ## /etc/ocfs2/cluster.conf
+instance-2: install ocfs2-tools, copy cluster.conf here ; 
+ins1&ins2: /sbin/o2cb.init configure|status # clustername: ociocfs2, systemctl enable o2cb|ocfs2, sysctl kernel.panic=30, sysctl kernal.panic_on_oops=1 # /etc/sysctl.conf
+inst1-only: mkfs.ocfs2 -L "ocfs2" /dev/sdb, ins1&ins2: mkdir /ocfs2; /etc/fstab (+/dev/sdb /ocfs2); mount -a 
+inst1 - touch /ocfs2/sample.txt ; inst2 - ls /ocfs2 # lists sample.txt
+
+Dynamic Performance Scaling: Performance based auto-tuning(VPUs/GB|IOPS|throughput), Dettached Volume auto-tuning(volume-detached=lower cost, attached=default-settings)
+
+Volume resize -> Can't decrease size, only increase upto 32TB. 
+                    -> Run re-scan commands in instance(To affect resized-disk=sdb), Extend partition(sdb1)
+                    -> To edit partition table: 
+parted /dev/oracleoci/oraclevdb1 (unit s; print), (rm 1;yes)=remove existing root partition (mkpart;primary;ext4;&values from first print statement: start=2048s;end=100%;quit) 
+                    -> To grow the filesystem(df -h): resize2fs /dev/oracleoci/oraclevdb1
+
+Backup(to OSS) ways: Manual-backup(On-demand one-off), Policy-based backup schedule = { Oracle defined(Gold,Silver,Bronze), User defined(canbe cross-region) }
+Backup types: Full backup(if first time), Incremental backup.
+Backup policies: Common policy for Bronze, Silver, Gold = { Fullbackup: yearly, Time: Jan01midnight, Retain: 5yrs }
+          -> Bronze = { Incremental: Monthly, Time: midnight 1st of month, Retain:12months } + common - Monthly
+          -> Silver = Bronze + { Incremental: Weekly, Time: Sundaymidnight, Retain: 4Weeks } - Weekly
+          -> Gold = Silver + { Incremental: Daily, Time: midnight, Retain: 7days } - Daily
+Can restore a backup to different AD. (Ex: backup a AD1 BV, restore it to AD2)
+Can Copy-BV-backup to different region, and restore there (Ex: BV1 in region1, take backup=bak-BV1, copyBackup to region2, restore here=restore-back-BV1)
+
+Clone-BV: created only in same AD, #ofclones created simultaneously: if sourceVolume=attached: max-clones=1, if sourceVolume=dettached: max-clones=Upto10allowed
+
+Cross-region-Replication(supports boot+block volumes): No-downtime-for-sourceVolumes. If enabled: can't resize volume. Not supported for encry-volumes-with-customerMKS. 
+     BV1-inRegion1 -> Replica-in-Region2 -> Activate Replica will creates a Clone of the Block volume = BV2
+
+Volume-Group: +boot+block, max: 32volumes & 128TB, each volume in only1group, When group deleted: volumes won't delete. # group backup & clones & co-ordinated-snapshot
+Volume-group -> Cross-region-replication. disable replication for VGroup, and disable for volumes individually. 
+
+Cross-AD-Replication: supports boot, block, Vgroups; replica billed lower-cost; Network costs for replication b/w ADs in same-region are not billed. 
+     If replication enabled: can't resize volume. Not supported for encry-volumes-with-customerManaged vault encry keys. 
+     - In Cross-region-replication, select same region = Cross-AD-Replication. 
+
+iMP: Lower Cost: Recommended for throughput intensive workloads with large sequential I/O, such as streaming, log processing, and data warehouses (BLOCK volume)
+-------------------------------------------------------------------------------------------------------------------
+
+File Storage ------------------------------------------------------------------------------------ 
+
+NFS(NetworkFS) = FileSystem: where files exists, Export: Control layer, Mount Target: endpoint used by clients to connect filesystem. 
+Exports controls which filesystems are available for given mountTargets. 
+
+iam: allow group storageAdmins to manage file-family in tenancy (create/delete/manage filesystems)
+     allow group managers to (manage file-systems)|(read mount-targets) in tenancy (create filesystem)
+Create FileSystem = name: demofs(AD1,compartmentA), ExportPath: /demofs, MountTarget: mt1/VCN1/subnetA ## ExportPath -> edit nfs-export options
+
+SL1 for VCN: Stateful Ingress from All Ports(inSourceCIDR) to TCP/111|2048|2049|2050 & UDP/111|2048 = source:(10.0.0.0/24:AllPorts-filesystem=10.0.0.7:/demofs)
+SL2 for VCN: Stateful Egress from TCP & UDP all ports to ports 111|2048|2049|2050 & 111 = Dest:10.0.0.0/24:AllPorts-filesystem
+On instance: The above custom tcp & udp ports are of instance, mount as below. 
+     sudo => yum install -y nfs-utils, mkdir /mnt/nfs, mount 10.0.0.7:/demofs(FileSystem) /mnt/nfs(mountTarget) ; df -h  #nfs-host:export-path=10.0.0.7:/demofs
+
+NFS Export options: Control client access to filesystem (withCIDR), RW/RO access while connecting to mountTarget
+If there are two entries for a single IP in export options, the first entry will be applied either RW or RO. 
+Options to control export-access: Source:CIDRofNFSClient, Ports:Privileaged/any, Access:RO/RW, Squash:All/root/none (uid:gid mapping)
+
+1. Export Path: uniquely identifies filesystem within mountTarget, (max:100FS in MT), can't be edited after export creation. 
+sudo mount 10.0.0.7:/FileSystem1 /mnt/mountpointA
+2. Mount Point Path = locally accessible dir on client instance = /mnt/mountpointA on VM
+3. FileSystem Path = dir within filesystem contains contents, Ex: path to a snapshot(April22) = /mnt/mountpointA/.snapshot/April22 
+
+FSS supports NFSv3.0, service supports NLM(n/w lock manager)protocol for file locking functionality. supports=VM,BM,Container in VCN. 
+To access FSS Outside VCN ->  VCN peering, FastConnect, IPSec VPN. 
+
+Snapshot can be created from OCI console(Filesystem->Snapshot->Create), CMD: Just create a dir under ".snapshot" folder = mkdir /mnt/demofs/.snapshot/<name>
+FileSystem Cloning: Contains data that pointInTime when snapshot created, SAME AD 
+     - FS1 -> take Snapshot -> create Clone = FS-clone -> Create Export to enable access to FS(export-path=/demofs-clone, mount-target=MT1,same existing one)
+Encryption using Customer managed keys: Vault-MEK with AES algorithm. (Add IAm policy before upadting the keys)
+
+In-Transit Encryption: Secure data b/w instances & mountedFileSystem using TLSv1.2 ; download & install oci-fss-utils(TransportLayerSecurity)
+SL1: Stateful Ingress rule allowing TCP traffic to dest-port:2051 ## port is of instance/vcn. 
+SL2: Stateful Egress rule allowing TCP traffic from source-port:2051 
+sudo=> mount -t oci-fss 10.0.0.7:/demofs /mnt/demofs ## oci-fss In-transit encryption mechanism available from above utils installation. 
+=> mount| grep demofs
+
+FileSystem Replication: within|across regions, Concepts: Source|Target FS, Replication source|target, Replication snapshot|Interval(>=60min)
+     -> Base Copy, Delta Copy ; Delta Cycle: Idle, Capturing, Transferring, Applying
+1. Create FileSystem for NFS (default)=FS1, 2. Create Filesystem for Replication(unexported fs can be used for targetfs for replication data)=FS2
+-> Create replication under FS1, Then replication snapshots will get added basedon intervals.... 
+-> Failover: create Clone outof ReplicationSnapshot=FSnew, Create exports & mountTarget(useExisting)
+
+FileStorage Security: Layers->IAM(users&policies), NetworkSecurity(IP,cidr,SL,NSG), NFSExportOptions(RW|RO,port,user),UnixSecurity(users,file mode bits)
+FSS Access control 4layers -> NFS export option, NFSv3 unix security, n/w security, OCI policy
+IMP: replica always read-only, replica resource needs manual creation (bucket/filesystem), stop replication to make it use, No-versions saved(only latest-data)
+--------------------------------------------------------------------------------------------------------------------------------
+
+OCI Cloud Guard ----------------------------------securityZone(policyviolation:OpsDenied)---SecAdvisor:TemplateforResources-------
+
+CSPM - Cloud Security Posture Management = continuous monitoring and providing alerts on security issues and suggestions. 
+Oracle CSPM = Cloud Guard: supports Compute, n/w, LB, IAM, OSS, BV, DB, KMS, Scanning, Bastion
+               -> Examine Targets (Quantify security stance, Access risk posture) 
+               -> Detect Problems (Check configuration, Monitor activities) 
+               -> Apply Response (Correlate Problems, Apply fix) 
+Cloud Guard notifications, Events happens only in Reporting region. 
+CIS compliance with Cloud Guard: CIS_OCI_V1.1_IAM (IAM|MONITORING|NETWORK|OBJECTSTORAGE)
+Cloud Guard Overview:
+1. Targets: Scope of Resources to be examined (Ex: compartments)
+2. Detectors: Identifying issues - (public instance, public bucket, suspicious IP)
+3. Problems: Potential security issues
+4. Responders: Corrective actions - (Stop instance, disable bucket, Suspend User) 
+Responder rule: Define specific action to take; If one rule is triggered, it triggers responder ; Responder recipes = Collection of Responder rules. 
+
+To enable Cloud Guard, policies: allow service cloudguard to read users|groups|DG.... in tenancy
+Following iam policies automatically added to the "Cloud guard policies" when you enable
+-> read users|groups|dynamic-groups|authentication-policies|policies|compartments|tenancies|instance-family|virtual-network-family|load-balancers|volume-family
+     => |object-family|database-family|vaults|keys|audit-events|compute-management-family
+
+CG -> Configuration Detector rules, Activity Detector rules ; Compartment Inheritence(A:B:C): To comp-C: DetectorB rules(at lower level) overrides DetectorA(root comp) rules
+Oracle-managed detector recipe: rules can't be edited. Clone the recipe(=User-managed), edit the rule.
+
+Create new Target: Select - Compartment + ConfigurationDetector Recipe + ActivityDetector Recipe + Responder Recipe # default = Oracle-managed
+
+CGNotifications: Events -> create rule = { service:CloudGuard, EventType:(DetectedProblem,RemidiatedProblem), Actions:Notifications->Topic } # Topic->Subscription(email)
+
+SecurityZones(Recipes): supports Networking, Compute, Storage, Database ; AttachestoCompartments, if policyViolation: then Operation Denied. 
+Securityzone Recipe -> Oracle-managed policies, example policy don't allow users to create public buckets, it will throw errors to user as not allowed. 
+Security Advisor = template to create VM, bucket,... in a secure manner. Can prevent security misconfigurations. 
+
+Vulnerability Sources: Linux platforms support below three sources, But windows supports only NVD. 
+National Vulnerability Database (NVD)
+Open Vulnerability and Assessment Language (OVAL)
+Center for Internet Security (CIS)
+
+Web Application Firewall(WAF): Prevents attacks- SQL injection, Cross-site scripting(XSS), DDoS; uses OWASP modsecurity. WAF preconfigured to prevent OWASP Top10 threats
+WAF components: Policy, Origin(webapp host/IP), Protection(OWASP) rules, Bot management
+
+Certificate Authority = .crt+.key upload to LB Listener while selecting HTTPS. Then create zone(with domain name) add Arecord and publish changes. 
+Certificate provides TLS & SSL = Transport Layer Security, Secure Socket Layer; csr request(user) verifies by CA, webserver gets SSL. 
+OCI Certificate service -> Can (configure rules to renew certs), (import certs issued by 3-partyCA), (create and manage CAs, certificates, and CA bundles). 
+-> dynamic group is necessary to allow the Certificate Authority to make API calls to Vault or Object Storage services.
+
+---------------------------------------------------------------------------------------------------------
+
+OCI Vaults (encryption-Keys, Secret-credentials) -----------MEK(AES)--------------------------------------------
+
+Encryption: PlainText + Key(StringofLetters+Numbers) -> Cryptographic algorithm -> CipherText ## similarly decryption
+Encryption at rest = stores data in a server/Datacenter
+Encryption in-Transit = client to server with in-transit encry # Ex: https, whatsapp-msgs
+Symmetric(-key) encryption() = single key is used for encry and decryption # AES algorithm, can't be used for digital signing
+Asymmetric encryption = diff keys, Public-key:encrypts, Private-key:decrypts # RSA algorithm, used for digital signing
+ - ECDSA also used for digital signing, but not for encry or decry
+
+OCI Vault uses HSM(hardware security module) = Tamper resistant, identity-based auth, deletes-keys when detection of tampering
+-> Virtual private vault: dedicated isolated partition in HSM, default = upTo 1000keyVersions,  backup to OSS # Greater performance and expensive
+-> Shared partition in HSM: shares same part with multiple tenants, charges only for #ofKeys/Secrets, No backups. 
+
+Vault recognizes 3types of keys: MEK(master-encry-keys), DEK(data), Wrapping-keys ## DEK generated|encrypted by MEK = Envelope encryption
+MEK protection modes(2): HSM(keys can't-be-exported|but-backup, all-operations inside hsm), Software(stored on server, can-export|no-backup, encry by root-key on HSM) 
+Wrapping Keys: It is included with each vault by default, Use pub-wrapping-key for keys-import into the vault service. Can't be created|deleted|rotated
+
+Rotating vault keys: The versions of keys recognized by ocid while vault-decrypt, Old key version used for only decrypt. 
+
+1. plainText=$(echo "hi"|base64), echo $plaintext|base64 --decode # base64 encode
+2. encryptedtext=$(oci kms crypto encrypt --plaintext $plainText --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint>
+3. export cipher=$ (echo $encryptedtext | jq -r '.data | .ciphertext') # get cyphertext from the json
+4. decryptedtext=$(oci kms crypto decrypt --ciphertext $cipher --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint> # get plaintext from json & base64decode
+
+Cryptographic-endpoint[encry,decry,sign,verify,generateDEK] and Management-endpoint[create,update,delete,list,get] of vault are used in CLI operations
+CLI = oci kms # key-management-service old name of vault
+
+Oracle-managed keys - Oracle-managed vault has MEK, which provides DEK to resp service to encrypt data # services: OSS, FSS, BV, compute, container, DB
+Customer-managed keys - not imported, just created and revised versions by customer in a OCI vault. 
+
+Cross-region-replication: manualway: take vault backup(only VirtualPrivateVault, only with HSM protection mode) to bucket1, copy to bucket2 in other region; 
+          -> replication synchronizes create|delete|update keys b/w source and dest vaults # only one dest vault per source. 
+Restore-Vault+keys: key always associates with vault, first restore vault and then key. 
+
+Secret uses MEK, to decrypt I think we can use that MEK and vault's-cryptographic-endpoint. 
+Summary:
+     Vault - 2types(1. dedicated partition in HSM(virtualPrivateVault), sharedPart in HSM) ; 
+     Vault-Keys - 3types(MEK,DEK(envelope encry),Wrapper-keys)
+     MEK-protection modes - 2types(HSM-backup,Software-export)
+-------------------------------------------------------------------------------------------------------
+
+Observability and Management - Monitoring (Per compartment) -------------------MetricNamespaces(predefined groups)----------------
+
+1. Metrics: grouped within MetricNamespaces(predefined - ex:oci-computeagent), service|custom metrics, Filter by Dimensions(ex:shape,AD,FD,region) and Time period, 
+     -> Data aggregation with Interval and Statistic(peak), Metric streams and grouping; Grouping-function: groupBy(), grouping()
+     - Metric statistics: absent, avg, count, increment, max, min, mean, percentile rate, sum()
+2. Alarm: oci-services -> metrics -> monitoring -> (ifHighCPU)Notifications ->  message -> topic -> email|function|https|slack
+     Alarm States: OK, Firing, Reset, Repeat ; Suppression: avoid alarms during maintenance. 
+
+CLI: oci monitoring metric|alarm list --compartment-id <> # metric-data post, alarm create, suppression remove --alarm-id <> ;
+Max permissions throubh iam policies in tenancy level: read metrics, manage alarms and ons-topics ; condition: where target.metrics.namespace='oci_computeagent'
+Storage limits: Metric-definitions=upto14days, Alarm-history=upto90days
+
+Alarm Def: CPUusage = Select { compartment, metricNamespace+Metric(cpu), staticstic(max), inteval(1m) }, Trigger rule(condition when cpu reaches 50%), Notification+Topic
+IMP=======:components in MQL expression: [[ Metric, Interval, statistic ]] ; Optional: Dimensions, Grouping, Comparision operation=====================
+Syntax: metric[interval].statistic -> ex: CpuUtilization[5m].max() = basic query with mandatory components
+ - metric[interval]{dimensionname="dimensionval"}.statistic -> ex: CpuUtilization[5m]{availabilityDomain = "<>"}.max()
+ - metric [interval].groupingfunction.statistic CpuUtilization[5m].grouping().max () # groupBy(shape).max()
+Nested Query: (CpuUtilization[5m].max() > 80).grouping().max()
+
+iMP: Retention period: metric-def(14days), Alarm-history(90days), dimensions=resource-filter
+-----------------------------------------------------------------------------------------------------
+
+Observability and Management - Logging -------------------------LogGroups(searchable,restrict-access)----svcConnectorHub----------
+
+OCI Logging service: Open standards - fluentd ingestion, compliant with CNCF ; log encryption: Inflight, Disk-level, Archieved. 
+Types of logs: 
+     -> Service logs: Emitted by OCI native services like vcn, oss, devops
+     -> Custom logs: Emitted by apps running on OCI, other cloud-providers, on-premises
+     -> Audit logs: Audit events emitted by OCI audit service, accessed from OCI(OOB)
+
+Log Groups(logical container for logs): Collection of logs stored in compartment; searchable and transportable; canbe used to limit access to sensitive logs(with IAM)
+
+service log category: each service has diff category for diff resources
+service connector hub: move log data to other services like archived-logs to OSS (ex: logging->monitoring, logging->OSS)
+unified monitoring agent(UMA): fluentd-based agent runs on OCIinstance to help ingest custom logs.
+Agent configuration: UMA config that specifies how custom logs are ingested
+
+Audit: records api calls to OCIapi public endpoints as log events. 
+
+Service log format: unified envelope(generic-like version), Oracle-specific metadata(logid,groupid,tenant,comp), data section(msg)
+      - Object storage logs: write event = put,post,delete ; read event = get,list,head
+      - LB logs: log-resource=loadbalancer, log-category = Accesslogs,Errorlogs
+      - VCN Flow logs: log-resource=VCNsubnet, categories=ALL(Accept,reject records)
+
+Custome logs: Ingested using APIPutLogs, unified monitoring agent(can be manual installation or from cloud agent in oci console)
+     - Instance/cloud agent, enable custom-logs plugin ; DG(with instance.id)
+     - create custom log = {name, compartment, loggroup}, agent-configuration:{ select DG & add policy, loginput=filepath:/var/log/messages}
+
+oci logging-search search-logs --search-query "search <>" --time-start --time-end
+Logging Query: includes log-streams, fields, datatypes, operators, expressions 
+     <log_stream> := "<compartment_ocid>(/<log_goup_ocid>(/<log_object_ocid>)? )?" # ex: search "compartmentocid" # () are optional
+     Fields: <field_паmе> := <identifier> (DOT <identifier>) * # data.resourceId = 'ocid..'
+     Datatypes: search with strings, numbers, arrays, booleans, timestamps, and interval ; also with wild-card pattern
+Search logs: select logs to search = { Compartment, then log group, then logname } # advanced search is same as above logging query. 
+
+Service Connector: Source(ex: logging) --> Task(optional, ex: filter, function) --> Target(ex: monitoring) 
+     # For source logging, select comp|loggroup|logname ; Log filter task(optional): where data.requestAction=PUT
+     # For target monitoring, select comp|metricNamespace|metric ; add optional dimensions if any.
+     Another example logging to Object storage(Target, select comp|bucket). 
+     ## After service creation, first example=verify in monitoring console, another example=verify in OSS bucket if archieved logs stored. 
+-------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
