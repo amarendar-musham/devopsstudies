@@ -505,9 +505,10 @@ Service log format: unified envelope(generic-like version), Oracle-specific meta
       - LB logs: log-resource=loadbalancer, log-category = Accesslogs,Errorlogs
       - VCN Flow logs: log-resource=VCNsubnet, categories=ALL(Accept,reject records)
 
-Custome logs: Ingested using APIPutLogs, unified monitoring agent(can be manual installation or from cloud agent in oci console)
-     - Instance/cloud agent, enable custom-logs plugin ; DG(with instance.id)
+Custom-logs: Ingested using APIPutLogs, unified monitoring agent(can be manual installation or from cloud agent in oci console)
+     - Instance/cloud agent, enable custom-logs plugin; DG(with instance.id)
      - create custom log = {name, compartment, loggroup}, agent-configuration:{ select DG & add policy, loginput=filepath:/var/log/messages}
+  Ex-use-case: install UMA on k8s worker nodes. create DynamicGroup(w/ nodes), add IAM logging policies, configure custom-logs, and view logs.
 
 oci logging-search search-logs --search-query "search <>" --time-start --time-end
 Logging Query: includes log-streams, fields, datatypes, operators, expressions 
