@@ -11,6 +11,7 @@ LICENSE, README.md
 
 Helm charts - Values.yaml -> vars used in other yaml as {{ .Values.replicacount }}, {{ .Values.image.repository }}
 
+## Note: give -n namespace to recognize the k8s workspace
 $helm install MyfirstChart binami/wordpress ## [ReleaseName][Chart]
 $helm upgrade -f Values.yaml MyfirstChart binami/wordpress ## [Release][Chart]
 $helm list -a ## lists releases in the namespace
