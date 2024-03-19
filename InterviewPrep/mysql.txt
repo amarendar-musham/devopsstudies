@@ -59,10 +59,22 @@ join invoice_item ivt on iv.id = ivt.invoice_id
 join product pd on ivt.product_id = pd.id
 order by iv.total_price desc, ct.city_name asc, pd.product_name asc;
 
-======================================================== Group By and Order By example
+============= Group By and Order By example =============
 select count(*), to_char(created,'MONYYYY') from ExampleTable 
 group by to_char(created,'MONYYYY')
 order by to_date(to_char(created,'MONYYYY'),'MMYYYY') 
-======================================================== Get Unique records of a specific column
+
+============== Get Unique records of a specific column ============
 select distinct <col1> from ExampleTable ## Ex: col1=city_name
+
+============= To filter recs with null values ================
+select nvl(col1,0) as field from ExampleTable where field=nvl(:var1,0) ## var1 can be a variable in apex for example.
+
+============== Get a count with condition ============
+select count(case when field='True' then 1 else null end) from ExampleTable
+
+=======If a filter value is null choose all records ===========
+Ex: Null display value = ALL, Null return value = %
+==> field LIKE :var || %
+
 
