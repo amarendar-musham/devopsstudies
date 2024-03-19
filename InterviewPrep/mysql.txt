@@ -59,7 +59,10 @@ join invoice_item ivt on iv.id = ivt.invoice_id
 join product pd on ivt.product_id = pd.id
 order by iv.total_price desc, ct.city_name asc, pd.product_name asc;
 
-========================================================
-
-
+======================================================== Group By and Order By example
+select count(*), to_char(created,'MONYYYY') from ExampleTable 
+group by to_char(created,'MONYYYY')
+order by to_date(to_char(created,'MONYYYY'),'MMYYYY') 
+======================================================== Get Unique records of a specific column
+select distinct <col1> from ExampleTable ## Ex: col1=city_name
 
