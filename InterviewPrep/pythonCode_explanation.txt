@@ -97,6 +97,11 @@ for row in json_data: 		## Can be json_data["results"] or json_data["notificatio
 	print(json.dumps(row["number"]).replace('"','')+ "|" + row["status"]) 
 	print(json.dumps(payload,indent=1))
 
+## skip a iteration in for loop
+for key in data:
+    if key in ('starttime','endtime'): continue
+    print(data[key])
+
 def ex(str):
 	ls=[]
 	....get json_data
