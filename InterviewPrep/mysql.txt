@@ -77,4 +77,6 @@ select count(case when field='True' then 1 else null end) from ExampleTable
 Ex: Null display value = ALL, Null return value = %
 ==> field LIKE :var || %
 
-
+=====================Alter Table================================
+alter table ExampleTable ADD column_name <data_type>; ## data_type.Ex: varcar2(50) 
+alter table ExampleTable ADD primary key (col_name); 
