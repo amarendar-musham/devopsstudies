@@ -70,13 +70,19 @@ select distinct <col1> from ExampleTable ## Ex: col1=city_name
 ============= To filter recs with null values ================
 select nvl(col1,0) as field from ExampleTable where field=nvl(:var1,0) ## var1 can be a variable in apex for example.
 
-============== Get a count with condition ============
-select count(case when field='True' then 1 else null end) from ExampleTable
+============== case-when examples ============
+select count(case when field='True' then 1 else null end) from ExampleTable ##Get a count with condition
+select col1,col2, case when col1='val1' then 'red' else 'green' end as colors from ExampleTable # create new column=colors
 
-=======If a filter value is null choose all records ===========
-Ex: Null display value = ALL, Null return value = %
-==> field LIKE :var || %
+===============imaginary table use in a query============
+with IMGTBL as ( select * from TB1; union all ; select * from TB2) 
+select * from IMGTBL
 
 =====================Alter Table================================
 alter table ExampleTable ADD column_name <data_type>; ## data_type.Ex: varcar2(50) 
 alter table ExampleTable ADD primary key (col_name); 
+
+
+=======If a filter value is null choose all records ===========
+Ex: Null display value = ALL, Null return value = %
+==> field LIKE :var || %
