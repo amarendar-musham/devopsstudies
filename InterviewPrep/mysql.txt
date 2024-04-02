@@ -63,6 +63,8 @@ order by iv.total_price desc, ct.city_name asc, pd.product_name asc;
 select count(*), to_char(created,'MONYYYY') from ExampleTable 
 group by to_char(created,'MONYYYY')
 order by to_date(to_char(created,'MONYYYY'),'MMYYYY') 
+TO_DATE:
+    select * from ExampleTable where created >= to_date('3/1/2024','mm/dd/yyyy') ## created can be timezone(6)
 
 ============== Get Unique records of a specific column ============
 select distinct <col1> from ExampleTable ## Ex: col1=city_name
