@@ -75,8 +75,11 @@ select count(case when field='True' then 1 else null end) from ExampleTable ##Ge
 select col1,col2, case when col1='val1' then 'red' else 'green' end as colors from ExampleTable # create new column=colors
 
 ===============Regex usage for where/case-when condition===============
-select * from ExampleTable where regexp_like(type,'good_(morning|night)') ## searches for regex pattern in type column
-select * from ExampleTable where regexp_like('good_morning,good_night',type) ## to search multiple values
+simple pattern matching::
+    select * from ExampleTable where type LIKE '%_morning%'
+regex pattern matching::
+    select * from ExampleTable where REGEXP_LIKE(type,'good_(morning|night)') ## regex pattern in type column
+    select * from ExampleTable where regexp_like('good_morning,good_night',type) ## to search multiple values
 ## Can be used >> case when regexp_like(...) then '...' end as col<3>
 
 ===============imaginary table use in a query============
