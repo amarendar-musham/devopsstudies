@@ -74,14 +74,21 @@ select nvl(col1,0) as field from ExampleTable where field=nvl(:var1,0) ## var1 c
 select count(case when field='True' then 1 else null end) from ExampleTable ##Get a count with condition
 select col1,col2, case when col1='val1' then 'red' else 'green' end as colors from ExampleTable # create new column=colors
 
+===============Regex usage for where/case-when condition===============
+select * from ExampleTable where regexp_like(type,'good_(morning|night)') ## searches for regex pattern in type column
+select * from ExampleTable where regexp_like('good_morning,good_night',type) ## to search multiple values
+## Can be used >> case when regexp_like(...) then '...' end as col<3>
+
 ===============imaginary table use in a query============
 with IMGTBL as ( select * from TB1; union all ; select * from TB2) 
 select * from IMGTBL
 
+=============== Replace method usage ===============
+select replace(type,'good_','bad_') from ExampleTable 
+
 =====================Alter Table================================
 alter table ExampleTable ADD column_name <data_type>; ## data_type.Ex: varcar2(50) 
 alter table ExampleTable ADD primary key (col_name); 
-
 
 =======If a filter value is null choose all records ===========
 Ex: Null display value = ALL, Null return value = %
