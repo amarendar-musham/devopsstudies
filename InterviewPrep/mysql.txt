@@ -75,6 +75,9 @@ select nvl(col1,0) as field from ExampleTable where field=nvl(:var1,0) ## var1 c
 ============== case-when examples ============
 select count(case when field='True' then 1 else null end) from ExampleTable ##Get a count with condition
 select col1,col2, case when col1='val1' then 'red' else 'green' end as colors from ExampleTable # create new column=colors
+    select type, status,
+    case when status = 'SUCCESS' then (count - (select count from HLG where type=t.type and status='HEALED')) else count end as count,
+    from hlg t order by type,status desc
 
 ===============Regex usage for where/case-when condition===============
 simple pattern matching::
