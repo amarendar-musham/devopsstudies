@@ -65,6 +65,7 @@ group by to_char(created,'MONYYYY')
 order by to_date(to_char(created,'MONYYYY'),'MMYYYY') 
 TO_DATE:
     select * from ExampleTable where created >= to_date('3/1/2024','mm/dd/yyyy') ## created can be timezone(6)
+    Note: to_char(created, 'mm/dd/yyyy') <= <some_date> ## Must convert the "created" field for less than a date. 
 
 ============== Get Unique records of a specific column ============
 select distinct <col1> from ExampleTable ## Ex: col1=city_name
