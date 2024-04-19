@@ -89,8 +89,15 @@ regex pattern matching::
 ## Can be used >> case when regexp_like(...) then '...' end as col<3>
 
 ===============imaginary table use in a query============
-with IMGTBL as ( select * from TB1; union all ; select * from TB2) 
-select * from IMGTBL
+Ex1: with tb as ( select * from XX; union all ; select * from YY) ## further used as <select * from tb>
+Ex2: with tb1 as (select * from XX), tb2 as (select * from YY) ## further used as two separate tables: tb1, tb2
+
+===============Fill the gaps with zeros(COALESCE)============  ## use above imaginary table 
+select Types.type, Statuses.status, coalesce(your_table.count,0)
+from (select distinct type from your_table) Types
+cross join (select distinct status from your_table) Statuses
+left join your_table on Types.type=your_table.type and Statuses.status=your_table.status
+### ex: type: prov|upg|patch, status: success|failed|healed
 
 =============== Replace method usage ===============
 select replace(type,'good_','bad_') from ExampleTable 
