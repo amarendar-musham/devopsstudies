@@ -62,7 +62,8 @@ order by iv.total_price desc, ct.city_name asc, pd.product_name asc;
 ============= Group By and Order By example =============
 select count(*), to_char(created,'MONYYYY') from ExampleTable 
 group by to_char(created,'MONYYYY')
-order by to_date(to_char(created,'MONYYYY'),'MMYYYY') 
+order by to_date(to_char(created,'MONYYYY'),'MMYYYY')
+
 TO_DATE:
     select * from ExampleTable where created >= to_date('3/1/2024','mm/dd/yyyy') ## created can be timezone(6)
     Note: to_char(created, 'mm/dd/yyyy') <= <some_date> ## Must convert the "created" field for less than a date. 
@@ -79,6 +80,8 @@ select col1,col2, case when col1='val1' then 'red' else 'green' end as colors fr
     select type, status,
     case when status = 'SUCCESS' then (count - (select count from HLG where type=t.type and status='HEALED')) else count end as count,
     from hlg t order by type,status desc
+
+select id, type, case when regexp_like(status, 'FAILED|IN_PROGRESS|TIMEOUT') then 'FAILED' else status from ExampleTable
 
 ===============Regex usage for where/case-when condition===============
 simple pattern matching::
@@ -100,7 +103,7 @@ left join your_table on Types.type=your_table.type and Statuses.status=your_tabl
 ### ex: type: prov|upg|patch, status: success|failed|healed
 
 =============== Replace method usage ===============
-select replace(type,'good_','bad_') from ExampleTable 
+select replace(type,'good_','bad_') from ExampleTable ## syntax: replace(column, string, to_replace_with)
 
 =====================Alter Table================================
 alter table ExampleTable ADD column_name <data_type>; ## data_type.Ex: varcar2(50) 
