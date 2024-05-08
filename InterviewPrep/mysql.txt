@@ -41,7 +41,12 @@ delete from table1 where example_recent > 0; ## clears data of recent update
 source for GET api <endpoint>/get/:key==> select * from ExampleTable where KEY=:key
 pl/sql for POST api <endpoint>/insert ==> begin insert into tb1 (col1, col2, col3) VALUES (:col1, :col2, :col3) ; end;
 pl/sql for PUT api <endpoint>/update/:key ==> begin update tb1 set col1 = :col1, col2 = :col2, col3 = :col3 where KEY = :key; end; 
------------------------------------------------------------------========================================================
+
+==> If a filter value is null choose all records
+Ex: Null display value = ALL, Null return value = %
+==> field LIKE :var || %
+
+========================================================
 example queries with join statement....
 
 SELECT a.stock_code FROM price_today a
@@ -125,6 +130,4 @@ alter table <schema>.<tb1> add constraint <name> primary key ("col1");
 alter table <schema>.<tb1> add constraint <name> foreign key ("col1") references <tb2> ("col2");
 alter table SCH1.tb1 add col1 varchar2(4000) check (col1 is null or col1 is JSON) ## <add|modify> ## json constraint
 
-=======If a filter value is null choose all records ===========
-Ex: Null display value = ALL, Null return value = %
-==> field LIKE :var || %
+
