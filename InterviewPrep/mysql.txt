@@ -104,6 +104,10 @@ cross join (select distinct status from your_table) Statuses
 left join your_table on Types.type=your_table.type and Statuses.status=your_table.status
 ### ex: type: prov|upg|patch, status: success|failed|healed
 
+ListAggregation:
+select name, sum(marks), listagg(subject || '-' || marks, '/') within group(order by subject) from tb1 
+Result: Amar 100 maths-50/science-50 ## input: 1)Amar maths 50, 2)Amar science 50
+
 =============== Replace method usage ===============
 select replace(type,'good_','bad_') from ExampleTable ## syntax: replace(column, string, to_replace_with)
 
