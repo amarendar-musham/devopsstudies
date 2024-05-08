@@ -96,7 +96,9 @@ Ex1: with tb as ( select * from XX; union all ; select * from YY) ## further use
 Ex2: with tb1 as (select * from XX), tb2 as (select * from YY) ## further used as two separate tables: tb1, tb2
 
 ===============Fill the gaps with zeros(COALESCE)============  ## use above imaginary table 
-select Types.type, Statuses.status, coalesce(your_table.count,0)
+## coalesce(multi-args) ~ nvl(only 2args), gives first non-null value
+
+select Types.type, Statuses.status, coalesce(your_table.count,0) 
 from (select distinct type from your_table) Types
 cross join (select distinct status from your_table) Statuses
 left join your_table on Types.type=your_table.type and Statuses.status=your_table.status
