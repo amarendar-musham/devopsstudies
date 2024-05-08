@@ -105,6 +105,9 @@ select replace(type,'good_','bad_') from ExampleTable
 =====================Alter Table================================
 alter table ExampleTable ADD column_name <data_type>; ## data_type.Ex: varcar2(50) 
 alter table ExampleTable ADD primary key (col_name); 
+alter table <schema>.<tb1> add constraint <name> primary key ("col1");
+alter table <schema>.<tb1> add constraint <name> foreign key ("col1") references <tb2> ("col2");
+alter table SCH1.tb1 add col1 varchar2(4000) check (col1 is null or col1 is JSON) ## <add|modify> ## json constraint
 
 =======If a filter value is null choose all records ===========
 Ex: Null display value = ALL, Null return value = %
