@@ -131,7 +131,6 @@ alter table <schema>.<tb1> add constraint <name> foreign key ("col1") references
 alter table SCH1.tb1 add col1 varchar2(4000) check (col1 is null or col1 is JSON) ## <add|modify> ## json constraint
 
 JSON_TABLE:================================
-
 select t.*, j.col1, j.col2 from tb1 t, json_table(t.jsoncol, $[*] columns (...)) as j ## jsoncol = jsonArray(array of json objects)
 Ex: select t.type, j.JOB, min(j.START), max(j.END), (:E - :S)*24 as diff ## ":E|:S" = to_date(max(END),'..format..')
 from tb1 t, JSON_TABLE(t.jsoncol, $[*] columns (
