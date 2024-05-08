@@ -105,7 +105,7 @@ left join your_table on Types.type=your_table.type and Statuses.status=your_tabl
 ### ex: type: prov|upg|patch, status: success|failed|healed
 
 ListAggregation:
-select name, sum(marks), listagg(subject || '-' || marks, '/') within group(order by subject) from tb1 
+select name, sum(marks), listagg(subject || '-' || marks, '/') within group(order by subject) from tb1 group by name 
 Result: Amar 100 maths-50/science-50 ## input: 1)Amar maths 50, 2)Amar science 50
 
 =============== Replace method usage ===============
