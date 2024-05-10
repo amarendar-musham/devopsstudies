@@ -95,7 +95,7 @@ select id, type, case when regexp_like(status, 'FAILED|IN_PROGRESS|TIMEOUT') the
 
 select id,type,status from tb1 ORDER BY case when type='..' then 0 when type='..' then 1 end
 
-select et.*, case when type='..' then 'typeX' else type end from ExampleTable et ## create a new column
+select et.*, (case when type='..' then 'typeX' else type end) as mod_type from ExampleTable et ## create a new column
 
 ===============Regex usage for where/case-when condition===============
 simple pattern matching::
