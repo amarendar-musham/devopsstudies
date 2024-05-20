@@ -121,6 +121,8 @@ ls = file.readlines() ## create a list with lines in a file, note: includes - "\
 
 ls = [x**2 for x in range(10) if x**2 % 2 == 0] #[0, 4, 16, 35, 64] ## list comprehensions
 dict = { k: v.replace("prod","dev") for k,v in dict.items() } ## dictionary comprehensions
+list_n_dict(jsonArray) = [ {k:v for k,v in x.items() if k in required_data_set } for x in json_data ] ## json_data is a JSON array
+ 	--> break_down = [x for x in json_data] + {k:v for k,v in dict.items()} 
 
 str="{c},{b},{a}".format(a=5,b=9,c=7) ## 7,9,5 ## named args. 
 str="{0}{1}{0}".format("abra","cad") ## abracadabra..
