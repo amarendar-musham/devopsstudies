@@ -47,7 +47,7 @@ allow dynamic-group IB to manage objects in tenancy where all {target.bucket.nam
 
 VCN--------------------------------------------------------------------------
 cidr - classeless Inter-domain routing = n/w address/prefix or mask (mask = how many bits fixed in n/w address||8 each digit)
-Ex: 192.168.1.0/24 # 24 = 8(3) -> (192.168.1) = Network address(Fixed), (0-255) = Host address(Can vary)
+Ex: 192.168.1.0/24 # 24bits-fixed = (8.8.8.0 bits fixed) -> (192.168.1) = Network address(Fixed), (0-255) = Host address(Can vary)
 First addr = 192.168.1.1, Last addr = 192.168.1.254, Broadcast addr = 192.168.1.255
 192.168.1.44/27 -> 27bits=n/w addr, 32-27= 5bits host addr, 2power5=32 each, 0-32|32-64|... ===>> 192.168.1.32/27(It belongs here)
 
