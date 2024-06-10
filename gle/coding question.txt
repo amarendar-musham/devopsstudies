@@ -47,7 +47,7 @@ def check_palindrome(s):
     length = len(ls)
     hlength = (len(ls) / 2).__floor__()
     one = "".join(ls[:hlength])
-    two = "".join(ls[-hlength:])[::-1] ## reverse a string
+    two = "".join(ls[::-1][:hlength]) ## [::-1] to reverse a string
     print(one)
     print(two)
     if one == two:
@@ -56,4 +56,5 @@ def check_palindrome(s):
     
 if __name__ == "__main__":
     s = "geeksskeeg"
+    #s = "geeksfkeeg"
     print(check_palindrome(s))
