@@ -40,3 +40,20 @@ for (( i=1; i<=$T; i++ )); do
         fi
 
 done
+========================
+#!/bin/python3
+def check_palindrome(s):
+    ls = list(s)
+    length = len(ls)
+    hlength = (len(ls) / 2).__floor__()
+    one = "".join(ls[:hlength])
+    two = "".join(ls[-hlength:])[::-1] ## reverse a string
+    print(one)
+    print(two)
+    if one == two:
+        return True
+    else: return False
+    
+if __name__ == "__main__":
+    s = "geeksskeeg"
+    print(check_palindrome(s))
