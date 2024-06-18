@@ -113,8 +113,10 @@ END----------
 .........................................................
 z = ['apple', 'banana', 'cherry'] ## print(list(enumerate(z)) ## for i, item in enumerate(z): print("{}-{}".format(i,item))
 
-List of chars in String ==> for char in word: ls.append(char)
+List of chars in String ==> for char in word: ls.append(char) ## "ls" is an array of chars...
 String operations ==> for i in range(len(word)): if word[i] == word[i-1]: print("dups-near")
+Reverse an array of string or sentence ==> s = "I like this program very much"; " ".join(s.split(" ")[::-1]) ## much very program this like i
+Note: [::-1] reverses an array. So convert string/sentence first into an array. 
 
 print(f.read()) ## similar to cat in Bash. 
 print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 //new line
