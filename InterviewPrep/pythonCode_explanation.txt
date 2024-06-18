@@ -113,6 +113,9 @@ END----------
 .........................................................
 z = ['apple', 'banana', 'cherry'] ## print(list(enumerate(z)) ## for i, item in enumerate(z): print("{}-{}".format(i,item))
 
+List of chars in String ==> for char in word: ls.append(char)
+String operations ==> for i in range(len(word)): if word[i] == word[i-1]: print("dups-near")
+
 print(f.read()) ## similar to cat in Bash. 
 print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 //new line
 
