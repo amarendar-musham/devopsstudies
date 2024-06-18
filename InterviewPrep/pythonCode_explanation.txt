@@ -118,6 +118,8 @@ String operations ==> for i in range(len(word)): if word[i] == word[i-1]: print(
 Reverse an array of string or sentence ==> s = "I like this program very much"; " ".join(s.split(" ")[::-1]) ## much very program this like i
 Note: [::-1] reverses an array, string is array of chars ##  "amar"[::-1] == "rama" 
 Palindrome check: if s == s[::-1]: True
+Number of vowels in a given string = len([1 for char in s if char in vo]) (or) sum(1 for char in s if char in vo) ; vo="aeiouAEIOU" ; 
+
 
 print(f.read()) ## similar to cat in Bash. 
 print("The value of var1 is " + var1 + "\n") ## Output: The value of var1 is 10 //new line
