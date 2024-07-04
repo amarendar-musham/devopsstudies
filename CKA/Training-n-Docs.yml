@@ -9,7 +9,7 @@ ContainerRuntime: |
 	cri = container runtime interface, cni = container network interface
 
 CNI: pod-network add-on coredns+flannel/calico. calico/flannel supports HostPort and HostIP functionality, not many others. 
-	In the case of OKE, we should provide a CIDR(10.0.0.0/16) for flannel-cni that does not overlap with the OKE worker subnet(172.0.0.0/28)
+	In the case of OKE, we should provide a CIDR(eg.10.0.0.0/16) for flannel-cni that does not overlap with the OKE worker subnet(eg.172.0.0.0/28)
  
 CoreDNS+calico/flannel/canel: | 
 	Provides network communication b/w pods, ability to ping/curl from pod to pod. 
