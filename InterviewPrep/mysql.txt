@@ -21,15 +21,16 @@ $ mysql> show create table table1 ## prints sql query that used to create the ta
 $ mysql> source example.sql ; # run sql queries script
 
 create-table.sql==================================
-create table example_metrics (
-example_id int AUTO_INCREMENT,
-col1 varchar (100),
-col2 varchar (100),
-col3 int (10),
-col4 decimal (5, 2),
-example_recent tinyint default (1),
-example_updated timestamp default now(),
-primary key (example_id)     );
+create table "example" ## alt: reg_id int auto_increment,
+( "reg_id" number generated always AS identity 
+        minvalue 1 maxvalue 9999999999999999999999999999 
+        increment by 1 start with 1 cache 20 noorder nocycle nokeep noscale 
+        not null enable,
+    "email" varchar2(100), 
+    "phone" varchar2(15), 
+    "gender" varchar2(10), 
+    "reg_date" date default sysdate, 
+    primary key ("reg_id") );
 ========================================================
 
 update table1 set example_recent = 0 where example_id > 0; ## set recent=0 for all existing data
