@@ -14,7 +14,7 @@ Helm charts - Values.yaml -> vars used in other yaml as {{ .Values.replicacount 
 ## Note: give -n namespace to recognize the k8s workspace
 $helm install MyfirstChart binami/wordpress ## [ReleaseName][Chart]
 $helm upgrade -f Values.yaml MyfirstChart binami/wordpress ## [Release][Chart]
-$helm list -a ## lists releases in the namespace
+$helm list -a -n <namespace>## lists releases in the namespace
 $helm rollback MyfirstChart 1 ## [Release][Revision]
 $helm uninstall MyfirstChart ## [Release]
 
@@ -40,3 +40,11 @@ helm package example-chart/ .
 helm push example-chart-1.0.tgz <artifact-registry> # <cloud-key>://<region-key>.<domain>/tenancy-namespace
 helm pull <artifact-registry>/example-chart --version 0.1.0          
 helm install exv1 example-chart-1.0.tgz -n example-chart -f values.yaml
+
+Troubleshoot any issues. 
+$helm list -a -n <namespace> ## list release names. usually one release per one k8s-namespace. 
+$helm get values <release> -n <> ## user-supplied values if any
+$helm diff revision <release> <revision1> <revision2> -n <> ## ex: helm diff revision rel1 241 242 -n hi
+
+## note: install helm diff using:::: $helm plugin install https://github.com/databus23/helm-diff  
+
