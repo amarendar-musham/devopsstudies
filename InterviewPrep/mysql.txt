@@ -22,16 +22,22 @@ $ mysql> source example.sql ; # run sql queries script
 
 create-table.sql==================================
 create table "example" ## alt: reg_id int auto_increment,
-( "reg_id" number generated always AS identity 
-        minvalue 1 maxvalue 9999999999999999999999999999 
-        increment by 1 start with 1 cache 20 noorder nocycle nokeep noscale 
-        not null enable,
+( "reg_id" number generated always AS identity minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 1 cache 20 noorder nocycle nokeep noscale not null enable,
     "email" varchar2(100), 
     "phone" varchar2(15), 
     "gender" varchar2(10), 
     "reg_date" date default sysdate, 
     primary key ("reg_id") );
-========================================================
+-----
+create table photo_tb
+(   "photono" int auto_increment,
+    "image" blob, 
+    "mimetype" varchar2(255 CHAR), 
+    "imagename" varchar2(400 CHAR), 
+    "image_last_update" date, 
+     constraint "photo_tb_PK" primary key ("photono")
+  using index  enable
+) ; ========================================================
 
 update table1 set example_recent = 0 where example_id > 0; ## set recent=0 for all existing data
 insert into table1 (col1, col2, col3, col4) values ('string1','string2',100,10.0); 
