@@ -15,7 +15,7 @@ FLUSH PRIVILEGES; ## reload grant tables...
 $ mysql> show databases ;
 $ mysql> use abcd ; ## abcd database schema
 $ mysql> show tables ;
-$ mysql> select * from table1 ; 
+$ mysql> select * from table1 ; select * from table1 FETCH FIRST 5 ROWS ONLY ## top 5 rows
 $ mysql> desc table1 ; # shows the table structure
 $ mysql> show create table table1 ## prints sql query that used to create the table table1
 $ mysql> source example.sql ; # run sql queries script
