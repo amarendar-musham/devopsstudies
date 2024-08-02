@@ -9,6 +9,20 @@ update table1 set col1 = val1, col2=val2 where col3 > VAL; ## set recent=0 for a
 join-[ON]:                select ... from <table> a JOIN <table> b ON a.<> = b.<>
 case-when-[else]-end:     case when <cond> then "output" else "" end ## used for new columns, order by
 regexp_like:              regexp_like(col1, pattern) ## used in Where (or) Case-When conditions
+
+new-column: select p.*, <col1> from <table> p
+listagg: listagg(subject || '-' || marks, '/') within group(order by subject) ## used for new columns
+replace: replace(type,'good_','bad_')  ## new columns 
+min|max|avg: avg(<col1>) ## used for new columns
+percentile_cont: percentile_cont(0.75) within group(order by diff asc) over (partition by type,job) ## used for new column = 75%(diff)
+
+imaginary table: with tb1 as (<query1>), tb2 as (<query2>)  ## used futher in actual query. 
+
+json_table: json_table(p.jsoncol, '$[*]' columns(col1 datatype(length) path '$.col1',....) )
+	usage: select p.*,min(j.col1) from table p, json_table(..) as j 
+            ## To give jsonArray objects in single row, then use min/max/avg (or) for multiple rows, use [group by p.<>,j.col1]
+            ## ex: select p.type,j.job, min(j.start),max(j.end),(end-start) as diff ....... group by p.type,j.job => 
+
 =====================================================================
 
 $ vim /etc/yum.repos.d/example.repo
