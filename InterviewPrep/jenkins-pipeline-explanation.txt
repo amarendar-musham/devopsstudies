@@ -20,10 +20,10 @@ build job: name
 parameters: [ type:'stringparam' name:'ex1' value:'val1' ]
 
 2. Defining parameters::
-properties([
+properties([  parameters([
 	string(name:'', defaultValue:'', desc:''),
 	choice(name:'', choices:'c1\nc2', desc:'')
-	])
+	]) ])
 
 3. Using pod template as jenkins agent::
 node('pod tmpl name') {	...
