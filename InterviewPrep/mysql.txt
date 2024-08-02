@@ -23,6 +23,16 @@ json_table: json_table(p.jsoncol, '$[*]' columns(col1 datatype(length) path '$.c
             ## To give jsonArray objects in single row, then use min/max/avg (or) for multiple rows, use [group by p.<>,j.col1]
             ## ex: select p.type,j.job, min(j.start),max(j.end),(end-start) as diff ....... group by p.type,j.job => 
 
+join-on types: https://www.w3schools.com/sql/sql_join.asp
+	Left join: Returns all-rows(left) + matching rows(right) ## Right join X Left join
+	Inner join: Combines tables on matching values in a specified column
+	Full outer join: Returns all-rows(both), as long as there is at least one match
+	Cross join: Returns every combination of each-row from table1 with each-row from table2
+		## ex: select t.type,s.status from Types t cross join Status s 
+	
+	Self join: Joins a table to itself, allowing for comparison of rows within the same table
+		## ex: select a.<>,b.<> from table1 a, table1 b where a.<> = b.<>
+	Natural join: Joins tables based on a common column
 =====================================================================
 
 $ vim /etc/yum.repos.d/example.repo
