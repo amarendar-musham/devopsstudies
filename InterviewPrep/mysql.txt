@@ -22,7 +22,7 @@ json_table: json_table(p.jsoncol, '$[*]' columns(col1 datatype(length) path '$.c
 	usage: select p.*,min(j.col1) from table p, json_table(..) as j 
             ## To give jsonArray objects in single row, then use min/max/avg (or) for multiple rows, use [group by p.<>,j.col1]
             ## ex: select p.type,j.job, min(j.start),max(j.end),(end-start) as diff ....... group by p.type,j.job => 
-
+-----------------------------------------
 join-on types: https://www.w3schools.com/sql/sql_join.asp
 	Left join: Returns all-rows(left) + matching rows(right) ## Right join X Left join
 	Inner join: Combines tables on matching values in a specified column
