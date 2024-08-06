@@ -1,4 +1,4 @@
-Modules used: json,requests,pandas,concurrent.futures
+Modules used: os,re; json,requests,csv/pandas,concurrent.futures
 -----
 response = requests.get('<api>', auth=('XXXX', 'XXXX'))
 response = requests.post(update_url, json=payload, headers=headers) ## (data|json) 
