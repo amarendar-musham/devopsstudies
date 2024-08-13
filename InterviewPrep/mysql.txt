@@ -15,6 +15,7 @@ replace: replace(type,'good_','bad_')  ## new columns
 min|max|avg: avg(<col1>) ## used for new columns
 listagg: listagg(subject || '-' || marks, '/') within group(order by subject) ## used for new columns
 percentile_cont: percentile_cont(0.75) within group(order by diff asc) over (partition by type,job) ## used for new column = 75%(diff)
+		## this gives a 75th value in the list of {1..100}
 
 imaginary table: with tb1 as (<query1>), tb2 as (<query2>)  ## used futher in actual query. 
 
