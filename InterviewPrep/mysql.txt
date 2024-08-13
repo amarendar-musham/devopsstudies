@@ -184,6 +184,6 @@ from tb1 t, JSON_TABLE(t.jsoncol, $[*] columns (
 
 Get 75% avg of diff: 
 select type, job, avg(case when diff <= 75_val then diff end) as AVG_75 from 
-(select tb1.*, percentile_cont(0.75) within group(order by diff asc) over (partition by type,job) as 75_val from tb1)
+(select tb1.*, percentile_cont(0.75) within group(order by diff asc) over (partition by type,job) as 75p_cutVal from tb1)
 group by type, job
 ================================================================
