@@ -91,7 +91,7 @@ ETCDsnapshot : |
 	k get pods -n kube-system <etcd-pod-name> -oyaml ## spec.containers.command.etcd - container various params. 
 
 	ETCDCTL_API=3 etcdctl get / --prefix --keys-only
-	ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 snapshot save /root/example.db --cacert --cert --key --endpoint=
+	ETCDCTL_API=3 etcdctl snapshot save /root/example.db --cacert --cert --key --endpoints=https://127.0.0.1:2379
 	Restore= etcdctl snapshot restore --data-dir=/var/lib/etcd-backup etcd-backup.db ## note the data-dir here. 
 	edit file /etc/kubernetes/manifests/etcd.yaml, update spec.volumes.hostPath to new data-dir. etcd pod will re-create. 
 	etcdctl snapshot status
