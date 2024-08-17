@@ -215,7 +215,7 @@ https://www.cncf.io/wp-content/uploads/2020/08/CNCF-Presentation-Template-K8s-De
 
 How pvc and pv connected?
 ingress?
-statefulSet - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+statefulSet - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/ ## ex-usecase = databases
             1. StatefulSet provides unique identitiy for each pod(web-0,web-1,web-2). Pods are deleted/created in order. 
             2. Each pod gets its own dedicated persistent storage. When pod deleted and recreated, it will reattach to its original PVC
             3. It ensures order of scaling or deployment. Also scaled up or down in Order. Also, rolling updates
