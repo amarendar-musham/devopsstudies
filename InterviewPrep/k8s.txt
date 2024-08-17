@@ -2,7 +2,7 @@ Architecture ===
 Kubernetes Master ## all components runs as pod in kube-system namespace
             etcd <-> (key-value store that keeps the current state of cluster)
             kube-apiserver (serves REST operations, connects to etcd database)
-            kube-controllermanager (manages current state of cluster/change to desired state)
+            kube-controllermanager (Various Controllers that helps Managing cluster for desired state) Ex: Node/Replication/Endpoint Controllers
             kube-scheduler (schedules pods on specific nodes based on labels, taints, tolerations set for pods)
            
 kubernetes node ## kube-proxy runs as pod(kube-system), kubelet is a service(systemctl)
