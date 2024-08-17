@@ -6,9 +6,8 @@ Kubernetes Master ## all components runs as pod in kube-system namespace
             kube-scheduler (schedules pods on specific nodes based on labels, taints, tolerations set for pods)
            
 kubernetes node ## kube-proxy runs as pod(kube-system), kubelet is a service(systemctl)
-
-  kubelet (Talks to container engine to ensure pods availability), 1. 
-  kube-proxy (runs on everynode + uses iptables to provide an interface to connect to k8s components)
+            kubelet (Talks to container engine to ensure pods availability), 1. 
+            kube-proxy (runs on everynode + uses iptables to provide an interface to connect to k8s components)
   
 container runtime: takes care of actually running the containers. 
 supervisord: monitors and guarantees the availability of kubelet and docker processes. 
