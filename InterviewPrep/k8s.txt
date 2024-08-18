@@ -38,7 +38,7 @@ Manifests: apiVersion,Kind,metadata,spec
 
 volumes = name,emptyDir:{}/nfs/hostPath/persistentVolumeClaim/secret/configMap               
             ## nfs(server,path), hostPath(path), pvc(claimName), secret(secretName), cm(name) 
-containers = name, image, ports(name,port), volumeMounts(name,path), env, lifecycle.{postStart,preStop}.exec.command 
+containers = name, image, ports(name,port), volumeMounts(name,path), env, lifecycle.{postStart,preStop}.exec.command, resources.{requests|limits}.{memory|cpu}
             ## env(name,ValueFrom.{secretKeyRef|configMapKeyRef}.key) ##
 
 [Kind] = [spec] fields
