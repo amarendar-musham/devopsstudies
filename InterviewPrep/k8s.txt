@@ -59,6 +59,14 @@ configMap.data = key1:<file-content> ## keys=filenames
 
 HorizontalPodAutoscaler.spec = scaleTargetRef(depl.spec), minReplicas, maxReplicas, metrics(resource=cpu/memory)
 
+## kubeconfig for a user does requires .key + .crt => kubectl config set-credentials johndoe --client-key=johndoe.key --client-certificate=johndoe.crt --embed-certs=true
+Create a Private key (.key file) ## using openssl command
+CertificateSigningRequest.spec = request(<base64 .key file>) ## k certificate approve <csr.name> ==> .crt file-content 
+Role.rules = apiGroups,resources,verbs            ## ex-resources=pods, verbs=get,list,create
+RoleBinding.{subjects(User.name),roleRef(name)}
+
+ClusterRole & ClusterRoleBinding in similar way does support serviceAccounts instead of a User. 
+
 =================================================================================
 
 Cluster creation(kubeadm) ===
