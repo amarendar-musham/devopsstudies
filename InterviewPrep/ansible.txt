@@ -1,3 +1,4 @@
+Configuration Management:
 Simple, agentless architecture, communicating over SSH or WinRM, and works by pushing configurations from a central server to nodes. 
 Agentless = No software needs to be installed on the nodes being managed
 Ansible uses YAML for playbooks, unlike chef/Puppet that uses Ruby-based DSL's ## set of tasks that describes desired.state of system = configurations/deployments
