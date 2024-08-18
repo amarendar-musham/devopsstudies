@@ -11,12 +11,8 @@ Roles = organizes playbooks into re-usable components. separate dirs makes it ea
         ## dir structure = roles/<role-name>/{tasks/, handlers/, files/, templates/, vars/, defaults/, meta/} # Role dependencies are managed in the meta/main.yml 
 Ansible facts = variables(nodes info) gathered by "setup" module ## ex: os-type,ipaddr used to make decisions for custom playbooks
 Ansible handlers = Only triggered when a change is made, like restarting a service after a configuration file has been updated. defined w/ "notify" keyword.
-
-
-
-
-
 -==========================================================
+
 /etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg, inventory=<custom-path>
 
 /etc/ansible/hosts - inventory of hosts groups. ## inventory/{prod,stage,dev} ## using custom-inv => ansible-playbook -i <inv-path> file.yaml
@@ -27,6 +23,7 @@ ansi_amazon ansible_host = ip
 [prod]
 ansi_redhat ansible_host = ip
 ==========================
+
 SSH connection on managed nodes:
 On Ansible control node: 
         ssh-keygen -t rsa -b 4096 
@@ -40,6 +37,7 @@ Define nodes in inventory(.ini):
         server2 ansible_host=192.168.1.11 ansible_user=admin
 To test connection: $ansible -m ping all # ansible all -m ping -i hosts --private-key=/path/to/private_key
 ==========================
+
 cd playbooks ; cat file.yaml ; ansible-playbook file.yaml
 - hosts: all
   tasks: 
@@ -52,7 +50,6 @@ ansible dev -m yum -a "pkg=httpd state=installed"
             -m service -a "name=httpd state=started"
             -m copy -a "src=/etc/hosts dest=/tmp/hosts"
       
-
 Use when
 - hosts: all
   user: amar
@@ -60,17 +57,15 @@ Use when
     - name: Shut down Debian flavored systems
       ansible.builtin.command: /sbin/shutdown -t now
       when: ansible_facts['os_family'] == "Debian"
-      
+==========================
+
 Ansible-vault
 ansible-vault create test.yaml ## test.yaml will be encrypted        ## {create|view|edit} w/o decrypt
 ansible-vault encrypt/decrypt test1.yaml        ## to encrypt existing file ## {rekey} to change passwd
 playbook => vars: db_passwd: !vault <encrypted-content>         ## !vault tag is used for encrypted variable
         ## ansible-vault encrypt_string 'my_secret_password' --name 'some_password' ## gives encrypted-content
 Execute encrypted playbook: ansible-playbook <playbook.yml> --ask-vault-pass ## --vault-password-file <password_file>     
-
-
-
-
+==========================
 
 Ansible-roles
 ansible-galaxy init web ## web/{meta, templates, files, tasks, vars, handlers}/main.yaml
