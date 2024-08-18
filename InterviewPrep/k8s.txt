@@ -46,17 +46,14 @@ Pod.spec = containers[0]...,volumes ##
 Job.spec = template(pod.spec)
 CronJob.spec = { ++schedule }
 
-
-
 DaemonSet.spec =  selector.matchlabels, template
 Deployment.spec = replicas, selector.matchlabels, template:pod.spec, serviceName            ## Deployment.spec >~ ReplicationSet.spec >~  ReplicationController.spec
 StatefulSet.spec = { ++volumeClaimTemplate(metadata,spec) }
 
-
 Service.spec = selector, type, port            ## service types = clusterIP,nodePort,LoadBalancer,ExternalName
 
-persistentVolume.spec =              capacity.storage, nfs/hostPath, accessModes:RWO, storageClassName, 
-pvClaim.spec =             resources.requests.storage, accessModes:RWO, storageClassName
+persistentVolume.spec = nfs/hostPath, capacity.storage,  accessModes:RWO, storageClassName, 
+pvClaim.spec =              resources.requests.storage, accessModes:RWO, storageClassName
 secret.data = key1:<>,key2:<> ### secret.metadata.name = secret-name                        ### ex-keys: user: amar, pass: XXX  
 configMap.data = key1:<file-content> ## keys=filenames
 
