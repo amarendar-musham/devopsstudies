@@ -7,8 +7,15 @@ ad-hoc commands = single-line commands used for quick tasks, like restarting a s
 Ansible Galaxy = repository for Ansible roles, allows re-using playbooks. cmd=ansible-galaxy to manage those roles.
 Ansible Vault =  for sensitive info = passwd/APIkeys; decrypted during playbook execution
 Roles = organizes playbooks into re-usable components. separate dirs makes it easy to manage/reuse across playbooks
-        ## dir structure = roles/<role-name>/{tasks/, handlers/, files/, templates/, vars/, defaults/, meta/}
+        ## dir structure = roles/<role-name>/{tasks/, handlers/, files/, templates/, vars/, defaults/, meta/} # Role dependencies are managed in the meta/main.yml 
+Ansible facts = variables(nodes info) gathered by "setup" module ## ex: os-type,ipaddr used to make decisions for custom playbooks
+Ansible handlers = Only triggered when a change is made, like restarting a service after a configuration file has been updated. defined w/ "notify" keyword.
 
+
+
+
+
+-==========================================================
 /etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg
 
 /etc/ansible/hosts - inventory of hosts groups. 
