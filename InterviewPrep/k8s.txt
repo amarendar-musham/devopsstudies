@@ -34,6 +34,23 @@ kube-proxy pod on each node work:
       
       
 =================================================================================
+Manifests: apiVersion,Kind,metadata,spec
+
+volumes = name,pvc/nfs
+containers = name, image, ports(name,port), volumeMounts(name,path)
+
+[Kind] = [spec] fields
+pod.spec = containers[0]...,volumes ##
+deployment.spec = replicas, selector.matchlabels, template:pod.spec, serviceName
+statefulSet.spec = {++volumeClaimTemplate(metadata,spec)}
+
+service.spec = selector, type, port  ## service types = clusterIP,nodePort,LoadBalancer,ExternalName
+
+
+
+
+
+=================================================================================
 
 Cluster creation(kubeadm) ===
 All nodes::
