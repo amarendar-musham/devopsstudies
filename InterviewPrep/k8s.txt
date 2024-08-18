@@ -64,8 +64,11 @@ Create a Private key (.key file) ## using openssl command
 CertificateSigningRequest.spec = request(<base64 .key file>) ## k certificate approve <csr.name> ==> .crt file-content 
 Role.rules = apiGroups,resources,verbs            ## ex-resources=pods, verbs=get,list,create
 RoleBinding.{subjects(User.name),roleRef(name)}
-
 ClusterRole & ClusterRoleBinding in similar way does support serviceAccounts instead of a User. 
+
+LimitRange spec = min/max/default - limit/requests - cpu/memory             ### per container
+ResourceQuota spec = hard - limit/requests - cpu/memory, pods               ### per namespace(all pods)
+            ## quota consumed using priorityClassName in pod.spec
 
 =================================================================================
 
