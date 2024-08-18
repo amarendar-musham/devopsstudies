@@ -1,3 +1,11 @@
+Simple, agentless architecture, communicating over SSH or WinRM, and works by pushing configurations from a central server to nodes. 
+Agentless = No software needs to be installed on the nodes being managed
+Ansible uses YAML for playbooks, unlike chef/Puppet that uses Ruby-based DSL's ## set of tasks that describes desired.state of system = configurations/deployments
+Ansible Inventory = A list of managed nodes/hosts, can be organized into groups
+ad-hoc commands = single-line commands used for quick tasks, like restarting a service on multiple servers. 
+        Playbooks = structured YAML files for complex and repeatable automation.
+
+
 /etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg
 
 /etc/ansible/hosts - inventory of hosts groups. 
