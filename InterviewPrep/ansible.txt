@@ -55,7 +55,15 @@ Use when
       when: ansible_facts['os_family'] == "Debian"
       
 Ansible-vault
-ansible-vault create test.yaml ## {create, view, encrypt, decrypt, edit}
+ansible-vault create test.yaml ## test.yaml will be encrypted        ## {create|view|edit} w/o decrypt
+ansible-vault encrypt/decrypt test1.yaml        ## to encrypt existing file ## {rekey} to change passwd
+playbook => vars: db_passwd: !vault <encrypted-content>         ## !vault tag is used for encrypted variable
+        ## ansible-vault encrypt_string 'my_secret_password' --name 'some_password' ## gives encrypted-content
+Execute encrypted playbook: ansible-playbook <playbook.yml> --ask-vault-pass ## --vault-password-file <password_file>     
+
+
+
+
 
 Ansible-roles
 ansible-galaxy init web ## web/{meta, templates, files, tasks, vars, handlers}/main.yaml
