@@ -4,7 +4,10 @@ Ansible uses YAML for playbooks, unlike chef/Puppet that uses Ruby-based DSL's #
 Ansible Inventory = A list of managed nodes/hosts, can be organized into groups
 ad-hoc commands = single-line commands used for quick tasks, like restarting a service on multiple servers. 
         Playbooks = structured YAML files for complex and repeatable automation.
-
+Ansible Galaxy = repository for Ansible roles, allows re-using playbooks. cmd=ansible-galaxy to manage those roles.
+Ansible Vault =  for sensitive info = passwd/APIkeys; decrypted during playbook execution
+Roles = organizes playbooks into re-usable components. separate dirs makes it easy to manage/reuse across playbooks
+        ## dir structure = roles/<role-name>/{tasks/, handlers/, files/, templates/, vars/, defaults/, meta/}
 
 /etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg
 
