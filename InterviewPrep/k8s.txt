@@ -36,8 +36,8 @@ kube-proxy pod on each node work:
 =================================================================================
 Manifests: apiVersion,Kind,metadata,spec
 
-volumes = name,pvc/nfs
-containers = name, image, ports(name,port), volumeMounts(name,path)
+volumes = name,emptyDir:{}/nfs/hostPath/persistentVolumeClaim/secret/configMap               ## nfs(server,path), hostPath(path), pvc(claimName), secret(secretName), cm(name) 
+containers = name, image, ports(name,port), volumeMounts(name,path), env                        ## env(name,ValueFrom.{secretKeyRef|configMapKeyRef}.key) ##
 
 [Kind] = [spec] fields
 pod.spec = containers[0]...,volumes ##
@@ -46,7 +46,10 @@ statefulSet.spec = {++volumeClaimTemplate(metadata,spec)}
 
 service.spec = selector, type, port  ## service types = clusterIP,nodePort,LoadBalancer,ExternalName
 
-
+pv.spec = capacity.storage, nfs/hostPath, accessModes:RWO, storageClassName, 
+pvc.spec = resources.requests.storage, accessModes:RWO, storageClassName
+secret.data = key1:<>,key2:<> ### secret.metadata.name = secret-name                                     ### ex-keys: user: amar, pass: XXX  
+configMap.data = key1:<file-content> ## keys=filenames
 
 
 
