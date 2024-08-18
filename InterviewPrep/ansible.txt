@@ -17,22 +17,29 @@ Ansible handlers = Only triggered when a change is made, like restarting a servi
 
 
 -==========================================================
-/etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg
+/etc/ansible/ansible.cfg - tool configs # Ex: log-path = /var/log/ansible.cfg, inventory=<custom-path>
 
-/etc/ansible/hosts - inventory of hosts groups. 
+/etc/ansible/hosts - inventory of hosts groups. ## inventory/{prod,stage,dev} ## using custom-inv => ansible-playbook -i <inv-path> file.yaml
 [localhost]
 ansible_server ansible_connection = local
 [dev]
 ansi_amazon ansible_host = ip
 [prod]
 ansi_redhat ansible_host = ip
-
-$ansible -m ping all
-cat .ssh/id_rsa.pub >> .ssh/authorized_keys
-ssh-copy-id user@ip
-/etc/ssh/sshd_config ## permitrootlogin yes ; password_auth yes
-service sshd restart
-
+==========================
+SSH connection on managed nodes:
+On Ansible control node: 
+        ssh-keygen -t rsa -b 4096 
+        ssh-copy-id user@managed_node_ip ## Alt: cat .ssh/id_rsa.pub >> .ssh/authorized_keys (on node)
+On nodes:
+        /etc/ssh/sshd_config ## permitrootlogin yes ; password_auth yes ## then have root user in inventory for this host
+         service sshd restart$ansible -m ping all
+Define nodes in inventory(.ini): 
+        [webservers]
+        server1 ansible_host=192.168.1.10 ansible_user=admin
+        server2 ansible_host=192.168.1.11 ansible_user=admin
+To test connection: $ansible -m ping all # ansible all -m ping -i hosts --private-key=/path/to/private_key
+==========================
 cd playbooks ; cat file.yaml ; ansible-playbook file.yaml
 - hosts: all
   tasks: 
