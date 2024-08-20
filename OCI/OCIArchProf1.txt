@@ -1,0 +1,229 @@
+Prerequisites for Professional certification course:
+		Associate: compute, storage networking, IAM, security, observability
+		Cloud native, Microservices, ServerlessArchtecture, Oracle DBs, Infrastructure as code. 
+		Hybrid, MultiCloud, Migration, HA & DR
+=================================================================================
+
+NetWork Architecture: 3-Tier [Correlate with screenshot]
+Objectives:	Region|Compartment, [ VCNs|Subnets|CIDRs, Connectivity|Gateways(RoutTables) ], LB|Bastion, DNS|WAF, Compute|Storage|DB|VCN Flow logs. 
+
+1. Subscribe one region=PHOENIX if not already, Create a compartment
+------------
+2. Create VCN1(/16)=webapp-vcn, Public+Private Subnets(/24s) Note: Public subnet is for LOADBalancer, Private subnet is for BACKENDSets(webApplication)
+	subnet/SL w/ ingress allow [ VCN IPrange --> 80,22 ports(Prv.Sub), Internet --> 80 port(Pub.sub) ]
+	RouteTable(IG) for VCN. 
+3. Create LB w/ VCN attachment & Subnet where LB can be placed. Note: For Public LB, select a single regional subnet or two AD-specific subnets in diff ADs. (for Standby LB)
+	Create Backends in Private subnet, ex: a WebApplication as two backends... connect them in LB config, so health becomes green. 
+------------
+4. Create VCN2=db-vcn with only Private Subnet. Note: If created using VCN wizard, delete IG(w/ RouteTable), Public.sub, 
+	RouteTable w. NATGateway. 
+5. Create DB along with instance(VM/BM) in above pvt.sub. Give DBname, username/password
+------------
+6. VCN Peering: Create LPG1 (for vcn1), LPG2 (for vcn2), establish connection b/w them
+	Create RouteTable in both VCNs for LPGs. connect them to resp subnets(pvt.sub of vcn{1,2}). 
+
+7. Add subnet/SL ingress rules for 1521port in both VCNs for DB connection...
+
+8. Configure DNS: Create DNS/zone in OCI with a domain registered in GODaddy(ex: ocicert.me), which gives couple of NS records. 
+	Add the NS records in Godaddy to make connection with domain. 
+	Add A-rec with LB IP in the zone, so you can access LB with domain. *Publish changes*
+
+9. Create SSL Certificate and add to LB: In Identity&security/Certificates, 
+	Create certificate by importing one from Godaddy, Need to upload main-crt, bundle/chain-crt, private-key files. ## Alt: LB-managed-cert, add directly in LB. 
+	LB: add 443 Listener with above certificate and attach it to existing BackendSet. 
+	SL ingress: internet -> LB-pub.subnet-443 port (https://ocicert.me)
+
+10. security/WAF: create policy|rule to give 401Unauthorized for some particular region(ex: Antarctica),and add LB to it. 
+
+11. observ/VCN Flow logs: VCN1/pvt.sub(for WebApplication) - enable log, give log-group and log-name. Also, we can enable Service-logs for LB. 
+
+12. Have ServiceGateway(SG) for VCN2/RouteTable, so DB in pvt.sub can access OCI services like OSS, ADW
+
+13. Create ADB, create a bucket and add replication policy for another region. 
+
+14. Security/Bastion Service: create a Bastion for pvt.sub of DBVCN, we can give IPrange allowlist...
+	under Bastion, create a session(managed-ssh/ssh-port-forward), our case ssh-port-forwarding to DB host(pvt.ip)
+------------
+15. create a VCN(corporate-vcn) and subnets here in this region=ASHBURN.
+	Create DRG(to make peering with a VCN in different region) and attach to above vcn. 
+	Establish peering using ocid.RPC created in phoenix region...
+	Note: Add VCN route table rule to allow other VCN IPrange for DRGs....
+------------
+16. FastConnect for OnPremise: 
+	Create FastConnect by selecting Partner(Equinix:Fabric), pvt.VirtualCircuit, Ashburn.DRG, BGP address.IPV{4,6}
+	Create CPE(with customer IP), and create IPSec connection... for site-2-site VPNs...
+=================================================================================
+
+HA(High Availability) - To avoid single point of failures. / Highly available Architecture. 
+
+one AD can have three FDs(Fault domains) 
+
+VCN's Subnet can exists either in single-AD, or across an entire region. The failover system can be placed in one AD whereas actual system present in another AD
+
+This stand-by/failure feature can be used by these services: LB, VNIC/Virtual IP, Compute/Auto-scaling, OSS, BV(backup-restore to diff AD), FS(File storage)
+-------------
+VCN, Pub.sub = WordPress instance, Pvt.sub = Mysql instance. 
+Moving storage to File-Storage-Service, create filesystem: export=/wordpress, mountTarget=mt-wordpress (Under VCNs pvt.sub) ; 
+NSG(n/w sec group under VCN) for FSS to allow it on the app-instance. ingress-rule: TCP/UDP dest ports 111,2048,2050 ; attach it to mountTarget. 
+- access with <IP>:/export ~ 10.0.20.81:/wordpress on application instance(wordpress)
+
+LB - public, create VCN/NSG to allow internet to 80/443. choose VCN,pub.sub,NSG during LB creation. 
+policy=round-robin, backendsets|backends=webserver, listener=http/https+ssl-cert, certificates=LB-managed-cert(add given cert), routing-policy=(context-path->backendset)
+ex: /apiHandler --> apihandler-bs 
+
+Auto-scaling-group: create pvt.sub2, create a compute-instance(add init-script->install sample webapp), then instance-pool(#ofInstances). Add above LB. 
+	policy=Metric/schedule-based-autoscaling(ex: CPU), limits: min/max/initial-instances
+
+create DB: db-name, user/passwd, under-vcn2/pvt.sub, add SL to access db from webserver (mysql -h 10.0.20.74 -u <> -p <>) - convert to HighAvailability-DB
+=================================================================================
+Disaster Recovery:
+FullStack DR(FSDR) = full application recovery. 
+
+Two main metrics to measure the effectiveness of a Disaster Recovery setup => Recovery Point Objective (RPO), Recover Time Objective (RTO)
+
+supported components: compute-instances, boot/block-vols/vol-groups, Exa-DB/EnterpriceDB, Autonomous-DB on shared-Exa infrastruction. 
+The components not listed here can be taken through custom automation. 
+Components and Dependencies in App-stack: Application, DB, Infra(VCN,LB,DNS,VM,FSS,OSS,BV)
+
+DRPG(protection groups)=Peer association b/w regions, DRP(Plans)=switchover/failover (switchover=planned transition, failover=unplanned transition)
+
+requirements: get a volume group for BVs for easy recovery. Create a bucket for FSDR logs. 
+Recreate the n/w components in standby region(use: ResourceMgr/Terraform). OSS Replication, BV replication, Autonomous Data Gaurd for backup copies.... 
+
+------------- note: same compartment across the regions. 
+1. Migration&DR/DRPG service - create drpg and choose bucket for logs in primary-region1(Ashburn) and standby-region2(Phoenix), 
+peering=associate both protection-groups by choosing which needs primary-role and which needs standby role. 
+
+2. DRPG-Resources/Members (in Ashburn/primary) => create members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
+
+3. DRPG-resources/Plans (in Phoenix/standby) => create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be added under plan groups resource. 
+
+4. DRPG => Run Prechecks by selecting plan(above one-switchover), check logs after prechecks are green/red. 
+
+5. DRPG => Execute Plan, after execution try to access the application from a LB in standby-region. 
+=================================================================================
+
+OCIR repository, image-path: <region-key>.ocir.oi/<tenancy-namespace>/<repo-name>:<tag> ## region-key = phx.ocir.io/iad.ocir.io 
+Store the credentials(auth-tokens) to do "docker pull" in k8s secrets ; docker login phx.ocir.io -u <tenancy-namespace>/user -p <> ## API-auth-token for OCI user
+
+OKE cluster: ##
+Quick create w/f: auto-n/w resources. Options: k8s version, API-endpoint/worker-node visibility, node-shape/number, image verification
+Custom create w/f: create cluster w/ no-node-pool, add later. Options: secret-encryption,Pod-security, NSG, custom-CIDR for pods/services, node placement
+API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options: custom-image for nodes.
+
+Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(custom-cidr for pods/services), as not needed as we rely on service names for communication
+
+prerequisites to create OKE cluster: OCI tenancy access, sufficient quota on resource(service limits)
+ready-to-deploy compartment (vcn,subnets,IG,RoutTable,SL), configuring n/w resources, policies 
+Tools: kubectl and KUBECONFIG
+
+Network-configuration:
+3 subnets(look at the screenshot): public subnet for LB, private subnets for kubeAPI and worker-nodes. 
+kubeAPI can be connected using Bastion-service/bastion-session; routeTable to access ServiceGateway to connect oci-services like OCIR
+workers can communicate internal apps(ex: Jira,slack) through NATgateway(Note: destIPrange in RouteTable is not entire internet, only the CIDR of those internal apps)
+
+policies: allow service OKE to manage all-resources in tenancy ; allow group <> to manange cluster-family in compartment <> 
+## policies for a group: use subnets, use vnics, use private-ips/[public], manage instance-family, use network-security-groups, read virtual-network-family, inspect compartments, 
+## policies for Quick create w/f: manage vcns/subnets/nat-gateways/internet-gateways/service-gateways/route-tables/security-lists, use cloud-shell
+
+export OCI_CLI_AUTH=security_token && export OCI_CLI PROFILE=DEFAULT## refers while generating token through <oci session authenticate>
+if MFA enabled: add --profile, --auth to kubeconfig file. 
+We can create bastion host if API endpoint exists in private.sub. Bastion service+session can be used with ssh-port-forward 6443-port
+Note: API signing key-pair is req. upload pub key for connection
+
+export KUBECONFIG=$HOME/.kube/config # kubectl command makes use of authentication token. The authentication tokens are short-lived, cluster-scoped, and specific to individual users.
+$$ oci ce cluster create-kubeconfig --cluster-id <ocid1.cluster.oc1.phx...> --file <kubeconf> --region us-phoenix-1 --kube-endpoint PUBLIC ENDPOINT
+-------- kubeconfig version 2.0.0
+apiVersion: v1
+kind: Config 
+clusters: ## <<<<<<<<<<<<<<<<<<<<<<<
+- cluster: ## cluster, server and certificate info
+	certificate-authority-data: DATA+OMITTED
+	server: https://1.2.3.4:6443
+name: OCI-desktop
+users: ## <<<<<<<<<<<<<<<<<<<<<<<
+- name: admin 
+  user: ## Alt: token or username/password
+	client-certificate-data: <base64 encoded client cert data> 
+	client-key-data: < base64 encoded client key>
+contexts: ## <<<<<<<<<<<<<<<<<<<<<<<
+- context: ## important to specify cluster, namespace and user
+	cluster: staging 
+	namespace: OCI-Staged
+	user: admin
+name: staging-admin
+Current-context： "" ## default context.... ## <<<<<<<<<<<<<<<<<<<<<<<
+--------
+kubectl create secret docker-registry ocirsecret --docker-server=phx.ocir.io --docker-username=intoraclehit/<> --docker-password='; zkliOpmUWF:HF5+hrIx' --docker-email=<>
+kubectl get secret ocirsecret -o=yaml
+=================================================================================
+
+Devops = DEV(Plan|code|build|test) + OPS(release|deploy|operations|monitor)
+CI/CD: CI = automated build+test for frequent/small code change or error-fix; CD(cont.deploy) = manual cont.delivery, automatic cont.deployment
+=================================================================================
+
+Oracle Functions: Functions-as-a-service, fuctions deployed as docker-images, run as docker-containers ; = Ployglot-Containers
+
+How-it-works> Push function image to registry, configure func.trigger for code run, Pay for only code-execution time, not idle. 
+Function Pricing> #of invocation Requests(Free=2million/month), Resource Usage(Free=400K GB-seconds/month)
+
+FunctionsTrigger(events/notification/cli) ==> Pull-Image-from-ocir ==> { can use oss|ADB|secrets|compute|n/w, send logs/metrics to Monitoring|Logging }
+
+Function concepts:
+Application => collection of func.s, attached to VCN/sunets used for egress, enable/disable logs, set env-vars. 
+Function => Container image stored in registry, metadata(image-location,config-params,memory,timeout)
+Fn CLI => cmd to manage func.s, build&package code into image, generates boilerPlate func.code-java/python/node/go/ruby
+	fn deploy = Builds-image, Pushes-ocir, updates metadata
+Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
+Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
+Using Other services => oss|ADB|secrets|compute|n/w ; granular access control|func.s resource principal|ServiceGateway(private)|InternetG(public)
+
+1. create a tenancy/compartment, user/groups under Identity domain(ex:default), policy for functions. 
+2. Function/Applications -> create application(helloworld-app) by selecting a VCN and pub.subnet
+3. Cloud shell -> fn list/use context <>, fn update context oracle.compartment-id|registry <>, fn list apps	
+4. docker login phx.ocir.io -u <ten-ns/user> -p <auth-token> ;My Profile -> generate Auth token; 
+5. fn init hello-java --runtime java # hello-java is a dir of application with pom.xml
+	fn -v deploy --app helloworld-app ## builds <hello-java> as docker images and pushes to registry
+	fn invoke helloworld-app hello-java ## gives output of the function, i.e., hello world!!
+	### Just to create custom docker image from Dockerfile -> fn -v build
+	fn -v deploy --app custom-app
+	$ cat image.jpg | fn invoke custom-app imagedims ## gives length&width as output
+
+Elements of API: Description(Swagger/postman/spotlight), policies(APIGateway), Implementation(OKE/Functions/APEX)
+API Gateway networking -> VCN(pvt/pub.subnet=regional only), SecurityLists, RouteTables
+	policies-> Group policies(n/w resources, API gateways, func, logging), Resource policies(functions)
+
+Functions/API Gateway -> create one api-gateway, add resp. policies for that compartment to have access to functions (request.principal.type='ApiGateway') 
+Functions/APIs -> create api(FieldService), upload swagger.yaml for the description.
+					create deployment for above api, choose above api-gateway. Add get/post methods for static type or attach functions...
+				Now the api can be accessed from the api-gateway endpoint....... ex: <endpoint>/fs/v1/tickets
+
+================================================================================= doc: https://developer.hashicorp.com/terraform/tutorials
+Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
+State: state of infrastructure, Diff: b/w code and state
+Terraform-Engine: Core + Provider plugins(ex: oci) ; Terraform(Diff|Refresh|Apply) ---> TargetPlatform(Create|Read|Update|Delete)
+main.tf, variables.tf(ex: compartmentid, region); modules are re-usable codes(ex: vcn)
+
+Day1) Terraform-code(/plan) --Read--> Terraform-Engine --Provision--> { IaaS, PaaS, On-premises } ## IaC = Infra as code
+Day2) { Existing Infra, code } --Analyze|Read-->> engine --Modify-->> new-infra
+DayN) Existing Infra --Analyze--> engine --Destroy--> No-infra 
+
+3 core actions of CLI => $terraform plan|apply|destroy 
+$ terraform apply => Terraform Code|Config --read--> Terraform-Engine { --create--> Infrastructure, --write-->	State (view of infra) }
+$ terraform refresh => Infra --discover--> Terraform-Engine --update--> State ## to update state file if there any manual change in infrastructure. 
+$ terraform plan => Terraform-Engine creates a DIFF of Code and State, so can it can be reviewed before apply. 
+$ terraform apply => It runs plan by default and asks for a prompt to apply 
+$ terraform destroy => Terraform-Engine reads State file and destroys infra. 
+
+Apply -> Plan -> Refresh -> State -> Plan -> Diff -> Apply -> Infra
+
+State & Diff files will be centralized(version-control) using Cloud-based Terraform, i.e., Resource Manager
+
+Resource Manager/Stack -> create stack w/ code location selection; Use Plan/Apply to get infra ready ; It can create terraform config from an existing infra as well. 
+	- Drift detection: Run it to find Any changes from actual Infra, we can view the report. Note: Only reports on resources that Terraform knew about already
+	To avoid missing any resources, create a new stack out of existing compartment, and download Terraform configuration. 
+	- Templates: Terraform configuration, Schema document(Variables|Contraints on vars)=yaml
+
+=================================================================================
+
+

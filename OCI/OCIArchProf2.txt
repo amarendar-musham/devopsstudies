@@ -1,0 +1,158 @@
+OCI supported Database services: Oracle DB, non-oracle-MySQL, Oracle NoSQL, External DB
+
+DB service types------> Oracle BaseDB service, Oracle Exadata DB service, Autonmous DB
+
+----------------
+BaseDB system configuration: single VM or 2-node RAC VMs. Cloud automation: Prov/Patch/Backup/DR
+		=> VM options - choice of AMD Flex/Intel shapes
+	single-instance DB on VM => Upto (64 ocpus, 1TB memory, 80TB block-volume)
+	RAC DB on VM => Upto (128 ocpus, 2TB memory, 80TB block-volume, Extreme performance edition)
+	VM shape: VM.Standard2.1 (1 ocpu,16GB memory), VM.Standard2.2(2 ocpus, 32GB memory) VM.Standard2.16( OCPUs=16, memory=16*16=2456GB )
+				VM.Standard.E4.Flex (ocpus= 1 to 64, memory= 16GB to 1TB)
+
+Exadata DB system configuration: The fastest and most-available DB platform. Infra deployed/managed by Oracle
+	storage => space in Exadata-storage-server is managed by ASM(automatic-storage-management)=disk groups(DATA, RECO)
+	OCPUs => can be scaled up w/in existing servers(multiples of #of DB-servers provisioned for exadata-VM-cluster)
+			- beyond-existin-servers: For X8M/X9M Flexible Infrastructure systems can simply add Compute servers as required.
+----------------
+BaseDB managed Features: Launching VM DB System <-> pub.key.ssh|policies, VCN|IG, OSS(backup/patch), Compartment
+	=> scaleable: OCPUs, Storage, BV; 
+	=> backup&recovery: { OSS, high-durable|performance|available, local-storage = fast-recovery-area of DB system, backups unavailable if DB system is unavailable
+	=> automatic-backups will be deleted along with DB termination, but full-manual-backups(on-demand) remains. 
+	=> DB performance hub: info about performance, analytics, observability & management, 
+
+1. Create a VCN(10.0.0.0/16) with a prv(10.0.1.0/24) and a pub(10.0.2.0/24) subnets. 
+2. BaseDB Service=> i) DB-system info: create DB by selecting VCN, prv/pub subnet, NSG, VM-shape, cpu-type(AMD/Intel), #ofNodes, SSH-key-pair, 
+					BV-storage, storage-mgmt(LVM/Grid), (Hostname-prefix + Host-domain-name) = FQDN
+					licentType(subscribe-one/BYOL), diagnostic-options(enable events,logs), 
+			ii) DB info: database-name, image(19c/21c), creds: sys/<passwd>, backup-options(oss-bucket)...
+
+3. connect the node(DB-system) with private-key.ssh if it's in public subnet(login w/ opc user, sudo su - oracle, sqlplus sys/<passwd>)
+
+BaseDB cloning: Oracle-Databases/BaseDB/DB-system-details, 
+	clone => select source-DB-system,clone-DB-system name, add new ssh-key-pair, oracle-licence/BYOL, VCN(pvt/pub.sub), host-prefix+domain=fqdn, DB-name|creds. 
+	connect-clone => under resources of DBsystem choose nodes, use public.key of the node to do ssh(opc, sudo su - oracle, sqlplus sys/<pass>)
+
+Database upgrades are not rolling and require downtime
+Database Encryption Keys: Encryption key must be AES-256 (Oracle-managed/customer-managed keys)
+=====================================================================================================================================
+
+Autonomous DB: (authentication = self-signed certificates)-mTLS(wallet)/TLS(walletless), mTLS-default
+ -> Fully-managed DB by oracle = Auto - {prov/upg/patching}, self-tuning, self-secured, auto-scale
+ -> Complete DB/infra/DataCenter automation - Upgrade/patch/Tuning/security/scaling/failure-handling/high-availability
+
+Optimized by workloads(4): [TP, DW, JSON, APEX]
+ATP(transaction-processing), ADW(data-warehouse); AJD(json-db) #{limit:20GB,derived from ATP}, APEX service ## DW=columner-storage-format, TP=row-storage-format
+
+Deployment options/deployment-type: (shared/dedicated)
+	Shared infra - (allows prov&management of autonomous DB, oracle handles Exadata-infra deployment) w/ isolation & security ## Public-cloud/OCI
+	Dedicated infra - (allows exclusive use of Exadata hardware), must subscribe dedicated-exadata infra in OCI ## privateDB in Public-cloud/OCI
+	Exadata Cloud@Customer - ( ~ Dedicated, but configured in customer DataCenter ) ## for security req, n/w latency 
+	Dedicated Region Cloud@Customer
+
+Network-accessibility: (everywhere/allowedIPsVCNs/private-ep) ## FOR shared deployment-type
+ 	1. secure access from everywhere (mTLS wallet as auth) 
+ 	2. secure access from allowed IPs&VCNs only (TLS), intermediate=customer-VCN(w/ InternetGateway) ## only-whitelistedIPs when DB having public-endpoint
+ 	3. Private endpoint access only (TLS), intermediate=customer-VCN(w/ ServiceGateway) ## private subnet
+ 
+Self-Driving: Auto-Provisioning => Quickly deploys in a RAC Database on Exadata hardware, no-hardware-config, no-software-install
+-----------
+Shared-infra provisioning: simple|fast|elastic
+	crucial-inputs: n/w accessibility, master-key encryption (oracle-managed/customer-managed), patch-level: (Early/regular)
+ - client-connections: secureTCP, TLS1.2, self-signed-cert for authentication=mTLS(wallet)/TLS(walletless)
+ 	connection-type=JDBC,OCI,ODBC ; mTLS requires autonomousDBwallet, TLS requires ACL or private endpoint configured
+
+Provision shared-type DB 
+1. Oracle DB/Autonomous DB => create autonomous db w/ { database-name, admin-creds(admin/<pass>), db-version(19c),
+												**** => workload-type(ADW/ATP/JSON/APEX), deployment-type, n/w-access
+							 					resources:[OCPUs|storage](auto-scale), license(subscribe-one/BYOL), encryption-keys, patch-level }
+2. if n/w-access=allowedIPsVCNs: do sqlplus admin@<db-name> from a node of DB-system in VCN2. Note: whitelist the nodeIP in ACL of ADB.  
+-----------
+Dedicated-infra provisioning: EXA/AVM/ACD
+	Exadata infrastructure (EXA) - Gen2 exadata cloud in quarter/half/full-RAC shape; exadata-system-models -> X7-2, X8-2, X8M-2, X9M-2 
+	Autonomous Exadata VM Cluster (AVM) - Layer on top of EXA. link-b/w-{EXA & ACD}
+	Autonomous Container Database (ACD) - container for creating ADB. create one or more ACDs in AVM
+	Autonomous Database (ADB) - db created in ACD. OCPUs split across multiple nodes in cluster(<=16 ocpus, drawn from single VM node)
+	Autonomous Backup - for backup of ADB. 
+
+resource-limits: 12 ACDs/AVM, 200 ADBs/ACD or 25 ADBs/ACD w/ DataGuard. 
+
+IMP*seperation of roles: Fleet-Administrator(EXA -> AVM -> ACD) -> Database-Administrator(ADBs) ## DB-admin should have IAM policy to *use* ACDs
+
+Provision dedicated-type DB
+1. Create Compartments - FleetCompartment, ADBCompartment
+2. Creates Group and Assign IAM privileges, create users. groups={Fleet-Administrators, ADB-Administrators}, users={FleetAdmins,DBAdmins}
+3. Create a VCN - ADBD_VCN => Private-ExadataSubnet, Public-Apps(for compute and db resources)
+4. Oracle DB/Autonomous-Dedicated-infrastructure
+	/Exadata Infrastructure: create EXA, choose exadata-system-model(#ofDBserver,#ofStorageServer) ## choose compartment
+	/Autonomous Exadata VM Cluster: create AVM, choose above EXA-infra and n/w=(ADBD_VCN/Private-ExadataSubnet); licence:subscript/byol
+	/Autonomous Container Database: create ACD, option(DataGuard) choose backup-retention(default=7d), encryption-key(default=oracle-managed)
+5. Autonomous Container Database(ACD)/Autonomous databases
+	- create ADB, choose workload-type(*ATP* or ADW/JSON/APEX), deployment-type=dedicated, above ACD, OCPUs|Storage, admin-creds=admin/<passwd>, 
+		optional=ACL(access-control-list) to whitelist particular IPs, encryption-key=oracle-managed
+=====================================================================================================================================
+============ADB Features=============
+Auto-configuration: 
+	Pre-configured metric collection(for monitoring performence/activity), resource management plans
+	lifecycle managed using ConsoleUI/restAPI/SDKs. 
+	Frees resources from idle sessions - default idle timeout=5min
+	Auto-SQL-plan-mgmt to manage regressed SQLs.
+Optimiser-statistics-collection: default=every 15min (procedure=DBMS_STATS.SET_GLOBAL_PREFS)
+	Statistics are gathered automatically for direct path load operations issued in SQL - CREATE TABLE ... AS SELECT ..; INSERT /*+ append */ INTO ... SELECT ...;
+	- Data Pump Import loads, DBMS_CLOUD loads, DML workloads. 
+Initialization Parameters: Automatically sets parameters to optimal values based on workload type, Restricts parameters change (for security, and performance)
+Scaling: (Fully Elastic), Scale on-demand or auto-scaling - [ OCPU and storage ], life-cycle-state="Scaling in Progress"
+	auto-scale-> ocpus[upto 3X of base size, pay for only-used, when-disabled=restores-base-ocpus], 
+				storage[upto 3X of base storage, pay for round(TB) used, when-disabled=nearest round(TB), when-free-storage<=900GB: additional 1TB reserved.]
+
+Cloning(shared): can be taken from ADB or from its backup(point-in-time). # note: clone-from-backup is local to region(no-Cross-region)
+	- full-clone
+	- refreshable-clone # clone=Read-only DB. disconnect from DB to make it ReadWrite(reconnect <24hrs). (manual-refresh <7d) #note: can't do from backup. 
+	- metadata-clone # clones only metadata of DB schema, not data. 
+	Notes: Cross-region clone(from-ADB) can only be performed using OCI console. refreshable-clone is local to region. 
+Cloning(dedicated): Supports full clone or metadata clone from database source (clones on diff ACD)
+
+Backup(shared): Manual-backups = point-in-time full backup, (oss-customer-managed-tenancy)
+				backups=> OSS, disabled-life-cycle states during backup=(stop,scale,terminate), #retention=60d
+		Automatic-backups(can't disable), Incremental-in-nature(full-backup>60d,daily=incremental,weekly=cumulative-incremental) (oss-oracle-managed-tenancy)
+		Restore and Recover: to point-in-time in last 60days, life-cycle-state: Unavailable, supported-operations=terminate
+Backup(dedicated): Auto-backups(preconfigured)(full-sundays,increment-weekdays) retention-container-level=7.15CR days.
+					auto/manual=(oss-oracle-managed-tenancy)
+
+Patches&Updates(shared): Can't enable DataGuard if patch-level=Early for ADB. 
+Patches&Updates(dedicated): Zero Impact Patching of Grid Infrastructure(Patches applied in a rolling fashion)
+	One-off patches for critical issues can't be skipped, but reschedulable <quarter. auto-patch runs <72hrs
+
+DisasterRecovery(DR): options = AutonomousDataGuard/Backup-based
+	 - Recovery Time Objective(RTO): Max-time to restore connectivity to standby
+	 - Recovery Point Objective(RPO): Max-duration(mins) of data loss that can be tolerated [ data-loss for AuDG < 1min ]
+AuDG(shared) [SLA 99.95%] - Provides extreme availability with zero data loss; Can have local & remote standby DB simultaneously
+
+	 - Use console or APls to enable, disable, failover, switchover
+	Local Standby: Creates new standby post failover
+				- on-demand Switchover; automatic Failover if primary is down.
+				- same wallet post failover/switchover
+	Cross-region Standby:
+				- on-demand Switchover; manual Failover if primary and localStandby(ifExists) is down
+				- Download new wallet; Map URLs to new cross-region database after a failover or switchover operation
+AuDG(dedicated): ACD level, protection modes: Max-availability, Max-performance ## same-AD(diff-FD), same-region(diff-AD), cross-region
+	_RO service on standBy DB
+
+Backup-Based DR: less cost, more RTO than AuDG; preferred for non-prod DBs. no-automaticFailover
+	- instantiate peerAuDB using backup copy during switchover/failover
+	- Can combine both DR types - Backup-based and AuDG, but one local and one cross-region
+	- Supported with all workload types (ADW, ATP, AJD,
+
+By default, AuDB will have DR enabled w/ Type=backup-based,peer-role=backup-copy
+=====================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
