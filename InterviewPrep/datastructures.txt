@@ -1,0 +1,30 @@
+Data Structures:
+  Linear -> Arrays, LinkedList, Stacks, Queues
+  Non-Linear -> Trees, Graphs, Tables, Sets
+----------   
+Different operations available in stack data structure:::
+Stack of clothes(LIFO): push,pop,top,isEmpty,size
+Queue of People(FIFO): enqueue, dequeue, isEmpty, rear, front, size
+LinkedList[Forward and backward operation in the browser]: linked nodes(data, pointer-to-next-node)
+types of LL: singly,doubly,circulaly
+adv over Arrays....
+LL can be used to implement stack,queus,trees,graphs, how it can be used?
+
+Tree: Insertion, Deletion, Traversal, Searching
+-----------
+Questions:
+Reverse a Linked List
+Implement a stack using only two queues | Implement a queue using two stacks
+Implement binary search on a sorted array
+-----------
+  
+Time complexity of an algorithm - Big-O notation
+
+O(n): simple loop that iterates through an array of size n once.
+O(log n): Binary search on a sorted array(search space is halved with each step, time taken increases logarithmically with the number of elements )
+O(n^2): Bubble sort, where every element is compared with every other element.
+
+
+In-Place Sorting (QuickSort): O(1) space complexity(optimized), O(n log n) average time complexity.
+Out-of-Place Sorting (MergeSort): O(n) space complexity, O(n log n) time complexity 
+		[additional space for the temporary arrays]
