@@ -187,3 +187,9 @@ select type, job, avg(case when diff <= 75_val then diff end) as AVG_75 from
 (select tb1.*, percentile_cont(0.75) within group(order by diff asc) over (partition by type,job) as 75p_cutVal from tb1)
 group by type, job
 ================================================================
+
+Calculate Size of a Table ==> select segment_name, bytes/(1024*1024) from user_segments where segment_name in (select table_name from user_tables)
+
+================================================================
+
+
