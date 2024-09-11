@@ -198,8 +198,8 @@ Calculate Size of a Table ==> select segment_name, bytes/(1024*1024) from user_s
 ================================================================
 Data definition language (DDL) describes the portion of SQL that creates, alters, and deletes database objects
 
-select dbms_metadata.get_ddl('TABLE', '<table_name>') from dual ## create definition.
-SELECT dbms_metadata.get_ddl('INDEX', index_name) from all_indexes where table_name = <tb1> ## index definition
+select dbms_metadata.get_ddl('TABLE', '<table_name>') from dual ## create table definition.
+SELECT dbms_metadata.get_ddl('INDEX', index_name) from all_indexes where table_name = <tb1> ## create index definition
 
 
 
