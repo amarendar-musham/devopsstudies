@@ -119,6 +119,11 @@ TO_DATE:
     select * from ExampleTable where created >= to_date('3/1/2024','mm/dd/yyyy') ## created can be timezone(6)
     Note: to_char(created, 'mm/dd/yyyy') <= <some_date> ## Must convert the "created" field for less than a date. 
 
+select * from ExampleSchema.ExampleTable ## skip condition if variable not passed
+where ( :start_date is NULL or created >= to_date(:start_date, 'dd-mm-yyyy') )
+and ( :end_date is NULL or created < to_date(:end_date, 'dd-mm-yyyy') + 1 )
+order by created desc
+
 ============== Get Unique records of a specific column ============
 select distinct <col1> from ExampleTable ## Ex: col1=city_name
 
