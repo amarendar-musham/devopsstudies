@@ -196,5 +196,14 @@ group by type, job
 Calculate Size of a Table ==> select segment_name, bytes/(1024*1024) from user_segments where segment_name in (select table_name from user_tables)
 
 ================================================================
+Data definition language (DDL) describes the portion of SQL that creates, alters, and deletes database objects
+
+SELECT dbms_metadata.get_ddl('TABLE', '<table_name>') from dual ## create definition.
+
+
+
+
+
+
 
 
