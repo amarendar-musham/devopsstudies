@@ -8,6 +8,7 @@ volumeTypes:
           pod: spec.volumes[].persistentVolumeClaim = pvc
 
 Note: pvc auto-bounds to pv on matched storage class + storage # manualbound=.spec.volumeName
+options: <spec.csi> or <spec.nfs> or <spec.hostPath>
 
 ---
 apiVersion: v1
@@ -20,6 +21,11 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: slow
+  csi: 
+      driver: blockvolume.csi.oraclecloud.com
+      volumeHandle: ocid1.volume.oc1.phx.XXXX
+----
+Way2: 
   nfs:
     path: /tmp
     server: 172.17.0.2
