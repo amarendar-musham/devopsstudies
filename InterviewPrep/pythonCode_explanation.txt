@@ -195,6 +195,21 @@ f.write(df.to_html(index=False)) ## f is a html file
 df.drop(df[<indexes>].index,inplace=True) ## indexes = df[col1].isin(ls)
 ls = df[col1].dropna().to_list()
 
+Insert to DB from a csv file.......
+conn = mysql.connector.connect(host="<fqdn>",user="<>",passwd="<>",database="<>")
+cursor = conn.cursor()
+query_templ = "insert into tb1 (col1, col2, col3) values (%s, %s, %s)"
+try:
+	cursor.execute("update tb1 set col4 = 0 where id > 0;")
+        for ind in df.index:
+            values = "('{}','{}',{})".format(df["col1"][ind],df["col2"][ind],df["col3"][ind])
+            cursor.execute(sql,eval(values))
+            print(cursor.rowcount, "record inserted!")
+        conn.commit()
+except Exception as e:  
+        print("failed to execute: {}".format(e))
+        conn.rollback()
+conn.close()
 ==========================================================================================================================
 
 import concurrent.futures
