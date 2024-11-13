@@ -193,6 +193,7 @@ select type, job, avg(case when diff <= 75_val then diff end) as AVG_75 from
 group by type, job
 ================================================================
 SQL procedure for bulk insert in Apex:::::::::::
+Note: POST API PL/SQL code - with application/json ## apex_json.parse(json_clob) is the key function.
 declare 
     l_json_clob CLOB := EMPTY_CLOB();
     l_json_array apex_json.t_values;
