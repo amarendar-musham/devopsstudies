@@ -195,7 +195,7 @@ f.write(df.to_html(index=False)) ## f is a html file
 df.drop(df[<indexes>].index,inplace=True) ## indexes = df[col1].isin(ls)
 ls = df[col1].dropna().to_list()
 
-Insert to DB from a csv file.......
+Insert to DB from a csv file....... ## pip3 module = mysql-connector-python
 conn = mysql.connector.connect(host="<fqdn>",user="<>",passwd="<>",database="<>")
 cursor = conn.cursor()
 query_templ = "insert into tb1 (col1, col2, col3) values (%s, %s, %s)"
