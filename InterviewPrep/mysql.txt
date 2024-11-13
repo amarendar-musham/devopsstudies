@@ -78,7 +78,7 @@ create table photo_tb
 ) ; ========================================================
 
 ==> input data types allowed = application/json
-
+From Apex:::
 source for GET api <endpoint>/get/:key==> select * from ExampleTable where KEY=:key
 pl/sql for POST api <endpoint>/insert ==> begin insert into tb1 (col1, col2, col3) VALUES (:col1, :col2, :col3) ; end;
 pl/sql for PUT api <endpoint>/update/:key ==> begin update tb1 set col1 = :col1, col2 = :col2, col3 = :col3 where KEY = :key; end; 
