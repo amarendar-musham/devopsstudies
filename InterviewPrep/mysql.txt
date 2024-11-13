@@ -192,6 +192,30 @@ select type, job, avg(case when diff <= 75_val then diff end) as AVG_75 from
 (select tb1.*, percentile_cont(0.75) within group(order by diff asc) over (partition by type,job) as 75p_cutVal from tb1)
 group by type, job
 ================================================================
+SQL procedure for bulk insert in Apex:::::::::::
+declare 
+    l_json_clob CLOB := EMPTY_CLOB();
+    l_json_array apex_json.t_values;
+    v_id NUMBER;
+    v_compartment_id VARCHAR2(4000);
+begin
+    l_json_clob := TO_CLOB(:body);
+    apex_json.parse(l_json_array,l_json_clob);
+  FOR i IN 1 .. apex_json.get_count(p_path =>'.',p_values=>l_json_array) LOOP
+    v_id := apex_json.get_number(p_path=>'[%d].id',p0=>i,p_values=>l_json_array);
+    v_compartment_id := apex_json.get_varchar2(p_path=>'[%d].compartment_id',p0=>i,p_values=>l_json_array);
+    
+    insert into TB1 (id,compartment_id)
+    values (v_id,v_compartment_id) ; 
+  END LOOP;
+
+  apex_json.open_object;
+  apex_json.write('status', 'success');
+  apex_json.close_object;
+
+end;
+================================================================
+
 
 Calculate Size of a Table ==> select segment_name, bytes/(1024*1024) from user_segments where segment_name in (select table_name from user_tables)
 
