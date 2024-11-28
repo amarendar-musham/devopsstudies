@@ -4,7 +4,7 @@ AuthN = Authentication = users || AuthZ = Authorization = policies
 
 ocid = ocid1.<resouce-type>.<realm>.[region][.future use].<uniq id> # ocid1.volume.oc1.eu-frankfurt-1.<> # realm = set of regions.
 
-Identity Domain - container for users/roles. Ex: default, sandbox
+Identity Domain(isolation for IAM) - container for users/groups/roles. Ex: default, sandbox
 
 api-signing-key = id_rsa, .pub ; API key = .pem content.... will gives oci-config ; Auth-tokens = upTo 2, to connect APIs. 
 
