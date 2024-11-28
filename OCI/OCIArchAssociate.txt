@@ -34,10 +34,11 @@ CompartmentQuota & Budget:
 ServiceLimits set by Oracle && Compartment quotas set by Adminstrators(policies). 
 compartment quota policies - set|unset|zero = max-resources|To default-service-limits|no-access
 
-Policy Inheritance & attachment for Compartments: (parent comp policies inherits to child comp)
-Ex: allow group group1 to manage virtual-network-family in compartment A (For A and its child-comp)| in compartment A:B(for onlyB)
-IMP: Parent comp can only see immidiate child comp. 
-Attach policy in root comp: If only compC needs, location="in compartment A:B:C" Patch should be specified as root can't know C child comp. 
+Granular Access Control: policyInheritance/conditionalPolicies/TBAC(task-based access control)
+  Policy Inheritance & attachment for Compartments: (parent comp policies inherits to child comp)
+  Ex: allow group group1 to manage virtual-network-family in compartment A (For A and its child-comp)| in compartment A:B(for onlyB)
+  IMP: Parent comp can only see immidiate child comp. 
+  Attach policy in root comp: If only compC needs, location="in compartment A:B:C" Patch should be specified as root can't know C child comp. 
 
 DynamicGroup supported vars:  instance.compartment.id, instance.id, tag.<tagnamespace>.<tagkey>.value, and tag.<tagnamespace>.<tagkey>.value='<tagvalue>'
 DG allows Infrastructure|Stacked|Ephemeral resource principals = groups # Ex: [[Instances|Databases|Functions]]
