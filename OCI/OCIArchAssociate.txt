@@ -47,6 +47,13 @@ group1 = Any { resource.type='dbaas', resource.compartment.id='ocid'} # Any=logi
 allow dynamic-group IB to manage objects in tenancy where all {target.bucket.name='Log',target.region.name='phx'}
 ---------------------------------------------------------------------------------------------------------------
 
+---------------Networking----------summary-----------
+VCN(RT/GW/Security),IPmgmt(reservedIP/BYOIP/publicIPpools),
+Connectivity(Peering/DRG/site-to-siteVPN/FastConnect/Transit-routing)
+LB(applicationLB/networkLB/WebAppAcceleration=caching+compression)
+DNS(PublicDNS/PrivateDNS/privateView/TrafficMgmtSteering policies)
+NetworkCommandCenter(Inter-region-latency/network-path-analyzer/network-visuliser/capture-filters/virtual-test-access-points)
+---------------------------------------------------------------------------------------------------------------
 VCN--------------------------------------------------------------------------
 cidr - classeless Inter-domain routing = n/w address/prefix or mask (mask = how many bits fixed in n/w address||8 each digit,2^8=256)
 Ex: 192.168.1.0/24 # 24bits-fixed = (8.8.8.0 bits/256*256*256 fixed) -> (192.168.1) = Network address(Fixed), (0-255) = Host address(Can vary)
