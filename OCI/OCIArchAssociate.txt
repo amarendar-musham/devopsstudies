@@ -1,4 +1,4 @@
-IAM----------------------------------------Subjects(Users,group|DG|service)---Actions(Verb + resources)---Placements------------
+IAM----------------------------------------Subjects(Users,group|DG|service)---Actions(Verb + resources)---Placements(compartment/tenancy)------------
 -----------------------------------------------------------------------------
 AuthN = Authentication = users || AuthZ = Authorization = policies
 
