@@ -1,7 +1,6 @@
 Prerequisites for Professional certification course:
-		Associate: compute, storage networking, IAM, security, observability
-		Cloud native, Microservices, ServerlessArchtecture, Oracle DBs, Infrastructure as code. 
-		Hybrid, MultiCloud, Migration, HA & DR
+		Associate: [ compute, storage networking, IAM ] ; 
+		Professional: Security, Observability, Databases, IaC, Cloud-Native, HA/DR, Multicloud&Hybrid, Migration
 =================================================================================
 
 NetWork Architecture: 3-Tier [Correlate with screenshot]
