@@ -4,7 +4,7 @@ AuthN = Authentication = users || AuthZ = Authorization = policies
 
 ocid = ocid1.<resouce-type>.<realm>.[region][.future use].<uniq id> # ocid1.volume.oc1.eu-frankfurt-1.<> # realm = set of regions.
 
-Identity Domain(isolation for IAM) - container for users/groups/roles. Ex: default, sandbox
+--- Identity Domain(isolation for IAM) - container for users/groups/roles. Ex: default, sandbox
 
 api-signing-key = id_rsa, .pub ; API key = .pem content.... will gives oci-config ; Auth-tokens = upTo 2, to connect APIs. 
 
@@ -30,11 +30,11 @@ Compartments: To isolate and control access.
               Global across regions, access can be restricted wrto regions. Set quotas&budgets  on compartments. 
 Nested compartments -> Tenancy(rootComp) -> A -> B -> C
 
-CompartmentQuota & Budget:
+--- CompartmentQuota & Budget:
 ServiceLimits set by Oracle && Compartment quotas set by Adminstrators(policies). 
 compartment quota policies - set|unset|zero = max-resources|To default-service-limits|no-access
 
-Granular Access Control: policyInheritance/conditionalPolicies/TBAC(task-based access control)
+--- Granular Access Control: policyInheritance/conditionalPolicies/TBAC(task-based access control)
   Policy Inheritance & attachment for Compartments: (parent comp policies inherits to child comp)
   Ex: allow group group1 to manage virtual-network-family in compartment A (For A and its child-comp)| in compartment A:B(for onlyB)
   IMP: Parent comp can only see immidiate child comp. 
