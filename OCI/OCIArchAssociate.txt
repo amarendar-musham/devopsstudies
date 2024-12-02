@@ -237,8 +237,9 @@ Infrastructure Maintenance: HostA--VM-->HostB
 Shielded Instances(low-level security-image/shape) -> Secure boot(VM & BM), Measured boot(Only VM), Trusted platform module(TPM). # Measured boot enables TPM automatically. 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Object Storage (OSS)----summary--------------------------------------------------------------------
+Object Storage (OSS)----------------------------------------------------------------------
 
+---summary------------------
 Bucket,Object(data),multi-part-uploads; 
 Tiers,Auto-tiering,object-LCM(pattern,prefix);
 Replication,object-copy,versioning,retention-rules
