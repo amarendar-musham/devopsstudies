@@ -182,8 +182,13 @@ Network Path Analyzer :- Identifies connectivity problems with auto-configuratio
 
 OCI Compute -------------------------------BurstableInst(baseline)---ShieldedInst(secure,measured+TPM)----------------------
 
-Compute = Bare Metal & Virtual Machine instances
-Compute = Shape( A template that defines OCPUs, Memory, Storage ) + Image (Template of Virtual harddrive contains OS & Software)
+---summary
+Compute = Image (Template of Virtual harddrive contains OS & Software)=Platform/Custom/BYOI + Shape( A template that defines OCPUs, Memory, Storage )
+- Bare-Metal/Virtual-Machine/DedicatedHosts
+- Capacity => Preemptible/capacityReservation/DedicatedHost ; Burstable/Shielded
+- Connect => generateSSHkeypair/LaunchComputeInstance
+- Scaling => Vertical/Horizontal(auto-scaling)
+--------------------------------------------
 
 Image sources = Oracle Platform(Linux,Win) | Custom images(from existing OCIinstances/ BYOImage) | Marketplace(3rd-party) # Max-custom-image(400GB)
 Custom-image import/export supports: Emulation|ParaVirtualized|Native modes. 
