@@ -292,6 +292,13 @@ CreateBucket with Customer-managed-keys -> Create vault+key(AES encry), bucket(e
 
 Block Storage(AD-specific)-------------------------------Auto-Tuning(dynamic-performance,dettached)---VolumeGroup-----------------
 
+---summary---
+Block-volume(performance,scalability,resize), Volume-group
+Volume-attachment-types(iscsi/paravirtual), multi-instance-attachment
+Volume-access-types(RW/RO)
+BV-backup/clone, Cross-region/AD-replication, security
+--------------------------
+
 Min:50GB, Max:32TB (both block/boot volumes) ## Clone=sameAD, Backup&Restore=diffAD & diffRegion(uses OSS bucket for backups)
 
 Volume attachment types: iSCSI = (uses internal storage stack in GuestOS & n/w hardware virtualization) = doesn't use hypervisor  [iscsi commands to list lsblk]
