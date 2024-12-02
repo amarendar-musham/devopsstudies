@@ -237,8 +237,13 @@ Infrastructure Maintenance: HostA--VM-->HostB
 Shielded Instances(low-level security-image/shape) -> Secure boot(VM & BM), Measured boot(Only VM), Trusted platform module(TPM). # Measured boot enables TPM automatically. 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Object Storage (OSS)-------------------------------------Auto-tiering, LCM(pattern,prefix)--------------------------------------
+Object Storage (OSS)----summary--------------------------------------------------------------------
 
+Bucket,Object(data),multi-part-uploads; 
+Tiers,Auto-tiering,object-LCM(pattern,prefix);
+Replication,object-copy,versioning,retention-rules
+Security -> pre-authenticated-requests,customer-managed-keys,logging
+--------------------------------------
           -> Max object size = 10TB, can't edit or append data to object. but can enable versioning 
 OSS Resources: Object+metadata, Bucket - unique name in region in tenancy, Namespace - name is unique to a tenanant. 
 Object storage endpoint = https://objectstorage.us-sanjose-1.oraclecloud.com/n/ociarchassociate/b/training/o/oci.jpg [n=namespace, b=bucket, o=object]
