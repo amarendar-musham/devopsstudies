@@ -59,6 +59,8 @@ one AD can have three FDs(Fault domains)
 VCN's Subnet can exists either in single-AD, or across an entire region. The failover system can be placed in one AD whereas actual system present in another AD
 This stand-by/failure feature can be used by these services(diff AD): LB, VNIC/Virtual IP, Compute/Auto-scaling, OSS, BV(backup-restore to diff AD), FS(File storage)
 High Availability for OCI: Connectivity = [IPSec VPN connections,FastConnect] to connect your data center to OCI. It gives higher bandwidth options, a more reliable and consistent networking experience compared to internet-based connections.
+	IPSec VPN Redundancy Models = Multiple CPE -> HA VPN deployment, with two configured tunnels per CPE.
+	Redundant FastConnect = VCN network is connected via an IPsec VPN connection, virtual circuits to the on-premises network, and also has the IGW for VCN internet-bound traffic
 
 -------------
 VCN, Pub.sub = WordPress instance, Pvt.sub = Mysql instance. 
