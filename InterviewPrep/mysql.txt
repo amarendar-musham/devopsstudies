@@ -44,9 +44,11 @@ $ yum search mysql ; yum install mysql-server
 $ mysql -u root -p ## default no-passwd
 
 Create User.... and resp queries....==============
-CREATE USER 'amar'@'localhost' IDENTIFIED BY 'Welcome123!'; ## create/alter(passwd), localhost/fqdn/%(wildcard)=anyhost/
-RENAME USER 'amar'@'localhost' TO 'amar'@'%';
-GRANT ALL PRIVILEGES ON *.* TO 'amar'@'%' WITH GRANT OPTION; ## localhost/fqdn
+create user amar identified by '<>' 
+grant all privileges on wordpress.* to amar
+	CREATE USER 'amar'@'localhost' IDENTIFIED BY 'Welcome123!'; ## create/alter(passwd), localhost/fqdn/%(wildcard)=anyhost/
+	RENAME USER 'amar'@'localhost' TO 'amar'@'%';
+	GRANT ALL PRIVILEGES ON *.* TO 'amar'@'%' WITH GRANT OPTION; ## localhost/fqdn
 FLUSH PRIVILEGES; ## reload grant tables...
 ========================================================
 
