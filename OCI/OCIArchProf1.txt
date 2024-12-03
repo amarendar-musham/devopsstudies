@@ -67,7 +67,9 @@ VCN, Pub.sub = WordPress instance, Pvt.sub = Mysql instance.
 Moving storage to File-Storage-Service, create filesystem: export=/wordpress(shareIdentity), mountTarget=mt-wordpress (Under VCNs pvt.sub - where DB resides) ; 
 		Note: only MT resides in subnet, actual FS scope is different - look at the architecture diagram.
 NSG(n/w sec group under VCN) for FSS to allow it on the app-instance. ingress-rule: TCP/UDP dest ports 111,2048,2049,2050 ; attach it to mountTarget. 
-- access with <IP>:/export ~ 10.0.20.81:/wordpress on application instance(wordpress)
+- access with <IP>:/export ~ 10.0.20.81:/wordpress on application instance(wordpress) 
+	$$ showmount -e 10.0.20.151 ## Export /list for 10.0.20.151: /wordpress (everyone)
+	$$ mount -t nfs 10.0.20.151:/wordpress /mnt
 
 LB - public, create VCN/NSG to allow internet to 80/443. choose VCN,pub.sub,NSG during LB creation. 
 policy=round-robin, backendsets|backends=webserver, listener=http/https+ssl-cert, certificates=LB-managed-cert(add given cert), routing-policy=(context-path->backendset)
