@@ -355,6 +355,11 @@ iMP: Lower Cost: Recommended for throughput intensive workloads with large seque
 
 File Storage ------------------------------------------------------------------------------------ 
 
+----summary----
+File system concepts, Mount/Export-options, file-system-Path
+Snapshot, clone, in-transit-encryption, usage&metering
+---------------------
+
 NFS(NetworkFS) = FileSystem: where files exists, Export: Control layer, Mount Target: endpoint used by clients to connect filesystem. 
 Exports controls which filesystems are available for given mountTargets. 
 
