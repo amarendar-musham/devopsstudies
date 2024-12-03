@@ -65,6 +65,7 @@ High Availability for OCI: Connectivity = [IPSec VPN connections,FastConnect] to
 -------------
 VCN, Pub.sub = WordPress instance, Pvt.sub = Mysql instance. 
 Moving storage to File-Storage-Service, create filesystem: export=/wordpress(shareIdentity), mountTarget=mt-wordpress (Under VCNs pvt.sub - where DB resides) ; 
+		Note: only MT resides in subnet, actual FS scope is different - look at the architecture diagram.
 NSG(n/w sec group under VCN) for FSS to allow it on the app-instance. ingress-rule: TCP/UDP dest ports 111,2048,2049,2050 ; attach it to mountTarget. 
 - access with <IP>:/export ~ 10.0.20.81:/wordpress on application instance(wordpress)
 
