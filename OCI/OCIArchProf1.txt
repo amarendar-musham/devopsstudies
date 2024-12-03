@@ -74,6 +74,9 @@ NSG(n/w sec group under VCN) for FSS to allow it on the app-instance. ingress-ru
 LB - public, create VCN/NSG to allow internet to 80/443. choose VCN,pub.sub,NSG during LB creation. 
 policy=round-robin, backendsets|backends=webserver, listener=http/https+ssl-cert, certificates=LB-managed-cert(add given cert), routing-policy=(context-path->backendset)
 ex: /apiHandler --> apihandler-bs 
+NSG-LB: source:0.0.0.0/0 dest:80,443 (ingress)
+NSG-webserver: source:NSG-LB,dest:80,443 (ingress)
+
 
 Auto-scaling-group: create pvt.sub2, create a compute-instance(add init-script->install sample webapp), then instance-pool(#ofInstances). Add above LB. 
 	policy=Metric/schedule-based-autoscaling(ex: CPU), limits: min/max/initial-instances
