@@ -85,10 +85,12 @@ create DB: db-name, user/passwd, under-vcn2/pvt.sub, add SL to access db from we
 	Note: 10.0.20.74 will become a FLOATING-IP incase of HA and connects to the active DB node. 
 
 =================================================================================
-Disaster Recovery: options w/ cost=> backup&restore(OCI)($) > Standby(replicatedata w/ minServices) ($$) > Active/Active(readytoTakeOver) ($$$) 
+Disaster Recovery: 
 FullStack DR(FSDR) = full application recovery. 
 
-Two main metrics to measure the effectiveness of a Disaster Recovery setup => Recovery Point Objective (RPO), Recover Time Objective (RTO)
+Two main metrics to measure the effectiveness of a Disaster Recovery setup => Recovery Point Objective (RPO), Recover Time Objective (RTO) ## less RPO&RTO = more cost($$$)
+DR options w/ cost => backup&restore(OCI)($) > Standby(replicatedata w/ minServices) ($$) > Active/Active(readytoTakeOver) ($$$) 
+DB strategies for DR: ActiveDataGuard(physical-replica-RO), GoldenGate(more replica features)
 
 supported components: compute-instances, boot/block-vols/vol-groups, Exa-DB/EnterpriceDB, Autonomous-DB on shared-Exa infrastruction. 
 The components not listed here can be taken through custom automation. 
