@@ -146,6 +146,8 @@ Network LB, load balancing policy to disctribute traffic to backends :---- 2(sou
 If listener=tcp/22, then we can ssh with LB IPaddr. It connects to backend nodes of DB. 
 
 Public LB - reserved/ephemeral IPv4 addr. 
+
+security:  <<network-firewall/WAF>>, OCI certificates/KMS
 ---------------------------------------------------------------------------------------------------------------
 
 Networking - DNS(Domain Name System) Management----------------------------------SOA,NS,A,Rdata-------------------------
