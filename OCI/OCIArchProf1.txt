@@ -81,7 +81,9 @@ NSG-webserver: source:NSG-LB,dest:80,443 (ingress) ## all the instances under we
 Auto-scaling-group: create pvt.sub2, create a compute-instance(add init-script->install sample webapp), then instance-pool(#ofInstances). Add above LB. 
 	policy=Metric/schedule-based-autoscaling(ex: CPU), limits: min/max/initial-instances
 
-create DB: db-name, user/passwd, under-vcn2/pvt.sub, add SL to access db from webserver (mysql -h 10.0.20.74 -u <> -p <>) - convert to HighAvailability-DB
+create DB: db-name, user/passwd, under-vcn2/pvt.sub, add SL to access db from webserver (mysql -h 10.0.20.74 -u <> -p <>) - convert to HighAvailability-DB ; 
+	Note: 10.0.20.74 will become a FLOATING-IP incase of HA and connects to the active DB node. 
+
 =================================================================================
 Disaster Recovery:
 FullStack DR(FSDR) = full application recovery. 
