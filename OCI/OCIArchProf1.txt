@@ -97,7 +97,7 @@ The components not listed here can be taken through custom automation.
 Components and Dependencies in App-stack: Application, DB, Infra(VCN,LB,DNS,VM,FSS,OSS,BV)
 
 DR components&concepts: DRPG,DR-PLans/plan-groups
-DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); Members=resources need DR(ex:volume groups,DB)
+DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); Members=Resources which need DR(ex:volume groups,DB)
 DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
 	types:[switchover=planned transition, failover=unplanned transition]
 
