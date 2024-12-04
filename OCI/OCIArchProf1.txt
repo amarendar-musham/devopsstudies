@@ -96,8 +96,10 @@ supported components: compute-instances, boot/block-vols/vol-groups, Exa-DB/Ente
 The components not listed here can be taken through custom automation. 
 Components and Dependencies in App-stack: Application, DB, Infra(VCN,LB,DNS,VM,FSS,OSS,BV)
 
-DRPG(protection groups)=Peer association b/w regions, DRP(Plans)=switchover/failover (switchover=planned transition, failover=unplanned transition)
-	primaryDRPG(phx),StandbyDRPG(iad); DRPlans=workflows associated with DRPGroups(Note: plans defined in StandbyDRPGs)
+DR components&concepts: DRPG,DR-PLans/plan-groups
+DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); 
+DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
+	types:[switchover=planned transition, failover=unplanned transition]
 
 requirements: get a volume group for BVs for easy recovery. Create a bucket for FSDR logs. 
 Recreate the n/w components in standby region(use: ResourceMgr/Terraform). OSS Replication, BV replication, Autonomous Data Gaurd for backup copies.... 
