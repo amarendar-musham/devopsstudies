@@ -86,7 +86,7 @@ create DB: db-name, user/passwd, under-vcn2/pvt.sub, add SL to access db from we
 
 =================================================================================
 Disaster Recovery: 
-FullStack DR(FSDR) = full application recovery. 
+FullStack DR(FSDR) = full application recovery - LB, application, database, infra(compute,BV,FSS,OSS)
 
 Two main metrics to measure the effectiveness of a Disaster Recovery setup => Recovery Point Objective (RPO), Recover Time Objective (RTO) ## less RPO&RTO = more cost($$$)
 DR options w/ cost => backup&restore(OCI)($) > Standby(replicatedata w/ minServices) ($$) > Active/Active(readytoTakeOver) ($$$) 
