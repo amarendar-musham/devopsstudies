@@ -97,7 +97,7 @@ The components not listed here can be taken through custom automation.
 Components and Dependencies in App-stack: Application, DB, Infra(VCN,LB,DNS,VM,FSS,OSS,BV)
 
 DR components&concepts: DRPG,DR-PLans/plan-groups
-DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); 
+DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); Members=resources need DR(ex:volume groups,DB)
 DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
 	types:[switchover=planned transition, failover=unplanned transition]
 
@@ -108,7 +108,7 @@ Scenario: Recreate the n/w components in standby region(use: ResourceMgr/Terrafo
 1. Migration&DR/DRPG service - create drpg and choose bucket for logs in primary-region1(Ashburn) and standby-region2(Phoenix), 
 peering=associate both protection-groups by choosing which needs primary-role and which needs standby role. 
 
-2. DRPG-Resources/Members (in Ashburn/primary) => create members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
+2. DRPG-Resources/Members (in Ashburn/primary) => Add members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
 
 3. DRPG-resources/Plans (in Phoenix/standby) => create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be added under plan groups resource. 
 
