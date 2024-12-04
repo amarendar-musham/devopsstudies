@@ -110,7 +110,7 @@ peering=associate both protection-groups by choosing which needs primary-role an
 
 2. DRPG-Resources/Members (in Ashburn/primary) => Add members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
 
-3. DRPG-resources/Plans (in Phoenix/standby) => create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be auto-added under plan groups resource. 
+3. DRPG-resources/Plans (in Phoenix/standby) => create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be auto-added under plan groups for defined members. 
 
 4. DRPG => Run Prechecks by selecting plan(above one-switchover), check logs after prechecks are green/red. 
 
