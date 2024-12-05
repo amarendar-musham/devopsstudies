@@ -118,7 +118,7 @@ peering=associate both protection-groups by choosing which needs primary-role an
 =================================================================================
 
 OCIR repository, image-path: <region-key>.ocir.oi/<tenancy-namespace>/<repo-name>:<tag> ## region-key = phx.ocir.io/iad.ocir.io , retention policies:global/custom
-Store the credentials(auth-tokens) in k8s secrets, define ocir path in k8s manifest ; 
+Store the credentials(auth-tokens) in k8s secrets, Specify the ocir-image-location and the Docker secret in the deployment manifest file
 docker login phx.ocir.io -u <tenancy-namespace>/user -p <> ## API-auth-token for OCI user
 
 OKE cluster: ##
