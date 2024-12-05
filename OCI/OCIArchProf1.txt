@@ -117,8 +117,9 @@ peering=associate both protection-groups by choosing which needs primary-role an
 5. DRPG => Execute Plan, after execution try to access the application from a LB in standby-region. 
 =================================================================================
 
-OCIR repository, image-path: <region-key>.ocir.oi/<tenancy-namespace>/<repo-name>:<tag> ## region-key = phx.ocir.io/iad.ocir.io 
-Store the credentials(auth-tokens) to do "docker pull" in k8s secrets ; docker login phx.ocir.io -u <tenancy-namespace>/user -p <> ## API-auth-token for OCI user
+OCIR repository, image-path: <region-key>.ocir.oi/<tenancy-namespace>/<repo-name>:<tag> ## region-key = phx.ocir.io/iad.ocir.io , retention policies:global/custom
+Store the credentials(auth-tokens) in k8s secrets, define ocir path in k8s manifest ; 
+docker login phx.ocir.io -u <tenancy-namespace>/user -p <> ## API-auth-token for OCI user
 
 OKE cluster: ##
 Quick create w/f: auto-n/w resources. Options: k8s version, API-endpoint/worker-node visibility, node-shape/number, image verification
