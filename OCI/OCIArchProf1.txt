@@ -132,8 +132,8 @@ API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options
 
 Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(custom-cidr for pods/services), as not needed as we rely on service names for communication
 
-prerequisites to create OKE cluster: OCI tenancy access, sufficient quota on resource(service limits)
-ready-to-deploy compartment (vcn,subnets,IG,RoutTable,SL), configuring n/w resources, policies 
+Prerequisites to create OKE cluster: OCI tenancy access(subscribe-a-region), sufficient quota on resource(service limits)(1compute,50GB-BV,LB,VCN/Subnet)
+ready-to-deploy compartment, configuring n/w resources(vcn,subnets,IG,RT,SL), policies(tenancy-admin-group to manage cluster)
 Tools: kubectl and KUBECONFIG
 
 Network-configuration:
