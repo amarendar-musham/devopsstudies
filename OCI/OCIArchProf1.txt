@@ -124,6 +124,8 @@ associate retention policies with repos:global/custom ; delete images that haven
 Container instance: Provisioned for containers. Options to select memory,storage similar to compute instances. 
 
 OKE cluster: ## Arch=kube-[etcd,APIserver,controller,scheduler] + cloud-controller
+Managed-nodes(VMs): kubelet+containerRuntime, 
+Vitual-nodes: fully managed serverless [ virtual-Kubelet+CI-Runtime, {pod,container-instance}mgmt ]
 Quick create w/f: auto-n/w resources. Options: k8s version, API-endpoint/worker-node visibility, node-shape/number, image verification
 Custom create w/f: create cluster w/ no-node-pool, add later. Options: secret-encryption,Pod-security, NSG, custom-CIDR for pods/services, node placement
 API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options: custom-image for nodes.
