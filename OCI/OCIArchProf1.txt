@@ -138,6 +138,7 @@ Tools: kubectl and KUBECONFIG
 
 Network-configuration:
 3 subnets(look at the screenshot): public subnet for LB, private subnets for kubeAPI and worker-nodes. 
+--> create VCN. create Gateways(IG,NAT,SG), routeTables(target+dest) ## ex-routeTable: (target=IG/SG, dest=0.0.0.0/0 or all-phx-svcs)
 kubeAPI can be connected using Bastion-service/bastion-session; routeTable to access ServiceGateway to connect oci-services like OCIR
 workers can communicate internal apps(ex: Jira,slack) through NATgateway(Note: destIPrange in RouteTable is not entire internet, only the CIDR of those internal apps)
 
