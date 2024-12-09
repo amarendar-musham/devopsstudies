@@ -147,7 +147,7 @@ API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options
 Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(custom-cidr for pods/services), as not needed as we rely on service names for communication
 
 --> create VCN. create Gateways(IG,NAT,SG), routeTables(target+dest) ## ex-routeTable: (target=IG/SG, dest=0.0.0.0/0 or all-phx-svcs)
---> create individual SLs for workers,LB,APIendpoint, but will add ingress/egress rules later.
+--> create individual SLs for workers,LB,APIendpoint, add ingress/egress rules from docs.oracle/container-Engine.
 --> create subnet by selecting the SLs(above-created), check DNS-resolution, select default DHCP options
 
 
