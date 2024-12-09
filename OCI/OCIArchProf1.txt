@@ -123,6 +123,13 @@ docker login phx.ocir.io -u <tenancy-namespace>/user -p <> ## API-auth-token for
 associate retention policies with repos:global/custom ; delete images that haven't-pulled/versioned over 30days(exempt-versions:latest,*.release)
 Container instance: Provisioned for containers. Options to select memory,storage similar to compute instances. 
 
+OKE cluster: ## Arch=kube-[etcd,APIserver,controller,scheduler] + cloud-controller
+Managed-nodes(VMs): kubelet+containerRuntime, 
+Vitual-nodes: fully managed serverless [ virtual-Kubelet+CI-Runtime, {pod,container-instance}mgmt ]
+Quick create w/f: auto-n/w resources. Options: k8s version, API-endpoint/worker-node visibility, node-shape/number, image verification
+Custom create w/f: create cluster w/ no-node-pool, add later. Options: secret-encryption,Pod-security, NSG, custom-CIDR for pods/services, node placement
+API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options: custom-image for nodes.
+Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(custom-cidr for pods/services), as not needed as we rely on service names for communication
 
 Prerequisites to create OKE cluster: OCI tenancy access(subscribe-a-region), sufficient quota on resource(service limits)(1compute,50GB-BV,LB,VCN/Subnet)
 ready-to-deploy compartment, configuring n/w resources(vcn,subnets,IG,RT,SL), policies(tenancy-admin-group to manage cluster)
@@ -137,23 +144,14 @@ Network-configuration:
 kubeAPI can be connected using Bastion-service/bastion-session; routeTable to access ServiceGateway to connect oci-services like OCIR
 workers can communicate internal apps(ex: Jira,slack) through NATgateway(Note: destIPrange in RouteTable is not entire internet, only the CIDR of those internal apps)
 
-OKE cluster: ## Arch=kube-[etcd,APIserver,controller,scheduler] + cloud-controller
-Managed-nodes(VMs): kubelet+containerRuntime, 
-Vitual-nodes: fully managed serverless [ virtual-Kubelet+CI-Runtime, {pod,container-instance}mgmt ]
-Quick create w/f: auto-n/w resources. Options: k8s version, API-endpoint/worker-node visibility, node-shape/number, image verification
-Custom create w/f: create cluster w/ no-node-pool, add later. Options: secret-encryption,Pod-security, NSG, custom-CIDR for pods/services, node placement
-API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options: custom-image for nodes.
-
-Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(custom-cidr for pods/services), as not needed as we rely on service names for communication
-
 --> create VCN. create Gateways(IG,NAT,SG), routeTables(target+dest) ## ex-routeTable: (target=IG/SG, dest=0.0.0.0/0 or all-phx-svcs)
 --> create individual SLs for workers,LB,APIendpoint, add ingress/egress rules from docs.oracle/container-Engine.
 --> create subnet by selecting the SLs(above-created), check DNS-resolution, select default DHCP options
 --> create OKE cluster(custom w/f): select flannelOverlay(CNI/pod-communication), subnets(LB/API/workers), node-pool-config
 
 
-export OCI_CLI_AUTH=security_token && export OCI_CLI PROFILE=DEFAULT## refers while generating token through <oci session authenticate>
-if MFA enabled: add --profile, --auth to kubeconfig file. 
+export OCI_CLI_AUTH=security_token && export OCI_CLI PROFILE=DEFAULT## refers while generating token through <oci session authenticate> 
+if MFA enabled: add --profile, --auth to kubeconfig file. ## this is an alternative to above exportedVars
 We can create bastion host if API endpoint exists in private.sub. Bastion service+session can be used with ssh-port-forward 6443-port
 Note: API signing key-pair is req. upload pub key for connection
 
