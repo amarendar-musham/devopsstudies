@@ -123,6 +123,20 @@ docker login phx.ocir.io -u <tenancy-namespace>/user -p <> ## API-auth-token for
 associate retention policies with repos:global/custom ; delete images that haven't-pulled/versioned over 30days(exempt-versions:latest,*.release)
 Container instance: Provisioned for containers. Options to select memory,storage similar to compute instances. 
 
+
+Prerequisites to create OKE cluster: OCI tenancy access(subscribe-a-region), sufficient quota on resource(service limits)(1compute,50GB-BV,LB,VCN/Subnet)
+ready-to-deploy compartment, configuring n/w resources(vcn,subnets,IG,RT,SL), policies(tenancy-admin-group to manage cluster)
+Tools: kubectl and KUBECONFIG
+
+policies: allow service OKE to manage all-resources in tenancy ; allow group <> to manange cluster-family in compartment <> 
+## policies for a group: use subnets, use vnics, use private-ips/[public], manage instance-family, use network-security-groups, read virtual-network-family, inspect compartments, 
+## policies to configure new n/w resources(Quick create w/f): manage vcns/subnets/nat-gateways/internet-gateways/service-gateways/route-tables/security-lists, use cloud-shell
+
+Network-configuration:
+3 subnets(look at the screenshot): public subnet for LB, private subnets for kubeAPI and worker-nodes. 
+kubeAPI can be connected using Bastion-service/bastion-session; routeTable to access ServiceGateway to connect oci-services like OCIR
+workers can communicate internal apps(ex: Jira,slack) through NATgateway(Note: destIPrange in RouteTable is not entire internet, only the CIDR of those internal apps)
+
 OKE cluster: ## Arch=kube-[etcd,APIserver,controller,scheduler] + cloud-controller
 Managed-nodes(VMs): kubelet+containerRuntime, 
 Vitual-nodes: fully managed serverless [ virtual-Kubelet+CI-Runtime, {pod,container-instance}mgmt ]
@@ -132,19 +146,11 @@ API driven/automation: max-customization. leverages APIs/SDKs/Terraform. Options
 
 Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(custom-cidr for pods/services), as not needed as we rely on service names for communication
 
-Prerequisites to create OKE cluster: OCI tenancy access(subscribe-a-region), sufficient quota on resource(service limits)(1compute,50GB-BV,LB,VCN/Subnet)
-ready-to-deploy compartment, configuring n/w resources(vcn,subnets,IG,RT,SL), policies(tenancy-admin-group to manage cluster)
-Tools: kubectl and KUBECONFIG
-
-Network-configuration:
-3 subnets(look at the screenshot): public subnet for LB, private subnets for kubeAPI and worker-nodes. 
 --> create VCN. create Gateways(IG,NAT,SG), routeTables(target+dest) ## ex-routeTable: (target=IG/SG, dest=0.0.0.0/0 or all-phx-svcs)
-kubeAPI can be connected using Bastion-service/bastion-session; routeTable to access ServiceGateway to connect oci-services like OCIR
-workers can communicate internal apps(ex: Jira,slack) through NATgateway(Note: destIPrange in RouteTable is not entire internet, only the CIDR of those internal apps)
+--> create individual SLs for workers,LB,APIendpoint, but will add ingress/egress rules later.
+--> create subnet by selecting the SLs(above-created), check DNS-resolution, select default DHCP options
 
-policies: allow service OKE to manage all-resources in tenancy ; allow group <> to manange cluster-family in compartment <> 
-## policies for a group: use subnets, use vnics, use private-ips/[public], manage instance-family, use network-security-groups, read virtual-network-family, inspect compartments, 
-## policies to configure new n/w resources(Quick create w/f): manage vcns/subnets/nat-gateways/internet-gateways/service-gateways/route-tables/security-lists, use cloud-shell
+
 
 export OCI_CLI_AUTH=security_token && export OCI_CLI PROFILE=DEFAULT## refers while generating token through <oci session authenticate>
 if MFA enabled: add --profile, --auth to kubeconfig file. 
