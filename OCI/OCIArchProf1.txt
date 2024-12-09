@@ -143,7 +143,7 @@ workers can communicate internal apps(ex: Jira,slack) through NATgateway(Note: d
 
 policies: allow service OKE to manage all-resources in tenancy ; allow group <> to manange cluster-family in compartment <> 
 ## policies for a group: use subnets, use vnics, use private-ips/[public], manage instance-family, use network-security-groups, read virtual-network-family, inspect compartments, 
-## policies for Quick create w/f: manage vcns/subnets/nat-gateways/internet-gateways/service-gateways/route-tables/security-lists, use cloud-shell
+## policies to configure new n/w resources(Quick create w/f): manage vcns/subnets/nat-gateways/internet-gateways/service-gateways/route-tables/security-lists, use cloud-shell
 
 export OCI_CLI_AUTH=security_token && export OCI_CLI PROFILE=DEFAULT## refers while generating token through <oci session authenticate>
 if MFA enabled: add --profile, --auth to kubeconfig file. 
