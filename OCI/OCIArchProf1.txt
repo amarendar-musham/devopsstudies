@@ -149,7 +149,7 @@ Note: choose custom w/f as we need to choose resp VCN&subnets. but don't choose(
 --> create VCN. create Gateways(IG,NAT,SG), routeTables(target+dest) ## ex-routeTable: (target=IG/SG, dest=0.0.0.0/0 or all-phx-svcs)
 --> create individual SLs for workers,LB,APIendpoint, add ingress/egress rules from docs.oracle/container-Engine.
 --> create subnet by selecting the SLs(above-created), check DNS-resolution, select default DHCP options
-
+--> create OKE cluster(custom w/f): select flannelOverlay(CNI/pod-communication), subnets(LB/API/workers), node-pool-config
 
 
 export OCI_CLI_AUTH=security_token && export OCI_CLI PROFILE=DEFAULT## refers while generating token through <oci session authenticate>
