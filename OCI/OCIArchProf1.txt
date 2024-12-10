@@ -186,16 +186,15 @@ Devops = DEV(Plan|code|build|test) + OPS(release|deploy|operations|monitor)
 CI/CD: CI = automated build+test for frequent/small code change or error-fix; CD(cont.deploy) = manual cont.delivery, automatic cont.deployment
 =================================================================================
 
-Oracle Functions: Functions-as-a-service, fuctions deployed as docker-images, run as docker-containers ; = Ployglot-Containers
+Oracle Functions: Functions-as-a-service, fuctions deployed as docker-images
 
-How-it-works> Push function image to registry, configure func.trigger for code run, Pay for only code-execution time, not idle. 
+How-it-works>>> pulls-image-ocir -> runs-container -> execute-tasks, configure func.trigger for code run, Pay for only code-execution time, not idle. 
 Function Pricing> #of invocation Requests(Free=2million/month), Resource Usage(Free=400K GB-seconds/month)
 
-FunctionsTrigger(events/notification/cli) ==> Pull-Image-from-ocir ==> { can use oss|ADB|secrets|compute|n/w, send logs/metrics to Monitoring|Logging }
-
 Function concepts:
-Application => collection of func.s, attached to VCN/sunets used for egress, enable/disable logs, set env-vars. 
+Application => collection/grouping of func.s (, runtime-isolation). Specify the subnets in which the functions will run. Enable logging for functions. 
 Function => Container image stored in registry, metadata(image-location,config-params,memory,timeout)
+FunctionsTrigger => Invocation using CLI/SDK/signedHTTPreq/Events'
 Fn CLI => cmd to manage func.s, build&package code into image, generates boilerPlate func.code-java/python/node/go/ruby
 	fn deploy = Builds-image, Pushes-ocir, updates metadata
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
