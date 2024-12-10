@@ -190,12 +190,15 @@ Oracle Functions: Functions-as-a-service, fuctions deployed as docker-images
 
 How-it-works>>> pulls-image-ocir -> runs-container -> execute-tasks, configure func.trigger for code run, Pay for only code-execution time, not idle. 
 Function Pricing> #of invocation Requests(Free=2million/month), Resource Usage(Free=400K GB-seconds/month)
+FDKs(functions development kit) -> (Build-time-Base-image + Run-time-Base-image + FDK-library), supported Languages = python,java,go,node,ruby
 
 Function concepts:
 Application => collection/grouping of func.s (, runtime-isolation). Specify the subnets in which the functions will run. Enable logging for functions. 
 Function => Container image stored in registry, metadata(image-location,config-params,memory,timeout)
 FunctionsTrigger => Invocation using CLI/SDK/signedHTTPreq/Events'
-Fn CLI => cmd to manage func.s, build&package code into image, generates boilerPlate func.code-java/python/node/go/ruby
+Fn CLI => cmd to manage func.s, build&package code into image, generates boilerPlate
+	fn init --runtime python hi-func ; func.yaml(runtime, build_image,run_image)#python-images
+	fn build hi-func
 	fn deploy = Builds-image, Pushes-ocir, updates metadata
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
 Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
