@@ -200,6 +200,19 @@ Fn CLI => cmd to manage func.s, build&package code into image, generates boilerP
 	fn init --runtime python hi-func ; func.yaml(runtime, build_image,run_image)#python-images
 	fn build hi-func
 	fn deploy = Builds-image, Pushes-ocir, updates metadata
+
+Prerequisites to Creating an OCI Function
+	Sufficient quota on resource(service limits)
+	Creating Groups and Users
+	Ready-to-deploy compartment (includes vcn)
+	Configuring network resources
+	Policies
+	Setting up Function Development Environments
+
+configure n/w resources: VCN and subnets for OCI Functions(CIDR blocks are crucial in indicating the available IP addresses for resources)
+minimum_required_number_of_IP_addresses = functionA(max_memory_required * max_#executions)/ 14 + (3 * number_of_subnets) ## 1 IP can handle 14GB, 3 reservedIPs
+		Ex: ((0.5 * 2000) / 14) + (3 * 1) = 75IPs, /25 CIDR block is sufficient for OCI Functions use of the VCN.
+
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
 Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
 Using Other services => oss|ADB|secrets|compute|n/w ; granular access control|func.s resource principal|ServiceGateway(private)|InternetG(public)
