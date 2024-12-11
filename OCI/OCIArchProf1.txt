@@ -227,6 +227,7 @@ cd hello-java ## files: func.yaml, pom.xml ,src/code/java...
 fn -v deploy -app helloworld-app ## creates function in the application, container-image builds and pushes to registry
 echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar!
 ---------------------
+Function scheduling-> using resource-scheduler(form-based/cron-tab) ## DG - ALL(resource.type=<>,resource.id=<ocid>), Policy - to manage function-family
 
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
 Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
