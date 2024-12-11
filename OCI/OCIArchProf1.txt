@@ -202,9 +202,9 @@ Fn CLI => cmd to manage func.s, build&package code into image, generates boilerP
 	fn deploy = Builds-image, Pushes-ocir, updates metadata
 
 Prerequisites to Creating an OCI Function
-	Sufficient quota on resource(service limits)
-	Creating Groups and Users
-	Ready-to-deploy compartment (includes vcn)
+	Sufficient quota on resource(service limits) # check from docs.oracle.com
+	Creating Groups and Users ## who needs access
+	Ready-to-deploy compartment # holds n/w resources vcn,subnet
 	Configuring network resources
 	Policies
 	Setting up Function Development Environments
