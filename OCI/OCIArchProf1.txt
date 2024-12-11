@@ -213,6 +213,21 @@ configure n/w resources: VCN and subnets for OCI Functions(CIDR blocks are cruci
 minimum_required_number_of_IP_addresses = functionA(max_memory_required * max_#executions)/ 14 + (3 * number_of_subnets) ## 1 IP can handle 14GB, 3 reservedIPs
 		Ex: ((0.5 * 2000) / 14) + (3 * 1) = 75IPs, /25 CIDR block is sufficient for OCI Functions use of the VCN.
 
+---------------------
+fn list context
+fn use context us-ashburn-1
+fn update context oracle.compartment-id <ocid1.compartment.oc1.>
+fn update context oracle.image-compartment-id <ocid1.compartment.oc1.> ## function images will be pushed here...
+in update context registry <region>.ocir.io/namespace/[repo-name-prefix]
+docker login-u '<namespace>/<user>' <>.ocir.io
+fn list apps
+
+fn init -runtime java hello-java
+cd hello-java ## files: func.yaml, pom.xml ,src/code/java...
+fn -v deploy -app helloworld-app ## creates function, container-image builds and pushes to registry
+echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar!
+---------------------
+
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
 Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
 Using Other services => oss|ADB|secrets|compute|n/w ; granular access control|func.s resource principal|ServiceGateway(private)|InternetG(public)
