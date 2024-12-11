@@ -222,7 +222,7 @@ in update context registry <region>.ocir.io/namespace/[repo-name-prefix]
 docker login-u '<namespace>/<user>' <>.ocir.io
 fn list apps
 
-fn init -runtime java hello-java
+fn init -runtime java hello-java ## initializes application in CLI to get files in local (already created in OCI console also w/ same name)
 cd hello-java ## files: func.yaml, pom.xml ,src/code/java...
 fn -v deploy -app helloworld-app ## creates function, container-image builds and pushes to registry
 echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar!
