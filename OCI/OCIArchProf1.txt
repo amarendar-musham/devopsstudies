@@ -226,7 +226,10 @@ fn init -runtime java hello-java ## initializes function
 cd hello-java ## files: func.yaml, pom.xml ,src/code/java...
 fn -v deploy -app helloworld-app ## deploys function to the existing-application(helloworld-app), also builds container-image(w/ base-images build/runtime defined in func.yaml), and pushes to registry
 echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar!\
-	Ex: you can retrieve the list of VCNs list from a compartment using functions..
+
+Example functions usecases: Retrieve the list of VCNs from a compartment, encode videos for different resolution from OSS Bucket, generate invoices-pdf from json+data from OSS Bucket
+
+
 ---------------------
 Function scheduling-> using resource-scheduler(form-based/cron-tab) ## DG - ALL(resource.type=<>,resource.id=<ocid>), Policy - to manage function-family
 
