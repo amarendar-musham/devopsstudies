@@ -1,0 +1,61 @@
+-------- directory structure w/ a module
+./main.tf
+./terraform.tfvars
+./variables.tf
+./vcn_module/{main.tf, variables.tf, output.tf}
+
+-------- file contents....
+## ./main.tf 
+	module "vcn01" {
+		source = "./vcn module"
+		vcn_name = "vcn01"
+		vcn_cidr_block = "172.0.0.0/16"
+		compartment_id = var.compartment_ocid
+	}
+
+
+## ./provider.tf (provider-identifier + configuration)
+	terraform { 
+		required_providers { oci = { source = "oracle/oci" } ｝
+	}
+	provider "oci" {
+		# tenancy_ocid = "<tenancy OCID»"
+		# user_ocid = " ocidi.compartment.ocl..aaaa"
+		# private_key_path = "~/keys/priv-pem"
+		# fingerprint = "AA: 11: BB: 22"
+		region = var.region
+	}
+
+## ./terraform.tfvars
+	region = "us-ashburn-1"
+	compartment_ocid = "ocid1.compartment.oc1..aaa"
+	vcn01_cidr_block = "10.0.0.0/16"
+	vcn0l_ display_ name = "vcn01"
+--------
+## ./vcn_module/main.tf 
+	resource "oci_core_virtual_network" "vcn01" {
+	compartment_id = var.compartment_ocid
+	cidr_block = var.vcn01_cidr_block
+	dns_label = var.vcn01_display_name
+	display_name = var.vcn01_display_name
+	}
+
+## ./vcn_module/variables.tf
+	variable "region" ()
+	variable "compartment_ocid" {}
+	variable "vcn01_cidr_block" {}
+	variable "vcn01_display_name" {}
+
+## ./vcn_module/outputs.tf
+	output "vcn_id" { value = oci_core_virtual_network.vcn.id }
+	output "vcn_cidr_block" { value = oci_core_virtual_network.vcn.cidr_block }
+	output "vcn_dns_label" { value = oci_core_virtual_network.vcn.dns_label }
+--------
+terraform init ## initializes directory structure and allows running other commands. 
+terraform validate
+terraform plan
+terraform apply
+terraform destroy 
+
+
+
