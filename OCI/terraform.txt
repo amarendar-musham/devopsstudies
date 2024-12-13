@@ -72,11 +72,11 @@ Parameter evaluation order: Terraform-config(eX:main.tf/provider-block) -> Linux
 	output "vcn_cidr_block" { value = oci_core_virtual_network.vcn.cidr_block }
 	output "vcn_dns_label" { value = oci_core_virtual_network.vcn.dns_label }
 --------
-terraform init ## initializes directory structure and allows running other commands. 
-terraform validate
-terraform plan
-terraform apply
-terraform destroy 
+$ terraform init 		## initializes directory structure and allows running other commands. 
+$ terraform validate		## syntax validation
+$ terraform plan		## Terraform-Engine creates a DIFF of Code and State, so can it can be reviewed before apply. 
+$ terraform apply		## It runs plan by default and asks for a prompt to apply
+$ terraform destroy		## Terraform-Engine reads State file and destroys infra.
+$ terraform refresh		##  Infra --discover--> Terraform-Engine --update--> State ## to update state file if there any manual change in infrastructure. 
 
-
-
+Note: apply => Terraform Code|Config --read--> Terraform-Engine { --create--> Infrastructure, --write--> State (view of infra) }
