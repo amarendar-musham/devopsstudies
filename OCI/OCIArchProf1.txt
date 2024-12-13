@@ -253,7 +253,7 @@ Terraform Concepts:
 	Resources: cloud resources like compute,DB ## blocks....
 	Variables: parameters ## file: terraform.tfvars [key = value]
 	Outputs: to share data b/w diff parts of infra ## blocks{prints output from resources execution}
-	Modules: grouping of related resources together into reusable packages
+	Modules: grouping of related resources together into reusable packages ## blocks{use source attribute to import a module}
 	State: current state of infrastructure
 
 Terraform Commands:
