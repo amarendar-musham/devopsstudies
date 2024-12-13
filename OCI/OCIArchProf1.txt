@@ -206,7 +206,7 @@ Prerequisites to Creating an OCI Function
 	Creating Groups and Users ## who needs access
 	Ready-to-deploy compartment # holds n/w resources vcn,subnet
 	Configuring network resources
-	Policies
+	Policies ## for above create groups
 	Setting up Function Development Environments
 
 configure n/w resources: VCN and subnets for OCI Functions(CIDR blocks are crucial in indicating the available IP addresses for resources)
@@ -214,18 +214,21 @@ minimum_required_number_of_IP_addresses = functionA(max_memory_required * max_#e
 		Ex: ((0.5 * 2000) / 14) + (3 * 1) = 75IPs, /25 CIDR block is sufficient for OCI Functions use of the VCN.
 
 ---------------------
-fn list context
-fn use context us-ashburn-1
-fn update context oracle.compartment-id <ocid1.compartment.oc1.>
-fn update context oracle.image-compartment-id <ocid1.compartment.oc1.> ## function images will be pushed here...
-in update context registry <region>.ocir.io/namespace/[repo-name-prefix]
-docker login-u '<namespace>/<user>' <>.ocir.io
-fn list apps
+Function/Applications -> create application(helloworld-app) by selecting a VCN and pub.subnet
+Cloud shell =>  fn list context
+		fn use context us-ashburn-1
+		fn update context oracle.compartment-id <ocid1.compartment.oc1.>
+		fn update context oracle.image-compartment-id <ocid1.compartment.oc1.> ## function images will be pushed here...
+		in update context registry <region>.ocir.io/namespace/[repo-name-prefix]
+		docker login phx.ocir.io -u <tenancy-namespace>/<user> -p <auth-token>
+		fn list apps
 
-fn init -runtime java hello-java ## initializes function 
-cd hello-java ## files: func.yaml, pom.xml ,src/code/java...
-fn -v deploy -app helloworld-app ## deploys function to the existing-application(helloworld-app), also builds container-image(w/ base-images build/runtime defined in func.yaml), and pushes to registry
-echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar!\
+fn init hello-java --runtime java  
+		## initializes function and create a dir/hello-java with files: func.yaml, pom.xml ,src/code/java...
+fn -v deploy -app helloworld-app 
+		## deploys function to the existing-application(helloworld-app), also builds container-image(w/ base-images build/runtime defined in func.yaml), and pushes to registry
+fn invoke helloworld-app hello-java  ## Hello World! 
+		## echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar! 
 
 Example functions usecases: Retrieve the list of VCNs from a compartment, encode videos for different resolution from OSS Bucket, generate invoices-pdf from json+data from OSS Bucket
 
@@ -236,17 +239,6 @@ Function scheduling-> using resource-scheduler(form-based/cron-tab) ## DG - ALL(
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
 Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
 Using Other services => oss|ADB|secrets|compute|n/w ; granular access control|func.s resource principal|ServiceGateway(private)|InternetG(public)
-
-1. create a tenancy/compartment, user/groups under Identity domain(ex:default), policy for functions. 
-2. Function/Applications -> create application(helloworld-app) by selecting a VCN and pub.subnet
-3. Cloud shell -> fn list/use context <>, fn update context oracle.compartment-id|registry <>, fn list apps	
-4. docker login phx.ocir.io -u <ten-ns/user> -p <auth-token> ;My Profile -> generate Auth token; 
-5. fn init hello-java --runtime java # hello-java is a dir of application with pom.xml
-	fn -v deploy --app helloworld-app ## builds <hello-java> as docker images and pushes to registry
-	fn invoke helloworld-app hello-java ## gives output of the function, i.e., hello world!!
-	### Just to create custom docker image from Dockerfile -> fn -v build
-	fn -v deploy --app custom-app
-	$ cat image.jpg | fn invoke custom-app imagedims ## gives length&width as output
 
 Elements of API: Description(Swagger/postman/spotlight), policies(APIGateway), Implementation(OKE/Functions/APEX)
 API Gateway networking -> VCN(pvt/pub.subnet=regional only), SecurityLists, RouteTables
