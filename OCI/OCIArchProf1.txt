@@ -249,10 +249,10 @@ Functions/APIs -> create api(FieldService), upload swagger.yaml for the descript
 ================================================================================= doc: https://developer.hashicorp.com/terraform/tutorials
 Terraform Concepts:
 	Terraform Commands: init,plan,apply,destroy
-	Provider: plugins, bridge b/w terrform and target platform
-	Resources: cloud resources like compute,DB
-	Variables: parameters
-	Outputs: to share data b/w diff parts of infra
+	Provider: plugins, bridge b/w terrform and target platform   ## blocks{provider identifier[oci/<version>], provider configuration[tenancy,comp,user,auth]}
+	Resources: cloud resources like compute,DB ## blocks....
+	Variables: parameters ## file: example.tfvars [key = value]
+	Outputs: to share data b/w diff parts of infra ## blocks{prints output from resources execution}
 	Modules: grouping of related resources together into reusable packages
 	State: current state of infrastructure
 
