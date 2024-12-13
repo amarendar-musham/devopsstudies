@@ -247,6 +247,15 @@ Functions/APIs -> create api(FieldService), upload swagger.yaml for the descript
 				Now the api can be accessed from the api-gateway endpoint....... ex: <endpoint>/fs/v1/tickets
 
 ================================================================================= doc: https://developer.hashicorp.com/terraform/tutorials
+Terraform Concepts:
+	Terraform Commands: init,plan,apply,destroy
+	Provider: cloud providers
+	Resources: cloud resources like compute,DB
+	Variables: parameters
+	Outputs: to share data b/w diff parts of infra
+	Modules: grouping of terraform code
+	State: current state of infrastructure
+
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
 Terraform-Engine: Core + Provider plugins(ex: oci) ; Terraform(Diff|Refresh|Apply) ---> TargetPlatform(Create|Read|Update|Delete)
