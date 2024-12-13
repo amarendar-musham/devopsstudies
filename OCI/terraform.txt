@@ -80,3 +80,8 @@ $ terraform destroy		## Terraform-Engine reads State file and destroys infra.
 $ terraform refresh		##  Infra --discover--> Terraform-Engine --update--> State ## to update state file if there any manual change in infrastructure. 
 
 Note: apply => Terraform Code|Config --read--> Terraform-Engine { --create--> Infrastructure, --write--> State (view of infra) }
+----- Apply -> Plan -> Refresh -> State -> Plan -> Diff -> Apply -> Infra
+
+
+
+
