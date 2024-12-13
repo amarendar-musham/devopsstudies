@@ -94,11 +94,11 @@ Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provisio
 		---- job-Lifecycles: Accepted -> In progress -> { Succeeded, Failed, (Cancelling -> Canceled) }
 
 1. Stack can be created from below options
-	- My configurationzip(zip,folder upload)
-	- configuration-source-provider(GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables that are the configuration.
+	- My configuration (zip/folder upload)
+	- configuration-source-provider (GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables(from configuration)
 	- Existing compartment (can select all resoucers or selected(ex:core) resources)
 	- Template
-2. when plan/apply action triggered, it create a corresponding job. Logs of that action can be viewed inside the job details. 
+2. when plan/apply or any above action is triggered, it creates a corresponding job. Logs of that action can be viewed inside the job details. 
 
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
@@ -113,7 +113,7 @@ DayN) Existing Infra --Analyze--> engine --Destroy--> No-infra
 
 State & Diff files will be centralized(version-control) using Cloud-based Terraform, i.e., Resource Manager
 
-Resource Manager/Stack -> create stack w/ code location selection; Use Plan/Apply to get infra ready ; It can create terraform config from an existing infra as well. 
+Resource Manager/Stack -> 
 	- Drift detection: Run it to find Any changes from actual Infra, we can view the report. Note: Only reports on resources that Terraform knew about already
 	To avoid missing any resources, create a new stack out of existing compartment, and download Terraform configuration. 
 	- Templates: Terraform configuration, Schema document(Variables|Contraints on vars)=yaml
