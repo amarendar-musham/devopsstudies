@@ -43,8 +43,15 @@ compartment quota policies - set|unset|zero = max-resources|To default-service-l
 
 DynamicGroup supported vars:  instance.compartment.id, instance.id, tag.<tagnamespace>.<tagkey>.value, and tag.<tagnamespace>.<tagkey>.value='<tagvalue>'
 DG allows Infrastructure|Stacked|Ephemeral resource principals = groups # Ex: [[Instances|Databases|Functions]]
-group1 = Any { resource.type='dbaas', resource.compartment.id='ocid'} # Any=logicalOR, All=logicalAND
+
+DynamicGroup definition:
+          ALL{resource.type=<>,resource.id=<>} ; ## resource.id/resource.compartment.id, Ex: Any { resource.type='dbaas', resource.compartment.id='ocid'} # Any=logicalOR, All=logicalAND
+policy w/o DG definition: 
+          allow any-user to manage functions in tenancy where ALL{resource.type='APIGateway',resource.compartment.id=<>}
+        
 allow dynamic-group IB to manage objects in tenancy where all {target.bucket.name='Log',target.region.name='phx'}
+
+
 ---------------------------------------------------------------------------------------------------------------
 
 ---------------Networking----------summary-----------
