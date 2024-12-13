@@ -212,7 +212,6 @@ Prerequisites to Creating an OCI Function
 configure n/w resources: VCN and subnets for OCI Functions(CIDR blocks are crucial in indicating the available IP addresses for resources)
 minimum_required_number_of_IP_addresses = functionA(max_memory_required * max_#executions)/ 14 + (3 * number_of_subnets) ## 1 IP can handle 14GB, 3 reservedIPs
 		Ex: ((0.5 * 2000) / 14) + (3 * 1) = 75IPs, /25 CIDR block is sufficient for OCI Functions use of the VCN.
-
 ---------------------
 Function/Applications -> create application(helloworld-app) by selecting a VCN and pub.subnet
 Cloud shell =>  fn list context
@@ -232,8 +231,6 @@ fn invoke helloworld-app hello-java  ## Hello World!
 
 Example functions usecases: Retrieve the list of VCNs from a compartment, encode videos for different resolution from OSS Bucket, generate invoices-pdf from json+data from OSS Bucket
 
-
----------------------
 Function scheduling-> using resource-scheduler(form-based/cron-tab) ## DG - ALL(resource.type=<>,resource.id=<ocid>), Policy - to manage function-family
 
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
