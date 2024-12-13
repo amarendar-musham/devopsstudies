@@ -93,8 +93,9 @@ Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provisio
 	Jobs				- Operations performed on stacks(create/update/delete...resources)
 		---- job-Lifecycles: Accepted -> In progress -> { Succeeded, Failed, (Cancelling -> Canceled) }
 
-Note: when plan/apply action triggered, it create a corresponding job. Logs of that action can be viewed inside the job details. 
- - Stack can be created from a zip file(tf-code) or configuration-source-provider(GitHub) which integrated priorly using personal-access-token from GitHub
+1. Stack can be created from a zip file(tf-code) or configuration-source-provider(GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables that are the configuration.
+2. when plan/apply action triggered, it create a corresponding job. Logs of that action can be viewed inside the job details. 
+
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
