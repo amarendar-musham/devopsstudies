@@ -248,31 +248,6 @@ Functions/APIs -> create api(FieldService), upload swagger.yaml for the descript
 
 ================================================================================= doc: https://developer.hashicorp.com/terraform/tutorials
 
-Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
-State: state of infrastructure, Diff: b/w code and state
-Terraform-Engine: Core + Provider plugins(ex: oci) ; Terraform(Diff|Refresh|Apply) ---> TargetPlatform(Create|Read|Update|Delete)
-main.tf, variables.tf(ex: compartmentid, region); modules are re-usable codes(ex: vcn)
 
-Day1) Terraform-code(/plan) --Read--> Terraform-Engine --Provision--> { IaaS, PaaS, On-premises } ## IaC = Infra as code
-Day2) { Existing Infra, code } --Analyze|Read-->> engine --Modify-->> new-infra
-DayN) Existing Infra --Analyze--> engine --Destroy--> No-infra 
-
-3 core actions of CLI => $terraform plan|apply|destroy 
-$ terraform apply => Terraform Code|Config --read--> Terraform-Engine { --create--> Infrastructure, --write-->	State (view of infra) }
-$ terraform refresh => Infra --discover--> Terraform-Engine --update--> State ## to update state file if there any manual change in infrastructure. 
-$ terraform plan => Terraform-Engine creates a DIFF of Code and State, so can it can be reviewed before apply. 
-$ terraform apply => It runs plan by default and asks for a prompt to apply 
-$ terraform destroy => Terraform-Engine reads State file and destroys infra. 
-
-Apply -> Plan -> Refresh -> State -> Plan -> Diff -> Apply -> Infra
-
-State & Diff files will be centralized(version-control) using Cloud-based Terraform, i.e., Resource Manager
-
-Resource Manager/Stack -> create stack w/ code location selection; Use Plan/Apply to get infra ready ; It can create terraform config from an existing infra as well. 
-	- Drift detection: Run it to find Any changes from actual Infra, we can view the report. Note: Only reports on resources that Terraform knew about already
-	To avoid missing any resources, create a new stack out of existing compartment, and download Terraform configuration. 
-	- Templates: Terraform configuration, Schema document(Variables|Contraints on vars)=yaml
-
-=================================================================================
 
 
