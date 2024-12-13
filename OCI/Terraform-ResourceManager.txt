@@ -92,7 +92,8 @@ Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provisio
 	Actions				- plan/apply/destroy, Edit(code), DriftDetection(diff b/w configuration & infrastructure), ImportState(to-reflect-existing-infra)
 	Jobs				- Operations performed on stacks(create/update/delete...resources)
 		---- job-Lifecycles: Accepted -> In progress -> { Succeeded, Failed, (Cancelling -> Canceled) }
-	
+
+Note: when plan/apply action triggered, it create a corresponding job. Logs of that action can be viewed inside the job details. 
 
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
