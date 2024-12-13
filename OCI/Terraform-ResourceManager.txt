@@ -96,7 +96,7 @@ Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provisio
 1. Stack can be created from below options
 	- My configurationzip(zip,folder upload)
 	- configuration-source-provider(GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables that are the configuration.
-	- Existing compartment
+	- Existing compartment (can select all resoucers or selected(ex:core) resources)
 	- Template
 2. when plan/apply action triggered, it create a corresponding job. Logs of that action can be viewed inside the job details. 
 
