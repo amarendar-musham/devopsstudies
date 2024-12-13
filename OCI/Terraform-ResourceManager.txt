@@ -84,6 +84,16 @@ Note: apply => Terraform Code|Config --read--> Terraform-Engine { --create--> In
 
 --------------------------------
 --------------------------------
+Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provision-resources }
+	Configuration Source Provider	- GitHub/GitLab/Bitbucket
+	Configuration			- terraform code
+	Stacks				- collection of terraform configurations
+	Templates			- standardized configurations for automated deployment and management
+	Actions				- plan/apply/destroy, Edit(code), DriftDetection(diff b/w configuration & infrastructure), ImportState(to-reflect-existing-infra)
+	Jobs				- Operations performed on stacks(create/update/delete...resources)
+		---- job-Lifecycles: Accepted -> In progress -> { Succeeded, Failed, (Cancelling -> Canceled) }
+	
+
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
