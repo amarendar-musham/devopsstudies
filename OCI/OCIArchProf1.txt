@@ -253,7 +253,7 @@ Terraform Concepts:
 	Resources: cloud resources like compute,DB
 	Variables: parameters
 	Outputs: to share data b/w diff parts of infra
-	Modules: grouping of terraform code
+	Modules: grouping of related resources together into reusable packages
 	State: current state of infrastructure
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
