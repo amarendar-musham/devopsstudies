@@ -254,7 +254,7 @@ Terraform Concepts:
 	Variables: parameters ## file: terraform.tfvars [key = value] or ## blocks{details}
 	Outputs: to share data b/w diff parts of infra ## blocks{prints output from resources execution}
 	Modules: grouping of related resources together into reusable packages ## blocks{use source attribute to import a module}
-	State: current state of infrastructure
+	State: current state of infrastructure ## file: terraform.tfstate, locking mechanism to prevent conflicts of concurrent updates.
 
 Terraform Commands:
 	version		- Show the current Terraform version
