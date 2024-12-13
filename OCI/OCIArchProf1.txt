@@ -256,6 +256,16 @@ Terraform Concepts:
 	Modules: grouping of related resources together into reusable packages
 	State: current state of infrastructure
 
+Terraform Commands:
+	version		- Show the current Terraform version
+	init		-  Prepare your working directory for other commands
+	apply		- Create or update infrastructure
+	destroy		- Destroy previously created infrastructure
+	validate	- Check whether the configuration is valid
+	plan		- Show changes required by the current configuration
+	output		- Show output values from your root module
+	fmt		- Reformat your configuration in the standard style
+
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
 Terraform-Engine: Core + Provider plugins(ex: oci) ; Terraform(Diff|Refresh|Apply) ---> TargetPlatform(Create|Read|Update|Delete)
