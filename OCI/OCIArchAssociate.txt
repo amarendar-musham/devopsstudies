@@ -46,7 +46,7 @@ DG allows Infrastructure|Stacked|Ephemeral resource principals = groups # Ex: [[
 
 DynamicGroup definition:
           ALL{resource.type=<>,resource.id=<>} ; ## resource.id/resource.compartment.id, Ex: Any { resource.type='dbaas', resource.compartment.id='ocid'} # Any=logicalOR, All=logicalAND
-policy w/o DG definition: 
+direct-policy bypassing DG definition: 
           allow any-user to manage functions in tenancy where ALL{resource.type='APIGateway',resource.compartment.id=<>}
         
 allow dynamic-group IB to manage objects in tenancy where all {target.bucket.name='Log',target.region.name='phx'}
