@@ -96,11 +96,13 @@ Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provisio
 1. Stack can be created from below options
 	- My configuration (zip/folder upload)
 	- configuration-source-provider (GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables(from configuration)
-	- Existing compartment (can select all resoucers or selected(ex:core) resources)
+	- Existing compartment (can select all-resources or selected-resources(ex:core))
 	- Template
 2. when plan/apply or any above action is triggered, it creates a corresponding job. Logs of that action can be viewed inside the job details. 
+---
+3. Create drift-detection-report, if DRIFTED(any difference from configuration to infrastructure): Review the report and have that change manually in configuration -> plan -> apply. Then run the report again, it should be in-SYNC.  
 
-
+---------------
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
 Terraform-Engine: Core + Provider plugins(ex: oci) ; Terraform(Diff|Refresh|Apply) ---> TargetPlatform(Create|Read|Update|Delete)
@@ -110,12 +112,3 @@ Day1) Terraform-code(/plan) --Read--> Terraform-Engine --Provision--> { IaaS, Pa
 Day2) { Existing Infra, code } --Analyze|Read-->> engine --Modify-->> new-infra
 DayN) Existing Infra --Analyze--> engine --Destroy--> No-infra 
 
-
-State & Diff files will be centralized(version-control) using Cloud-based Terraform, i.e., Resource Manager
-
-Resource Manager/Stack -> 
-	- Drift detection: Run it to find Any changes from actual Infra, we can view the report. Note: Only reports on resources that Terraform knew about already
-	To avoid missing any resources, create a new stack out of existing compartment, and download Terraform configuration. 
-	- Templates: Terraform configuration, Schema document(Variables|Contraints on vars)=yaml
-
-=================================================================================
