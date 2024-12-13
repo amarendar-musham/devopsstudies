@@ -247,26 +247,6 @@ Functions/APIs -> create api(FieldService), upload swagger.yaml for the descript
 				Now the api can be accessed from the api-gateway endpoint....... ex: <endpoint>/fs/v1/tickets
 
 ================================================================================= doc: https://developer.hashicorp.com/terraform/tutorials
-Terraform Concepts:
-	Terraform Commands: init,plan,apply,destroy
-	Provider: plugins, bridge b/w terrform and target platform   ## blocks{provider identifier[oci/<version>], provider configuration[tenancy,comp,user,auth]}
-	Resources: cloud resources like compute,DB ## blocks....
-	Variables: parameters ## file: terraform.tfvars [key = value] or ## blocks{details}
-	Outputs: to share data b/w diff parts of infra ## blocks{prints output from resources execution}
-	Modules: grouping of related resources together into reusable packages ## blocks{use source attribute to import a module}
-	State: current state of infrastructure ## file: terraform.tfstate, locking mechanism to prevent conflicts of concurrent updates.
-
-Terraform Commands:
-	version		- Show the current Terraform version
-	init		-  Prepare your working directory for other commands
-	apply		- Create or update infrastructure
-	destroy		- Destroy previously created infrastructure
-	validate	- Check whether the configuration is valid
-	plan		- Show changes required by the current configuration
-	output		- Show output values from your root module
-	fmt		- Reformat your configuration in the standard style
-
-Parameter evaluation order: Terraform-config(eX:main.tf/provider-block) -> Linux environment.vars -> OCI config(non-default profile -> default profile)
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
