@@ -266,7 +266,7 @@ Terraform Commands:
 	output		- Show output values from your root module
 	fmt		- Reformat your configuration in the standard style
 
-Parameter evaluation order: Terraform-config(eX:provider) -> Linux environment.vars -> OCI config(non-default profile -> default profile)
+Parameter evaluation order: Terraform-config(eX:main.tf/provider-block) -> Linux environment.vars -> OCI config(non-default profile -> default profile)
 
 Major components of Terraform: Configuration/code, State, Diff, Terraform-Engine, Infrastructure. 
 State: state of infrastructure, Diff: b/w code and state
