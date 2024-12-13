@@ -93,7 +93,11 @@ Resource Manager Concepts: { configuration -> stack -> plan -> apply -> provisio
 	Jobs				- Operations performed on stacks(create/update/delete...resources)
 		---- job-Lifecycles: Accepted -> In progress -> { Succeeded, Failed, (Cancelling -> Canceled) }
 
-1. Stack can be created from a zip file(tf-code) or configuration-source-provider(GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables that are the configuration.
+1. Stack can be created from below options
+	- My configurationzip(zip,folder upload)
+	- configuration-source-provider(GitHub) which integrated priorly using personal-access-token from GitHub. Give the values to the Variables that are the configuration.
+	- Existing compartment
+	- Template
 2. when plan/apply action triggered, it create a corresponding job. Logs of that action can be viewed inside the job details. 
 
 
