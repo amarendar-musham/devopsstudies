@@ -3,7 +3,7 @@ OCI supported Database services: Oracle DB, non-oracle-MySQL, Oracle NoSQL(distr
 DB service types------> Oracle BaseDB service, Oracle Exadata DB service, Autonmous DB
 
 ----------------
-BaseDB system configuration: single VM or 2-node RAC VMs. Cloud automation: Prov/Patch/Backup/DR
+BaseDB system configuration: single VM or 2-node RAC VMs(cluster for HA). Cloud automation: Prov/Patch/Backup/DR
 		=> VM options - choice of AMD Flex/Intel shapes
 	single-instance DB on VM => Upto (64 ocpus, 1TB memory, 80TB block-volume)
 	RAC DB on VM => Upto (128 ocpus, 2TB memory, 80TB block-volume, Extreme performance edition)
