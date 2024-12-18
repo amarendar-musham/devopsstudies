@@ -10,7 +10,7 @@ BaseDB system configuration: single VM or 2-node RAC VMs(cluster for HA). Cloud 
 	VM shape: VM.Standard2.1 (1 ocpu,16GB memory), VM.Standard2.2(2 ocpus, 32GB memory) VM.Standard2.16( OCPUs=16, memory=16*16=2456GB )
 				VM.Standard.E4.Flex (ocpus= 1 to 64, memory= 16GB to 1TB)
 
-Exadata DB system configuration: The fastest and most-available DB platform. Infra deployed/managed by Oracle
+Exadata DB system configuration: The fastest and most-available DB platform. Infra deployed/managed by Oracle ## for mission-critical/analytics workloads
 	storage => space in Exadata-storage-server is managed by ASM(automatic-storage-management)=disk groups(DATA, RECO)
 	OCPUs => can be scaled up w/in existing servers(multiples of #of DB-servers provisioned for exadata-VM-cluster)
 			- beyond-existin-servers: For X8M/X9M Flexible Infrastructure systems can simply add Compute servers as required.
