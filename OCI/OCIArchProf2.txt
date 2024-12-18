@@ -1,7 +1,9 @@
 OCI supported Database services: Oracle DB, non-oracle-MySQL, Oracle NoSQL(distributed key-value DB), External DB
 
 DB service types------> Oracle BaseDB service, Oracle Exadata DB service, Autonmous DB
-
+BaseDB system: single VM or 2-node RAC VMs(cluster for HA). deploy->Enterprise-edition/Standard-edition, DBversion: 19c/21c/23ai ## Cloud: Prov/Patch/Backup/DR
+Exadata DB system configuration: Infra deployed/managed by Oracle. The fastest and most-available DB platform for mission-critical/analytics workloads
+Autonomous DB(serverless): <<-Fully-managed DB by oracle->> = Auto - {Backup/upgrade/patching/tuning}, self-tuning, self-secured, auto-scale
 ----------------
 BaseDB system configuration: single VM or 2-node RAC VMs(cluster for HA). Cloud automation: Prov/Patch/Backup/DR, deploy->Enterprise-edition/Standard-edition, DBversion: 19c/21c/23ai
 		=> VM options - choice of AMD Flex/Intel shapes
@@ -33,12 +35,13 @@ BaseDB cloning: Oracle-Databases/BaseDB/DB-system-details,
 	clone => select source-DB-system,clone-DB-system name, add new ssh-key-pair, oracle-licence/BYOL, VCN(pvt/pub.sub), host-prefix+domain=fqdn, DB-name|creds. 
 	connect-clone => under resources of DBsystem choose nodes, use public.key of the node to do ssh(opc, sudo su - oracle, sqlplus sys/<pass>)
 
+
 Database upgrades are not rolling and require downtime
 Database Encryption Keys: Encryption key must be AES-256 (Oracle-managed/customer-managed keys)
 =====================================================================================================================================
 
 Autonomous DB: (authentication = self-signed certificates)-mTLS(wallet)/TLS(walletless), mTLS-default
- -> Fully-managed DB by oracle = Auto - {prov/upg/patching}, self-tuning, self-secured, auto-scale
+ -> Fully-managed DB by oracle = Auto - {Backup/upgrade/patching/tuning}, self-tuning, self-secured, auto-scale
  -> Complete DB/infra/DataCenter automation - Upgrade/patch/Tuning/security/scaling/failure-handling/high-availability
 
 Optimized by workloads(4): [TP, DW, JSON, APEX]
