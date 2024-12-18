@@ -2,8 +2,9 @@ OCI supported Database services: Oracle DB, non-oracle-MySQL, Oracle NoSQL(distr
 
 DB service types------> Oracle BaseDB service, Oracle Exadata DB service, Autonmous DB
 BaseDB system: single VM or 2-node RAC VMs(cluster for HA). deploy->Enterprise-edition/Standard-edition, DBversion: 19c/21c/23ai ## Cloud: Prov/Patch/Backup/DR
-Exadata DB system configuration: Infra deployed/managed by Oracle. The fastest and most-available DB platform for mission-critical/analytics workloads
+Exadata DB system: Infra deployed/managed by Oracle. The fastest and most-available DB platform for mission-critical/analytics workloads
 Autonomous DB(serverless): <<-Fully-managed DB by oracle->> = Auto - {Backup/upgrade/patching/tuning}, self-tuning, self-secured, auto-scale
+
 ----------------
 BaseDB system configuration: single VM or 2-node RAC VMs(cluster for HA). Cloud automation: Prov/Patch/Backup/DR, deploy->Enterprise-edition/Standard-edition, DBversion: 19c/21c/23ai
 		=> VM options - choice of AMD Flex/Intel shapes
