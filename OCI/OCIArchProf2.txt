@@ -1,4 +1,4 @@
-OCI supported Database services: Oracle DB, non-oracle-MySQL, Oracle NoSQL, External DB
+OCI supported Database services: Oracle DB, non-oracle-MySQL, Oracle NoSQL(distributed key-value DB), External DB
 
 DB service types------> Oracle BaseDB service, Oracle Exadata DB service, Autonmous DB
 
