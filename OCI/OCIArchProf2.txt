@@ -17,7 +17,7 @@ Oracle Base Database Features w/ Oracle Database 23ai(AI version):
 BaseDB system configuration: single VM or 2-node RAC VMs(cluster for HA). Cloud automation: Prov/Patch/Backup/DR, deploy->Enterprise-edition/Standard-edition, DBversion: 19c/21c/23ai
 		=> VM options - choice of AMD Flex/Intel shapes
 	single-instance DB on VM => Upto (64 ocpus, 1TB memory, 80TB block-volume)
-	RAC DB on VM => Upto (128 ocpus, 2TB memory, 80TB block-volume, Extreme performance edition)
+	RAC DB on VMs(2-node-RAC) => Upto (128 ocpus, 2TB memory, 80TB block-volume, Extreme performance edition)
 	VM shape: VM.Standard2.1 (1 ocpu,16GB memory), VM.Standard2.2(2 ocpus, 32GB memory) VM.Standard2.16( OCPUs=16, memory=16*16=2456GB )
 				VM.Standard.E4.Flex (ocpus= 1 to 64, memory= 16GB to 1TB)
 
