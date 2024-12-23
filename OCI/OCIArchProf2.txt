@@ -19,6 +19,9 @@ BaseDB system => VM options - choice of AMD Flex/Intel shapes
 	RAC DB on VMs(2-node-RAC) => Upto (128 ocpus, 2TB memory, 80TB block-volume, Extreme performance edition)
 	VM DB Storage architecture: Block storage -> LVM (or) ASM
 		ASM(Grid infrastructure) => BV -> ASM-Disk-group(+DATA,+RECO) -> AVM
+	
+	CREATE -> BaseDBname/AD1/vm-shape(E4.flex)/Storage(LVM)/#nodes/SSH-keys/Licence-included
+		VCN+subnet/DBhostname-prefix/DBname/DBimageV(23ai)/admin-creds(sys/***)
 
 Exadata DB system configuration: The fastest and most-available DB platform. Infra deployed/managed by Oracle ## for mission-critical/analytics workloads
 	storage => space in Exadata-storage-server is managed by ASM(automatic-storage-management)=disk groups(DATA, RECO)
