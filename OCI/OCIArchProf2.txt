@@ -108,7 +108,7 @@ Provision dedicated-type DB
 4. Oracle DB/Autonomous-Dedicated-infrastructure
 	/Exadata Infrastructure: create EXA, choose exadata-system-model(X8M-2), #ofDBserver,#ofStorageServer ## choose compartment
 	/Autonomous Exadata VM Cluster: create AVM, choose above EXA-infra and n/w=(ADBD_VCN/Private-ExadataSubnet); licence:subscript/byol
-	/Autonomous Container Database: create ACD, option(DataGuard) choose backup-retention(default=7d), encryption-key(default=oracle-managed)
+	/Autonomous Container Database: create ACD, optional(DataGuard - for HA in diff-region), choose backup-retention(default=7d), encryption-key(default=oracle-managed)
 5. Autonomous Container Database(ACD)/Autonomous databases
 	- create ADB, choose workload-type(*ATP* or ADW/JSON/APEX), deployment-type=dedicated, above ACD, OCPUs|Storage, admin-creds=admin/<passwd>, 
 		optional=ACL(access-control-list) to whitelist particular IPs, encryption-key=oracle-managed
