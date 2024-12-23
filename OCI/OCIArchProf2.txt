@@ -64,25 +64,32 @@ Deployment options/deployment-type: (shared/dedicated)
 	Exadata Cloud@Customer - ( ~ Dedicated, but configured in customer DataCenter ) ## for security req, n/w latency 
 	Dedicated Region Cloud@Customer
 
+Self-Driving: Auto-Provisioning => Quickly deploys in a RAC Database on Exadata hardware, no-hardware-config, no-software-install
+
 Network-accessibility: => Public/Public-but-restricted/Private(withinVCN) =>
  	1. secure access from everywhere (mTLS wallet as auth) 
  	2. secure access from allowed IPs&VCNs only (TLS), intermediate=customer-VCN(w/ InternetGateway) ## only-whitelistedIPs when DB having public-endpoint 
  	3. Private endpoint access only (TLS), intermediate=customer-VCN(w/ ServiceGateway) ## private subnet
- 
-Self-Driving: Auto-Provisioning => Quickly deploys in a RAC Database on Exadata hardware, no-hardware-config, no-software-install
------------
-Shared-infra provisioning: simple|fast|elastic
+
+----------- Serverless / Shared-infra provisioning: simple|fast|elastic
 	crucial-inputs: n/w accessibility, master-key encryption (oracle-managed/customer-managed), patch-level: (Early/regular)
  - client-connections: secureTCP, TLS1.2, self-signed-cert for authentication=mTLS(wallet)/TLS(walletless)
  	connection-type=JDBC,OCI,ODBC ; mTLS requires autonomousDBwallet, TLS requires ACL or private endpoint configured
 
-Provision shared-type DB 
+Provision Serverless / shared-type DB 
 1. Oracle DB/Autonomous DB => create autonomous db w/ { database-name, admin-creds(admin/<pass>), db-version(19c),
 												**** => workload-type(ADW/ATP/JSON/APEX), deployment-type, n/w-access
 							 					resources:[OCPUs|storage](auto-scale), license(subscribe-one/BYOL), encryption-keys, patch-level }
 2. if n/w-access=allowedIPsVCNs: do sqlplus admin@<db-name> from a node of DB-system in VCN2. Note: whitelist the nodeIP in ACL of ADB.  
------------
-Dedicated-infra provisioning: EXA/AVM/ACD
+
+Connection-privateEP network access: 
+	1. create Bastion service in the same subnet of DB or subnet that has access to the DB subnet
+	2. Add NSG in the VCN with ingress rule (source: bastionIP, destPort:1522)
+	3. Update network-access of DB to privateEP and attach the above NSG. 
+	4. download wallet.zip, but update sqlnet.ora(for wallet location), tnsnames.ora(for hostname=localhost in connection string)
+	5. create bastion-session-port-forward 1522:DBIP:1522, establish tunnel from local desktop. Then connect from SQL developer
+
+----------- Dedicated-infra provisioning: EXA/AVM/ACD
 	Exadata infrastructure (EXA) - Gen2 exadata cloud in quarter/half/full-RAC shape; exadata-system-models -> X7-2, X8-2, X8M-2, X9M-2 
 	Autonomous Exadata VM Cluster (AVM) - Layer on top of EXA. link-b/w-{EXA & ACD}
 	Autonomous Container Database (ACD) - container for creating ADB. create one or more ACDs in AVM
