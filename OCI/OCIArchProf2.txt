@@ -59,7 +59,7 @@ Optimized by workloads(4): [TP, DW, JSON, APEX]
 ATP(transaction-processing), ADW(data-warehouse); AJD(json-db) #{limit:20GB,derived from ATP}, APEX service ## DW=columner-storage-format, TP=row-storage-format
 
 Deployment options/deployment-type: (shared/dedicated)
-	Shared infra - (allows prov&management of autonomous DB, oracle handles Exadata-infra deployment) w/ isolation & security ## Public-cloud/OCI
+	Serverless / Shared infra - (allows prov&management of autonomous DB, oracle handles Exadata-infra deployment) w/ isolation & security ## Public-cloud/OCI
 	Dedicated infra - (allows exclusive use of Exadata hardware), must subscribe dedicated-exadata infra in OCI ## privateDB in Public-cloud/OCI
 	Exadata Cloud@Customer - ( ~ Dedicated, but configured in customer DataCenter ) ## for security req, n/w latency 
 	Dedicated Region Cloud@Customer
