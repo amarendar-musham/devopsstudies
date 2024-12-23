@@ -64,8 +64,6 @@ Deployment options/deployment-type: (shared/dedicated)
 	Exadata Cloud@Customer - ( ~ Dedicated, but configured in customer DataCenter ) ## for security req, n/w latency 
 	Dedicated Region Cloud@Customer
 
-Self-Driving: Auto-Provisioning => Quickly deploys in a RAC Database on Exadata hardware, no-hardware-config, no-software-install
-
 Network-accessibility: => Public/Public-but-restricted/Private(withinVCN) =>
  	1. secure access from everywhere (mTLS wallet as auth) 
  	2. secure access from allowed IPs&VCNs only (TLS), intermediate=customer-VCN(w/ InternetGateway) ## only-whitelistedIPs when DB having public-endpoint 
@@ -112,17 +110,24 @@ Provision dedicated-type DB
 5. Autonomous Container Database(ACD)/Autonomous databases
 	- create ADB, choose workload-type(*ATP* or ADW/JSON/APEX), deployment-type=dedicated, above ACD, OCPUs|Storage, admin-creds=admin/<passwd>, 
 		optional=ACL(access-control-list) to whitelist particular IPs, encryption-key=oracle-managed
+
 =====================================================================================================================================
+
 ============ADB Features=============
-Auto-configuration: 
-	Pre-configured metric collection(for monitoring performence/activity), resource management plans
-	lifecycle managed using ConsoleUI/restAPI/SDKs. 
-	Frees resources from idle sessions - default idle timeout=5min
-	Auto-SQL-plan-mgmt to manage regressed SQLs.
-Optimiser-statistics-collection: default=every 15min (procedure=DBMS_STATS.SET_GLOBAL_PREFS)
-	Statistics are gathered automatically for direct path load operations issued in SQL - CREATE TABLE ... AS SELECT ..; INSERT /*+ append */ INTO ... SELECT ...;
-	- Data Pump Import loads, DBMS_CLOUD loads, DML workloads. 
-Initialization Parameters: Automatically sets parameters to optimal values based on workload type, Restricts parameters change (for security, and performance)
+Self-Driving: 
+	Auto-Provisioning: Quickly deploys in a RAC Database on Exadata hardware, no-hardware-config, no-software-install
+	Auto-configuration: Automatically configures DB for workloads(DW/TP/Apex/Json)
+		Pre-configured metric collection(to monitor performence&activity), resource management plans
+		lifecycle managed using ConsoleUI/restAPI/SDKs. 
+		Frees resources from idle sessions - default idle timeout=5min
+		Auto-SQL-plan-mgmt to manage regressed SQLs.
+
+Optimiser-Statistics-Collection: default-run-interval=every 15min, can be changed in procedure=DBMS_STATS.SET_GLOBAL_PREFS
+	- Statistics are gathered automatically for direct path load operations issued in SQL - CREATE TABLE ... AS SELECT ..; INSERT /*+ append */ INTO ... SELECT ...;
+	- Data Pump Import loads, DBMS_CLOUD loads, DML workloads(not-enabled by default). 
+
+Initialization Parameters: Automatically sets parameters to optimal values based on workload type, Restricts parameters change for security, and performance, but few are exceptional
+
 Scaling: (Fully Elastic), Scale on-demand or auto-scaling - [ OCPU and storage ], life-cycle-state="Scaling in Progress"
 	auto-scale-> ocpus[upto 3X of base size, pay for only-used, when-disabled=restores-base-ocpus], 
 				storage[upto 3X of base storage, pay for round(TB) used, when-disabled=nearest round(TB), when-free-storage<=900GB: additional 1TB reserved.]
