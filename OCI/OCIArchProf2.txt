@@ -87,7 +87,7 @@ Connection-privateEP network access:
 	2. Add NSG in the VCN with ingress rule (source: bastionIP, destPort:1522)
 	3. Update network-access of DB to privateEP and attach the above NSG. 
 	4. download wallet.zip, but update sqlnet.ora(for wallet location), tnsnames.ora(for hostname=localhost in connection string) files
-	5. create bastion-session-port-forward 1522:DBIP:1522, establish tunnel from local desktop. Then connect from SQL developer
+	5. create bastion-session-port-forward 1522:DBIP:1522, establish tunnel from local system. Then connect from SQL developer
 
 ----------- Dedicated-infra provisioning: EXA/AVM/ACD
 	Exadata infrastructure (EXA) - Gen2 exadata cloud in quarter/half/full-RAC shape; exadata-system-models -> X7-2, X8-2, X8M-2, X9M-2 
