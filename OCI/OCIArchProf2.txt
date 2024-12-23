@@ -64,9 +64,9 @@ Deployment options/deployment-type: (shared/dedicated)
 	Exadata Cloud@Customer - ( ~ Dedicated, but configured in customer DataCenter ) ## for security req, n/w latency 
 	Dedicated Region Cloud@Customer
 
-Network-accessibility: (everywhere/allowedIPsVCNs/private-ep) ## FOR shared deployment-type
+Network-accessibility: => Public/Public-but-restricted/Private(withinVCN) =>
  	1. secure access from everywhere (mTLS wallet as auth) 
- 	2. secure access from allowed IPs&VCNs only (TLS), intermediate=customer-VCN(w/ InternetGateway) ## only-whitelistedIPs when DB having public-endpoint
+ 	2. secure access from allowed IPs&VCNs only (TLS), intermediate=customer-VCN(w/ InternetGateway) ## only-whitelistedIPs when DB having public-endpoint 
  	3. Private endpoint access only (TLS), intermediate=customer-VCN(w/ ServiceGateway) ## private subnet
  
 Self-Driving: Auto-Provisioning => Quickly deploys in a RAC Database on Exadata hardware, no-hardware-config, no-software-install
