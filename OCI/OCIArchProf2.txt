@@ -90,9 +90,10 @@ Connection-privateEP network access:
 	5. create bastion-session-port-forward 1522:DBIP:1522, establish tunnel from local system. Then connect from SQL developer
 
 ----------- Dedicated-infra provisioning: EXA/AVM/ACD
-	Exadata infrastructure (EXA) - Gen2 exadata cloud in quarter/half/full-RAC shape; exadata-system-models -> X7-2, X8-2, X8M-2, X9M-2 
-	Autonomous Exadata VM Cluster (AVM) - Layer on top of EXA. link-b/w-{EXA & ACD}
-	Autonomous Container Database (ACD) - container for creating ADB. create one or more ACDs in AVM
+	Exadata infrastructure (EXA) -	Core physical hardware on which ADB is built upon. (configuration: maintenance-schedule)
+					Gen2 exadata cloud in quarter/half/full-RAC shape; exadata-system-models -> X7-2, X8-2, X8M-2, X9M-2 
+	Autonomous Exadata VM Cluster (AVM) - Layer on top of EXA. link-b/w-{EXA & ACD}. consistsOf symmetricalVMs across compute nodes. (config: license/cert-mgmt/control-networking)
+	Autonomous Container Database (ACD) - container for creating ADB. create one or more ACDs in AVM. max:12ACD/AVM, (200ADB/ACD or 25ADB/ACD + dataGuard)
 	Autonomous Database (ADB) - db created in ACD. OCPUs split across multiple nodes in cluster(<=16 ocpus, drawn from single VM node)
 	Autonomous Backup - for backup of ADB. 
 
