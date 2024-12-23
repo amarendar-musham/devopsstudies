@@ -52,7 +52,7 @@ Exadata DB system configuration: The fastest and most-available DB platform. Inf
 =====================================================================================================================================
 
 Autonomous DB: (authentication = self-signed certificates)-mTLS(wallet)/TLS(walletless), mTLS-default
- -> Fully-managed DB by oracle = Auto - {Backup/upgrade/patching/tuning}, self-tuning, self-secured, auto-scale(computeVMs)
+ -> Fully-managed DB by oracle = Auto - {Backup/upgrade/patching/tuning}, self-tuning, self-secured, auto-scale(compute/storage)
  -> Complete Infra automation -> complete-DB-automation -> DataCenter-operations-automation - Upgrade/patch/Tuning/security/scaling/failure-handling/high-availability
 
 Optimized by workloads(4): [TP, DW, JSON, APEX]
