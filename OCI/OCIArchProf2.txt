@@ -86,7 +86,7 @@ Connection-privateEP network access:
 	1. create Bastion service in the same subnet of DB or subnet that has access to the DB subnet
 	2. Add NSG in the VCN with ingress rule (source: bastionIP, destPort:1522)
 	3. Update network-access of DB to privateEP and attach the above NSG. 
-	4. download wallet.zip, but update sqlnet.ora(for wallet location), tnsnames.ora(for hostname=localhost in connection string)
+	4. download wallet.zip, but update sqlnet.ora(for wallet location), tnsnames.ora(for hostname=localhost in connection string) files
 	5. create bastion-session-port-forward 1522:DBIP:1522, establish tunnel from local desktop. Then connect from SQL developer
 
 ----------- Dedicated-infra provisioning: EXA/AVM/ACD
