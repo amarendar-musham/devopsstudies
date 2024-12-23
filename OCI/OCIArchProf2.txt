@@ -55,7 +55,7 @@ Autonomous DB: (authentication = self-signed certificates)-mTLS(wallet)/TLS(wall
  -> Fully-managed DB by oracle = Auto - {Backup/upgrade/patching/tuning}, self-tuning, self-secured, auto-scale(compute/storage)
  -> Complete Infra automation -> complete-DB-automation -> DataCenter-operations-automation - Upgrade/patch/Tuning/security/scaling/failure-handling/high-availability
 
-Optimized by workloads(4): [TP, DW, JSON, APEX]
+Workload types: Optimized by workloads(4): [TP, DW, JSON, APEX]
 ATP(transaction-processing), ADW(data-warehouse); AJD(json-db) #{limit:20GB,derived from ATP}, APEX service ## DW=columner-storage-format, TP=row-storage-format
 
 Deployment options/deployment-type: (shared/dedicated)
