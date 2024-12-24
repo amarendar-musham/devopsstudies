@@ -141,10 +141,10 @@ Cloning(dedicated): Supports full clone or metadata clone from database source (
 
 Backup(shared): Manual-backups = point-in-time full backup, (oss-customer-managed-tenancy)
 				backups=> OSS, disabled-life-cycle states during backup=(stop,scale,terminate), #retention=60d
-		Automatic-backups(can't disable), Incremental-in-nature(full-backup>60d,daily=incremental,weekly=cumulative-incremental) (oss-oracle-managed-tenancy)
+		Automatic-backups(can't disable), Incremental-in-nature(full-backup>60d,daily=incremental,weekly=cumulative-incremental) (OSS oracle-managed-tenancy)
 		Restore and Recover: to point-in-time in last 60days, life-cycle-state: Unavailable, supported-operations=terminate
 Backup(dedicated): Auto-backups(preconfigured)(full-sundays,increment-weekdays) retention-container-level=7.15CR days.
-					auto/manual=(oss-oracle-managed-tenancy)
+					auto/manual=(OSS oracle-managed-tenancy)
 
 Patches&Updates(shared): Can't enable DataGuard if patch-level=Early for ADB. 
 Patches&Updates(dedicated): Zero Impact Patching of Grid Infrastructure(Patches applied in a rolling fashion)
