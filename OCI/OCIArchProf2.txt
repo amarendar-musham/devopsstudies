@@ -154,17 +154,18 @@ Patches&Updates: Infra/DB patches includes security patches or bug patches. Patc
 DisasterRecovery(DR): options = AutonomousDataGuard/Backup-based
 	 - Recovery Time Objective(RTO): Max-time to restore connectivity to standby
 	 - Recovery Point Objective(RPO): Max-duration(mins) of data loss that can be tolerated [ data-loss for AuDG < 1min ]
-AuDG(shared) [SLA 99.95%] - Provides extreme availability with zero data loss; Can have local & remote standby DB simultaneously
 
-	 - Use console or APls to enable, disable, failover, switchover
-	Local Standby: Creates new standby post failover
+
+Autonomous DataGuard -> (HA) - Primary DB ----> Local/Remote Standby DB ## local=withinRegion
+	Serverless / shared) [SLA 99.95%] -  Provides extreme availability with zero data loss; Can have local & remote standby DB simultaneously
+	 		- Use console or APls to enable, disable, failover, switchover
+		Local-Standby (withinRegion): Creates new standby post failover
 				- on-demand Switchover; automatic Failover if primary is down.
 				- same wallet post failover/switchover
-	Cross-region Standby:
+		Remote/Cross-region Standby:
 				- on-demand Switchover; manual Failover if primary and localStandby(ifExists) is down
 				- Download new wallet; Map URLs to new cross-region database after a failover or switchover operation
-AuDG(dedicated): ACD level, protection modes: Max-availability, Max-performance ## same-AD(diff-FD), same-region(diff-AD), cross-region
-	_RO service on standBy DB
+	Dedicated: ACD level, protection modes: Max-availability, Max-performance ## same-AD(diff-FD), same-region(diff-AD), cross-region _RO service on standBy DB
 
 Backup-Based DR: less cost, more RTO than AuDG; preferred for non-prod DBs. no-automaticFailover
 	- instantiate peerAuDB using backup copy during switchover/failover
