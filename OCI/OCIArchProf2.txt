@@ -156,7 +156,8 @@ DisasterRecovery(DR): options = AutonomousDataGuard/Backup-based
 	 - Recovery Point Objective(RPO): Max-duration(mins) of data loss that can be tolerated [ data-loss for AuDG < 1min ]
 
 
-Autonomous DataGuard -> (HA) - Primary DB ----> Local/Remote Standby DB ## local=withinRegion
+Autonomous DataGuard -> (HA w/ a standbyDB that replicates primaryDB) - Primary DB ----> Local/Remote Standby DB ## local=withinRegion
+	Note: to do RW/RO operations on standbyDB, convert it to snapshotStandbyDB (~ disconnect the replication)
 	Serverless / shared) [SLA 99.95%] -  Provides extreme availability with zero data loss; Can have local & remote standby DB simultaneously
 	 		- Use console or APls to enable, disable, failover, switchover
 		Local-Standby (withinRegion): Creates new standby post failover
