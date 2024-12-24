@@ -128,7 +128,7 @@ Optimiser-Statistics-Collection: default-run-interval=every 15min, can be change
 
 Initialization Parameters: Automatically sets parameters to optimal values based on workload type, Restricts parameters change for security, and performance, but few are exceptional
 
-Scaling: (Fully Elastic), Scale on-demand or auto-scaling - [ OCPU and storage ], life-cycle-state="Scaling in Progress"
+Scaling: (Fully Elastic), Scale on-demand or auto-scaling - [ compute/OCPU and storage ], life-cycle-state="Scaling in Progress"
 	auto-scale-> ocpus[upto 3X of base size, pay for only-used, when-disabled=restores-base-ocpus], 
 				storage[upto 3X of base storage, pay for round(TB) used, when-disabled=nearest round(TB), when-free-storage<=900GB: additional 1TB reserved.]
 
