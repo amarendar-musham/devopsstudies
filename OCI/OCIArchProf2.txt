@@ -146,9 +146,10 @@ Backup(shared): Manual-backups = point-in-time full backup, (oss-customer-manage
 Backup(dedicated): Auto-backups(preconfigured)(full-sundays,increment-weekdays) retention-container-level=7.15CR days.
 					auto/manual=(OSS oracle-managed-tenancy)
 
-Patches&Updates(shared): Can't enable DataGuard if patch-level=Early for ADB. 
-Patches&Updates(dedicated): Zero Impact Patching of Grid Infrastructure(Patches applied in a rolling fashion)
-	One-off patches for critical issues can't be skipped, but reschedulable <quarter. auto-patch runs <72hrs
+Patches&Updates: Infra/DB patches includes security patches or bug patches. PatchLevels: Regular/Early-(patches applies before 7days of release)
+		(shared): Can't enable DataGuard if patch-level=Early for ADB. 
+		(dedicated): Zero Impact Patching of Grid Infrastructure(Patches applied in a rolling fashion)
+			One-off patches for critical issues can't be skipped, but reschedulable <quarter. auto-patch runs <72hrs
 
 DisasterRecovery(DR): options = AutonomousDataGuard/Backup-based
 	 - Recovery Time Objective(RTO): Max-time to restore connectivity to standby
