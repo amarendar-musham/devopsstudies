@@ -443,7 +443,9 @@ Create new Target: Select - Compartment + ConfigurationDetector Recipe + Activit
 
 CGNotifications: Events -> create rule = { service:CloudGuard, EventType:(DetectedProblem,RemidiatedProblem), Actions:Notifications->Topic } # Topic->Subscription(email)
 
-SecurityZones(Recipes): supports Networking, Compute, Storage, Database ; AttachestoCompartments, if policyViolation: then Operation Denied. 
+
+SecurityZones(Recipes): rules to stop misconfigurations
+      supports Networking, Compute, Storage, Database ; AttachestoCompartments, if policyViolation: then Operation Denied. 
 Securityzone Recipe -> Oracle-managed policies, example policy don't allow users to create public buckets, it will throw errors to user as not allowed. 
 Security Advisor = template to create VM, bucket,... in a secure manner. Can prevent security misconfigurations. 
 
