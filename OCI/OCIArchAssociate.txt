@@ -488,7 +488,7 @@ Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encrypti
 
 Rotating vault keys: The versions of keys recognized by ocid while vault-decrypt, Old key version used for only decrypt. 
 
-MEK details:
+Vault details:
     Cryptographic-endpoint = [encry,decry,sign,verify,generateDEK] 
     Management-endpoint = [create,update,delete,list,get] of vault are used in CLI operations
 
