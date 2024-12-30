@@ -479,7 +479,7 @@ OCI Vault uses HSM(hardware security module) = Tamper resistant, identity-based 
   -> Virtual private vault: dedicated isolated partition in HSM, default = upTo 1000keyVersions,  backup to OSS # Greater performance and expensive
   -> Shared partition in HSM: shares same part with multiple tenants, charges only for #ofKeys/Secrets, No backups. 
 
-Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encryption-keys, ## MEK=>AES
+Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encryption-keys, 
     MEK protection modes(2):  
                           - HSM(keys can't-be-exported|but-backup, all-operations inside hsm)  ## Hardware
                           - Software(stored on server, can-export|no-backup, encry by root-key on HSM) ## Software
