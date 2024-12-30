@@ -486,6 +486,10 @@ Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encrypti
     DEK ## DEK generated|encrypted by MEK = Envelope encryption
     Wrapping-keys: It is included with each vault by default, Use pub-wrapping-key for keys-import into the vault service. Can't be created|deleted|rotated
 
+OSS integration w/ Vault:
+    Encryption:  plainText-object -> OSS --generate-data-key-request--> Vault --> dataKey+encry.dataKey --> OSS # encry.data & encry.dataKey stored in bucket
+    Decryption:  OSS --encry.dataKey-> Vault -> dataKey -> OSS # Use the dataKey to decrypt data and remove it from memory after use
+
 Rotating vault keys: The versions of keys recognized by ocid while vault-decrypt, Old key version used for only decrypt. 
 
 MEK details:
