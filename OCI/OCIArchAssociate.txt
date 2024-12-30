@@ -464,22 +464,28 @@ OCI Certificate service -> Can (configure rules to renew certs), (import certs i
 
 ---------------------------------------------------------------------------------------------------------
 
-OCI Vaults (encryption-Keys, Secret-credentials) -----------MEK(AES)--------------------------------------------
+OCI Vaults (encryption-Keys, Secret-credentials) -------------------------------------------------------
 
-Encryption: PlainText + Key(StringofLetters+Numbers) -> Cryptographic algorithm -> CipherText ## similarly decryption
-Encryption at rest = stores data in a server/Datacenter
-Encryption in-Transit = client to server with in-transit encry # Ex: https, whatsapp-msgs
-Symmetric(-key) encryption() = single key is used for encry and decryption # AES algorithm, can't be used for digital signing
-Asymmetric encryption = diff keys, Public-key:encrypts, Private-key:decrypts # RSA algorithm, used for digital signing
- - ECDSA also used for digital signing, but not for encry or decry
+  Encryption: PlainText + Key(StringofLetters+Numbers) -> Cryptographic algorithm -> CipherText ## similarly decryption
+  Encryption at rest = stores data in a server/Datacenter
+  Encryption in-Transit = client to server with in-transit encry # Ex: https, whatsapp-msgs
+
+AES/RSA/ECDSA::
+  Symmetric(-key) encryption() = single key is used for encry and decryption # AES algorithm, can't be used for digital signing
+  Asymmetric encryption = diff keys, Public-key:encrypts, Private-key:decrypts # RSA algorithm, used for digital signing
+   - ECDSA also used for digital signing, but not for encry or decry
 
 OCI Vault uses HSM(hardware security module) = Tamper resistant, identity-based auth, deletes-keys when detection of tampering
--> Virtual private vault: dedicated isolated partition in HSM, default = upTo 1000keyVersions,  backup to OSS # Greater performance and expensive
--> Shared partition in HSM: shares same part with multiple tenants, charges only for #ofKeys/Secrets, No backups. 
+  -> Virtual private vault: dedicated isolated partition in HSM, default = upTo 1000keyVersions,  backup to OSS # Greater performance and expensive
+  -> Shared partition in HSM: shares same part with multiple tenants, charges only for #ofKeys/Secrets, No backups. 
 
-Vault recognizes 3types of keys: MEK(master-encry-keys), DEK(data), Wrapping-keys ## DEK generated|encrypted by MEK = Envelope encryption
-MEK protection modes(2): HSM(keys can't-be-exported|but-backup, all-operations inside hsm), Software(stored on server, can-export|no-backup, encry by root-key on HSM) 
-Wrapping Keys: It is included with each vault by default, Use pub-wrapping-key for keys-import into the vault service. Can't be created|deleted|rotated
+Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encryption-keys, ## MEK=>AES
+    MEK protection modes(2):  
+                          - HSM(keys can't-be-exported|but-backup, all-operations inside hsm)  ## Hardware
+                          - Software(stored on server, can-export|no-backup, encry by root-key on HSM) ## Software
+    DEK ## DEK generated|encrypted by MEK = Envelope encryption
+    Wrapping-keys: It is included with each vault by default, Use pub-wrapping-key for keys-import into the vault service. Can't be created|deleted|rotated
+
 
 Rotating vault keys: The versions of keys recognized by ocid while vault-decrypt, Old key version used for only decrypt. 
 
