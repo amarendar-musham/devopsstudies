@@ -486,10 +486,6 @@ Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encrypti
     DEK ## DEK generated|encrypted by MEK = Envelope encryption
     Wrapping-keys: It is included with each vault by default, Use pub-wrapping-key for keys-import into the vault service. Can't be created|deleted|rotated
 
-OSS/FSS/BV integration w/ Vault:
-    Encryption:  plainText-object -> OSS --generate-data-key-request--> Vault --> dataKey+encry.dataKey --> OSS # encry.data & encry.dataKey stored in bucket
-    Decryption:  OSS --encry.dataKey-> Vault -> dataKey -> OSS # Use the dataKey to decrypt data and remove it from memory after use
-
 Rotating vault keys: The versions of keys recognized by ocid while vault-decrypt, Old key version used for only decrypt. 
 
 MEK details:
@@ -503,6 +499,10 @@ Encrypt or Decrypt text using using MEK: oci kms(key-management-service
   2. Encryptedtext=$(oci kms crypto encrypt --plaintext $plainText --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint>)
   3. export cipher=$ (echo $encryptedtext | jq -r '.data | .ciphertext') # get cyphertext from the json
   4. Decryptedtext=$(oci kms crypto decrypt --ciphertext $cipher --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint> # get plaintext from json & base64decode
+
+OSS/FSS/BV integration w/ Vault:
+    Encryption:  plainText-object -> OSS --generate-data-key-request--> Vault --> dataKey+encry.dataKey --> OSS # encry.data & encry.dataKey stored in bucket
+    Decryption:  OSS --encry.dataKey-> Vault -> dataKey -> OSS # Use the dataKey to decrypt data and remove it from memory after use
 
 Oracle-managed keys - Oracle-managed vault has MEK, which provides DEK to resp service to encrypt data # services: OSS, FSS, BV, compute, container, DB
 Customer-managed keys - not imported, just created and revised versions by customer in a OCI vault. 
