@@ -511,7 +511,10 @@ Cross-region-replication: manualway: take vault backup(only VirtualPrivateVault,
           -> replication synchronizes create|delete|update keys b/w source and dest vaults # only one dest vault per source. 
 Restore-Vault+keys: key always associates with vault, first restore vault and then key. 
 
-Secret uses MEK, to decrypt I think we can use that MEK and vault's-cryptographic-endpoint. 
+Secrets CLI:
+    oci secrets secret-bundle get --secret-id <secret_ocid> \
+    --query "data.secret-bundle-content.content" --raw-output | base64 --decode
+
 Summary:
      Vault - 2types(1. dedicated partition in HSM(virtualPrivateVault), sharedPart in HSM) ; 
      Vault-Keys - 3types(MEK,DEK(envelope encry),Wrapper-keys)
