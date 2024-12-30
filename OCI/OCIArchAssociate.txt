@@ -486,16 +486,19 @@ Vault recognizes 3types of keys: MEK,DEK,Wrapping-Keys ## {master|data}-encrypti
     DEK ## DEK generated|encrypted by MEK = Envelope encryption
     Wrapping-keys: It is included with each vault by default, Use pub-wrapping-key for keys-import into the vault service. Can't be created|deleted|rotated
 
-
 Rotating vault keys: The versions of keys recognized by ocid while vault-decrypt, Old key version used for only decrypt. 
 
-1. plainText=$(echo "hi"|base64), echo $plaintext|base64 --decode # base64 encode
-2. encryptedtext=$(oci kms crypto encrypt --plaintext $plainText --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint>
-3. export cipher=$ (echo $encryptedtext | jq -r '.data | .ciphertext') # get cyphertext from the json
-4. decryptedtext=$(oci kms crypto decrypt --ciphertext $cipher --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint> # get plaintext from json & base64decode
+MEK details:
+    Cryptographic-endpoint = [encry,decry,sign,verify,generateDEK] 
+    Management-endpoint = [create,update,delete,list,get] of vault are used in CLI operations
 
-Cryptographic-endpoint[encry,decry,sign,verify,generateDEK] and Management-endpoint[create,update,delete,list,get] of vault are used in CLI operations
-CLI = oci kms # key-management-service old name of vault
+Encrypt or Decrypt text using using MEK: oci kms(key-management-service
+  CLI = oci kms crypto {encrypt|decrypt} {--plainText|--cipherText} -key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint>
+      
+  1. plainText=$(echo "hi"|base64), echo $plaintext|base64 --decode # base64 encode
+  2. Encryptedtext=$(oci kms crypto encrypt --plaintext $plainText --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint>)
+  3. export cipher=$ (echo $encryptedtext | jq -r '.data | .ciphertext') # get cyphertext from the json
+  4. Decryptedtext=$(oci kms crypto decrypt --ciphertext $cipher --key-id <MEK-ocid> --endpoint <Vault-cryptographic-endpoint> # get plaintext from json & base64decode
 
 Oracle-managed keys - Oracle-managed vault has MEK, which provides DEK to resp service to encrypt data # services: OSS, FSS, BV, compute, container, DB
 Customer-managed keys - not imported, just created and revised versions by customer in a OCI vault. 
