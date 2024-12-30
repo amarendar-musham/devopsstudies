@@ -1,52 +1,53 @@
 OCI Bastion service
-		 provides secure & time-limited access to oci-resources, w/o public-ip. Can be deployed in private subnet & security zones
-		 creates SSH tunnel to target oci-resource 
-		 security: IAM-authz(who can create/update/edit bastion), time-limited, no-public-ip, added security w/ cidr-block-allowlist.
-	Session Types
-		Managed SSH session =>
-							ssh -o ProxyCommand="<>" -p 22 opc@<target-pvtIP> -i <TargetHostPrivateKey> ]
-							ProxyCommand = ssh -W %h:%p -p 22 <ocid1.bastionsession..>  -i BastionSessonPrivateKey
-						
-		SSH port forwarding session => for RDP/3389 or DB/1521
-							ssh -i <BastionSessionPrivateKey> -N -L <LocalPort>:10.0.1.21:3389 -p 22 <ocid1.bastionsession..> #you can consule local system's pvt-key
+	 provides secure & time-limited access to oci-resources, w/o public-ip. Can be deployed in private subnet & security zones
+	 creates SSH tunnel to target oci-resource 
+	 security: IAM-authz(who can create/update/edit bastion), time-limited, no-public-ip, added security w/ cidr-block-allowlist.
+Session Types
+	Managed SSH session =>
+			ssh -o ProxyCommand="<>" -p 22 opc@<target-pvtIP> -i <TargetHostPrivateKey> ]
+			ProxyCommand = ssh -W %h:%p -p 22 <ocid1.bastionsession..>  -i BastionSessonPrivateKey
+					
+	SSH port forwarding session => for RDP/3389 or DB/1521
+					ssh -i <BastionSessionPrivateKey> -N -L <LocalPort>:10.0.1.21:3389 -p 22 <ocid1.bastionsession..> #you can consule local system's pvt-key
 
+	Dynamic port forwarding session => you will get access to all the ports...
 
-		Dynamic port forwarding session => you will get access to all the ports...
+limitations: 5 bastions/region, 20 sessions/bastion, max-session: 180 mins, 
+	Association: Single VCN only
+	Dependency: Oracle agent must be running(bastion-plugin)
 
-	limitations: 5 bastions/region, 20 sessions/bastion, max-session: 180 mins, 
-			Association: Single VCN only
-			Dependency: Oracle agent must be running(bastion-plugin)
 -----------
-Network firewall 		## FOR ALL TCP/UDP/ICMP
+Network firewall	## FOR ALL TCP/UDP/ICMP
 		Barrier b/w internet and web application servers (IGW --> firewall --> Application(public.subnet))
 		firewall from Cyber-Threats, Access-Control, Network-Segmentation, Application-Layer-Filtering, Content-Filtering
 	Deployment:
 		Centralized Model - Firewall in a dedicated VCN(Hub) routes traffice to application VCN(Spoke) through DRG
 		Distributed Model - firewall in same VCN as application but dedicated subnet=firewall-subnet. 
-
+	
 	n/w firewall Policy: 
 		decryption-rules - decrypt traffic from source|dest. w/ SSL-forward-proxy / SSL-inspection
-	 	security-rules - allow/drop/intrusion-detection/reject traffic based on match condition formed using below components
-
+		security-rules - allow/drop/intrusion-detection/reject traffic based on match condition formed using below components
+	
 	n/w firewall Policy Components:
 		Application[lists]: layer 7, identify specific functionalities for granular security rules. = ICMP rule
 		Services[lists]: layer 3/4(protocols,ports), define rules independently = TCP/UDP rules
 		URL lists: grouping urls(*,^)
 		Address lists: IPs or ranges for precise control. It can be either sourceIPs or destinationIPs
-
+	
 	Example setup: flow = Internet -> IGW <--> NFW <--> VCN
-
+	
 	1. add security rule by selecting the above components for below items either to block or allow traffic. # ex: control access to websites.
 			source			destination	App/URL			Action
-			any 			vm1			SSH				allow
-			vm1				any 		facebook.com 	deny
+			any 			vm1		SSH			allow
+			vm1			any 		facebook.com 		deny
 			10.0.0.0/16		any 		any 			allow 	## allow all at the end to avoid blocking traffic by default from n/w firewall.
-
+	
 	2. create n/w firewall in the particular VCN/subnet. 
 	3. Add route-table rules and associate:						
 			IG attachment:	source:internet, dest:VCN,	target:NFW-ip ## inbound-traffic
 			NFW attachment: souce:nfw,	dest:0.0.0.0/0,	target:IGW ## allow access to internet attach this to NFW
 			VCN attachment:	source:VM,	dest:0.0.0.0/0,	target:NFW-ip(pvt) ## outbound-traffic 
+
 -----------
 WAF(web application firewall) - uses OWASP security ruleset ## ONLY FOR 80/443 PORTS as we attach WAF w/ LoadBalancer
 	prevent attacks exploiting a web-application like SQL-injection, XSS(cross-site-scripting), DDoS attack
@@ -84,16 +85,16 @@ OCI Certificates(FREE) - private Certificate Authority manager
 -----------
 OCI Key Management Service (KMS)
 	OCI Encryption Options:
-		Oracle Managed Encryption				- Fully managed by Oracle, No control over keys
-		Vault Customer-managed Encryption		- Customer control keys, Virtual Vault & Private Vault, Single-tenant/ Multi-tenant HSMs
+		Oracle Managed Encryption		- Fully managed by Oracle, No control over keys
+		Vault Customer-managed Encryption	- Customer control keys, Virtual Vault & Private Vault, Single-tenant/ Multi-tenant HSMs
 		Dedicated Customer-managed Encryption	- Customer control HSMs and keys Single-tenant HSMs
 		External Customer-managed Encryption	- Customer control HSMs and keys Single-tenant HSMs outside OCI
 
-	Features 					Virtual Vault 		Private Vault		Dedicated KMS 	External KMS
-	Tenant isolation			Multitenant 		Single tenant 		Single tenant 	Single tenant
-	Customer Control 			Keys 				Keys 				Keys and HSMs 	Keys and HSMs
+	Features 			Virtual Vault 		Private Vault		Dedicated KMS 		External KMS
+	Tenant isolation		Multitenant 		Single tenant 		Single tenant 		Single tenant
+	Customer Control 		Keys 			Keys 			Keys and HSMs 		Keys and HSMs
 	Supported key types 		HSM and Software 	HSM and Software	HSM 			External
-	OCI Services Integration 	Yes 				Yes 				No 				Yes
+	OCI Services Integration 	Yes 			Yes 			No 			Yes
 
 	OCI Dedicated KMS:
 		Full Control - Fully managed, single-tenant HSM partition providing exclusive access and control.
