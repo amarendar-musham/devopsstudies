@@ -1,0 +1,92 @@
+OCI-Azure Interconnect Introduction====================================
+
+ - building blocks component comparision b/w OCI & AZURE.
+		Component			OCI 							Azure
+		Virtual Network		VCN 							VNet
+		Virtual Circuit		FastConnect Virtual Circuit 	ExpressRoute Circuit
+		Gateway				Dynamic Routing Gateway(DRG)	Virtual Network Gateway(VNG)
+		Routing				Route Tables					Route Tables
+		Security/Firewall	Security Lists					Network Security Groups
+							Network Security Groups
+
+Azure end:
+	create resourceGroup, VirtualNetwork+subnet+VM+VNG(type=Express-routing)
+	create ExpressRoute-circuit(provider=Oracle Cloud FastConnect)
+OCI end:
+	create compartment, VCN+subnet+DRG. routeTable for VCN -> target:DRG|dest:AzureVNetCIDR
+	create virtual-circuit/FastConnect(Partner=Microsoft Azure:ExpressRoute)
+		- private virtual circuit, DRG(VCNs), BGP IPaddr
+
+Azure: create connection - select (type:ExpressRoute), VNG, ExpressRoute-circuit
+==> you will be able to ping VM across OCI and Azure with private ips of each others.
+
+
+Oracle Database@Azure====================================
+	OCI Pod in Azure DataCenter = extention of OCI region => AD2.1 + AD3.1
+	ExaVNIC <--link--> ExaPrivateIP
+
+	Operational Interface:
+		Microsoft Azure (infra + vm-cluster)
+		- Provision Exadata Infrastructure and Exadata VM cluster using Azure portal, Azure APls, SDKs and Terraform.
+		- Manage the provisioned Oracle Exadata Database Service resources (scale Servers, OCPUs, maintenance)
+ 		- Monitor infrastructure and database metrics, events and logs
+
+	 	ORACLE CLOUD Infrastructure (database)
+		- Provision Database Homes. Provision Container and pluggable databases
+		- Manage the databases (Data Guard, Automatic Backup configuration, updates to Gl, System, Databases)
+		- Migrate to the provisioned databases in Exadata database Service
+
+	Provision Exadata Infrastructure: user must be of admin-group(Oracle Database@Azure Infra)
+	• Azure Subscription and Resource Group name ## resourceGroup=comparment in OCI
+	• Instance Name, Region, AZ, OCI account name
+	• Infrastructure model name (ex: X9M-2)
+	• Number of Database Servers(limit: 2-32), Storage Servers(limit: 3-64) => OCPUs/Storage
+	• Maintenance method(rolling/non-rolling) and Select Schedule
+
+	Provision Oracle Exadata VM Cluster: user must be of admin-group(Oracle Database@Azure VM cluster) ## Azure Vnet with 2subnets(deligated)
+	• Azure Subscription and Resource Group name
+	• Name, Region, Cluster Name, above created Exa-infra, License Type
+	• Grid Infrastructure version, SSH public Key, TZ
+	• VM Cluster configuration (Compute count, shape, OCPU/VM,memory/VM,local storage/VM, Exadata Storage)
+	• Optionally, enable sparse snapshots, local backups and distribution
+	• Provide delegated subnets for client and backup
+
+	Provision Oracle Exadata Database(CDB & PDB): user must be of admin-group(Oracle Database@Azure CDB or PDB) 
+	- Click on "OCI Database URL:Go To OCI" in Exadata VM Cluster Overview page(azure)
+	- In OCl Console, provision database home and databases (CDB and PDB) - select user(sys)+password ## {container|pluggable} databases
+
+Oracle Cloud VMware Solution(OCVS)====================================provider: VMware by Brodcom
+	
+	Software-Defined Data Center(SDDC) - Logical Abstraction: Virtual Data Centers as a Service
+
+	SDDC components in deployments:
+		vSpere - Hypervisor on BM Compute instance(combination of ESXi and vCenter)
+		vSAN - Software Defined Storage
+		NSX-T - Software-Defined Networking and Security
+
+	OCVS - Design Hybird Cloud:
+	- FastConnect: A dedicated network link providing a higher quality of service compared to the internet, achieving lower-latency, higher-bandwidth links (1 Gbps or 10 Gbps)
+	- VMware HCX (Hybrid Cloud Extension): A set of virtual appliances that provides secure connectivity between environments supporting migration and DR operations
+
+	HCX Components:
+		- HCX Manager - Target for SitePairing
+			• One HCX manager per SDDC
+			• Licensed with SDDC deployment
+			• Service Mesh are tunnel receivers
+
+		- HCX Connector - Source(On-Prem) for SiteParing;
+			• Cannot pair with another connector
+			• Licensed based on SDDC deployment
+			• Service Mesh are tunnel
+	Service Mesh
+		HCX IX - Interconnect
+		HCX WO - WAN Optimization
+		HCX NE - Network Extension
+
+
+
+
+
+
+
+
