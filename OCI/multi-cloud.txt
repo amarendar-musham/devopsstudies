@@ -1,13 +1,12 @@
 OCI-Azure Interconnect Introduction====================================
-
- - building blocks component comparision b/w OCI & AZURE.
-		Component			OCI 							Azure
-		Virtual Network		VCN 							VNet
+  building blocks component comparision b/w OCI & AZURE.
+		Component		OCI 				Azure
+		Virtual Network		VCN 				VNet
 		Virtual Circuit		FastConnect Virtual Circuit 	ExpressRoute Circuit
-		Gateway				Dynamic Routing Gateway(DRG)	Virtual Network Gateway(VNG)
-		Routing				Route Tables					Route Tables
-		Security/Firewall	Security Lists					Network Security Groups
-							Network Security Groups
+		Gateway			Dynamic Routing Gateway(DRG)	Virtual Network Gateway(VNG)
+		Routing			Route Tables			Route Tables
+		Security/Firewall	Security Lists			Network Security Groups
+					Network Security Groups
 
 Azure end:
 	create resourceGroup, VirtualNetwork+subnet+VM+VNG(type=Express-routing)
@@ -19,8 +18,7 @@ OCI end:
 
 Azure: create connection - select (type:ExpressRoute), VNG, ExpressRoute-circuit
 ==> you will be able to ping VM across OCI and Azure with private ips of each others.
-
-
+----------------------------
 Oracle Database@Azure====================================
 	OCI Pod in Azure DataCenter = extention of OCI region => AD2.1 + AD3.1
 	ExaVNIC <--link--> ExaPrivateIP
@@ -54,7 +52,7 @@ Oracle Database@Azure====================================
 	Provision Oracle Exadata Database(CDB & PDB): user must be of admin-group(Oracle Database@Azure CDB or PDB) 
 	- Click on "OCI Database URL:Go To OCI" in Exadata VM Cluster Overview page(azure)
 	- In OCl Console, provision database home and databases (CDB and PDB) - select user(sys)+password ## {container|pluggable} databases
-
+-----------------------
 Oracle Cloud VMware Solution(OCVS)====================================provider: VMware by Brodcom
 	
 	Software-Defined Data Center(SDDC) - Logical Abstraction: Virtual Data Centers as a Service
@@ -82,7 +80,7 @@ Oracle Cloud VMware Solution(OCVS)====================================provider: 
 		HCX IX - Interconnect
 		HCX WO - WAN Optimization
 		HCX NE - Network Extension
-
+---------------------------
 
 
 
