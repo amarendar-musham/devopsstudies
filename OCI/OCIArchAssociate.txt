@@ -110,8 +110,8 @@ DRG(Dynamic Routing Gateway) -> mainFeature=Remote Peering Connection(RPC) ; For
 Ex: VCN+DRG->FastConnect+VPN || ->Azure
 
 RPC demo: VCN1=10.0.0.0/16|VCN2=192.168.0.0/16
-DRG1(Create attchments VCN1,RPC1), vcn1+RouteTable=Target(DRG)/cidr(vcn2):192.168.0.0/16/DRG1 ## Region1 ## add SecurityList to enable ping/ICMP
-DRG2(Create attchments VCN2,RPC2), vcn2+RouteTable=Target(DRG)/cidr(vcn1):10.0.0.0/16/DRG2 ## Region2
+DRG1(Create attchments VCN1,RPC1), vcn1+RouteTable=Target(DRG)/dest:cidr(vcn2)=192.168.0.0/16/DRG1 ## Region1 ## add SecurityList to enable ping/ICMP
+DRG2(Create attchments VCN2,RPC2), vcn2+RouteTable=Target(DRG)/dest:cidr(vcn1)=10.0.0.0/16/DRG2 ## Region2
 From RPC1(ToRegion2) -> click establish connection ## will peers to RPC2(ToRegion1)
 
 Site-to-Site VPN = connect Corporate n/w to OCI. If already have Fastconnect, vpn provides redundant connection. 
