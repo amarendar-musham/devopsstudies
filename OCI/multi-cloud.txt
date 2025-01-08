@@ -57,6 +57,8 @@ Oracle Cloud VMware Solution(OCVS)====================================provider: 
 	
 	Software-Defined Data Center(SDDC) - Logical Abstraction: Virtual Data Centers as a Service
 
+	Note: a customer can use this service to migrate his own datacenter to OCI w/o an overhead. Just get the VMs into software-defined-data-center(OCVS)
+
 	SDDC components in deployments:
 		vSpere - Hypervisor on BM Compute instance(combination of ESXi and vCenter)
 		vSAN - Software Defined Storage
