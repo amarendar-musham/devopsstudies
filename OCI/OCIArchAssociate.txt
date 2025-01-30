@@ -364,6 +364,19 @@ iMP: Lower Cost: Recommended for throughput intensive workloads with large seque
 
 File Storage ------------------------------------------------------------------------------------ 
 
+-------easy-explanation --------
+File System for NFS
+ - Create a File System and an associated Export in a Mount Target. You can mount and access the File System as soon as it is created.
+
+sudo mount 10.x.x.x:/fs-export-path1 /mnt/yourmountpoint1
+sudo mount 10.x.x.x:/fs-export-path2 /mnt/yourmountpoint2
+
+10.x.x.x = MountTarget (we have to select VCN/Subnet for the ip allocation while creating MT, it gives a fqdn as well)
+fs-export-path1 = Export mapped to file-system/filer1 
+fs-export-path2 = Export mapped to file-system/filer2 
+
+Note: Mount Target can have multiple exports which points different filers.
+--------------------------------
 ----summary----
 File system concepts, Mount/Export-options, file-system-Path
 Snapshot, clone, in-transit-encryption, usage&metering
@@ -381,7 +394,7 @@ SL2 for VCN: Stateful Egress from TCP & UDP all ports to ports 111|2048|2049|205
 On instance: The above custom tcp & udp ports are of instance, mount as below. 
      sudo => yum install -y nfs-utils, mkdir /mnt/nfs, mount 10.0.0.7:/demofs(FileSystem) /mnt/nfs(mountTarget) ; df -h  #nfs-host:export-path=10.0.0.7:/demofs
 
-NFS Export options: Control client access to filesystem (withCIDR), RW/RO access while connecting to mountTarget
+NFS Export options:=(controls access of who can mount the filer) Control client access to filesystem (withCIDR), RW/RO access while connecting to mountTarget
 If there are two entries for a single IP in export options, the first entry will be applied either RW or RO. 
 Options to control export-access: Source:CIDRofNFSClient, Ports:Privileaged/any, Access:RO/RW, Squash:All/root/none (uid:gid mapping)
 
