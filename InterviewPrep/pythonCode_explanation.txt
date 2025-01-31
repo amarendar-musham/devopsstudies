@@ -2,9 +2,8 @@ Modules used: os,re; json,requests,csv/pandas,concurrent.futures, logging
 Flask: {app|route|def} --> app = Flask(__name__), @app.route("/app"), def home(): return "Welcome"
 
 -----
-python modules::
-syntax: import X || from Y import X ## import modules
-	requests, re, json, logging, threading, pandas
+python modules:: importing modules.... 
+	import requests, re, json, logging, threading, pandas
 	from datetime import datetime ## print(datetime.now()) Used in scripts, time_took. 
 
 	os.cpu_count(), os.getcwd(), os.path.getmtime(file) ## filemoddate in seconds
