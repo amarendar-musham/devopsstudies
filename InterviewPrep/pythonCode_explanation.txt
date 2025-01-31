@@ -1,31 +1,34 @@
 Modules used: os,re; json,requests,csv/pandas,concurrent.futures, logging
 Flask: {app|route|def} --> app = Flask(__name__), @app.route("/app"), def home(): return "Welcome"
+
 -----
-response = requests.get('<api>', auth=('XXXX', 'XXXX'))
-response = requests.post(update_url, json=payload, headers=headers) ## (data|json) 
-
-headers = { 'Authentication-Token' : open("base64-file","r").read().replace("\n","") }
-pin =  b64decode(<endcode-string>).decode('ascii')
-payload = { 'a':1,'b':2 } && modpayload = { **payload, 'c':3 }
-
 python modules::
-syntax: import X || from Y import X
-	requests, re, json, logging, pandas
-	from datetime import datetime ## datetime.now() Used in scripts, time_took. 
-	
-	time, ## time.time() = current time in seconds 
-	os.path ## path.getmtime(file) ## filemoddate in seconds
+syntax: import X || from Y import X ## import modules
+	requests, re, json, logging, threading, pandas
+	from datetime import datetime ## print(datetime.now()) Used in scripts, time_took. 
+
+	os.path.getmtime(file) ## filemoddate in seconds, os.cpu_count()
 	os ## file = "{}/file_name".format(os.getcwd())
 	csv, ## writer=csv.writer(file) ## writer.writerow([val1,val2,val3])
-
-	requests.auth/HTTPBasicAuth
 	selenium/webdriver  # driver = webdriver.Firefox() ## get method
 
-time.time() ## in seconds
-time.ctime() ## readable format in char string.
-Ex: time.ctime(os.path.getmtime(file)) # filemodtime in seconds ==converts-to==> readable format.
+import requests,json
+### headers must have content-type when posting....
+headers = { 'Content-Type': 'application/json', 'Authentication-Token' : open("base64-file","r").read().replace("\n","") }
 
-Overview::
+response = requests.get('api_url', auth=('user', 'pass')) ## HTTPBasicAuth
+response = requests.post(post_url, headers=headers, data=json.dumps(record)) ## (data)|json = payload 
+if response.status_code != 200:	break ## else: continue
+json_data = json.loads(response.text) ## (or)
+with open(file,'w') as f: f.write(response.content) # json_data = json.load(f)
+Note: (loads=stores data as json ; dumps=stores data as string) loads|dumps => string-data-type
+
+## read records/rows in json content. ls = [] (or) list of dictionaries using comprehension
+for row in json_data: ls.append(row["col1"]) ## return sorted(ls) (or)
+ls = [{k:v for k,v in rec if k in selected_fields} for rec in json_data["data"]["items"]]  ## selected_fields = ["field1","f2"]
+
+
+Program - Syntax::
 --------START
 import statements....
 global var1 = 'ex1'
@@ -50,9 +53,7 @@ if __name__ == "__main__":
 	 issue.printsomet(a, b) ## calling the method from Issue class. 
 END--------
 
-===TimeZoneUtility module in Java 
 .........................................................
-
 ------Read input and search pattern ----------START
 link = input("Give the main URL : ") ## read URL
 pattern = input("Any filter : ").    ## read search item
@@ -80,38 +81,7 @@ sys.stdout = var1  ## after the work is done, reset the stdout.
 END---------
 .........................................................
 
-------- Work with json --------START
-## import json and requests modules. 
 
-## create a object with json content. ##(loads|dumps) for string type data.
-1. json_data = json.load(f)		 ##  Ex: f = open("hi.json","r")
-2. json_data = json.loads(response.text)	## Ex: response = requests.get('url',auth=('user','pass'))
-
-if response.status_code != 200:
-	break
-
-## read records/rows in json content. 
-for row in json_data: 		## Can be json_data["results"] or json_data["notification"]["workflowSteps"]
-
-	## To manipulate(replace something) the data you must convert json to string using dumps() method. 
-	## otherwise you can read json data as a dictionary
-	
-	print(json.dumps(row["number"]).replace('"','')+ "|" + row["status"]) 
-	print(json.dumps(payload,indent=1))
-
-## skip a iteration in for loop
-for key in data:
-    if key in ('starttime','endtime'): continue
-    print(data[key])
-
-def ex(str):
-	ls=[]
-	....get json_data
-	for i in json_data["data"]:
-		ls.append(i["Title"])	## appned the values from dictionary content of json. 
-	return sorted(ls) 		## returns sorted list. 
-
-END----------
 .........................................................
 z = ['apple', 'banana', 'cherry'] ## print(list(enumerate(z)) ## for i, item in enumerate(z): print("{}-{}".format(i,item))
 
