@@ -7,8 +7,7 @@ syntax: import X || from Y import X ## import modules
 	requests, re, json, logging, threading, pandas
 	from datetime import datetime ## print(datetime.now()) Used in scripts, time_took. 
 
-	os.path.getmtime(file) ## filemoddate in seconds, os.cpu_count()
-	os ## file = "{}/file_name".format(os.getcwd())
+	os.cpu_count(), os.getcwd(), os.path.getmtime(file) ## filemoddate in seconds
 	csv, ## writer=csv.writer(file) ## writer.writerow([val1,val2,val3])
 	selenium/webdriver  # driver = webdriver.Firefox() ## get method
 
