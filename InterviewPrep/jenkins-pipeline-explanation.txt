@@ -30,6 +30,8 @@ node('pod tmpl name') {	...
 	container('con tmpl name1') { ... }
 	container('con tmpl name2') { ... } ## "dind" to publish dockerImages (docker login "$registry" -u '' -p '')
  }
+(Or) a Jenkins node:: node("jenkins-node1") { ...}
+
 
 4. Using Try-catch::
 try { stage('Cleanup') { .. } }
@@ -48,10 +50,8 @@ script {
 
 6. stage defination::
 stage('Setup') {
-	checkout([  class:'GitSCM',
-				branches: [name:''],
-				url:'',credentialId:''  // use credential created in Jenkins.
-	])
+	checkout([  class:'GitSCM', branches: [name:''], userRemoteConfigs:[url: 'repo.git', credentialsId: '<id>'], relativeTargetDir:'<dir>' ])  // from Jenkins credentials
+	
 	sh """ ... """
 	----(1)call different job--- ## can call scan, testing, publish jobs in other stages...
   }
