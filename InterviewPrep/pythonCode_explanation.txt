@@ -158,10 +158,29 @@ logger.info("") ## (info|warning|error)
 
 import pandas as pd
 df = pd.read_csv(csv_file)
-df = df.sort_volues(by=col1) ## df.to_csv(file2,index=False)
-f.write(df.to_html(index=False)) ## f is a html file
+df = pd.DataFrame.from_dict(ips_map, orient='index').reset_index()
+df = df.sort_volues(by=col1) ## df.to_csv(file2,index=False), f.write(df.to_html(index=False)) ## f is a html file
+merged_df = df.merge(x_df, on='id',how='left')
+
+df.columns # print headers
+df = df.drop(columns=columns) ## columns='col1' or columns = ['col1','col2']
 df.drop(df[<indexes>].index,inplace=True) ## indexes = df[col1].isin(ls)
+df.rename(columns={old_col:new_col})
+df = df[df["col1"] == "val1"]
 ls = df[col1].dropna().to_list()
+
+df.iloc[0] / df['col1'].iloc[0:10]
+df["col1"] = df["col1"].apply(transform_col1) ## apply a function
+df.loc[df["col1"] == 0, "host"] = df["json"].apply(extract_host) ## host = new column, condition based out of col1
+df['fqdn'] = df.apply(lamdba x: f"{x['host']}.{x['domain']}" if pd.notna(x['host']) ## fqdn = <host>.<domain>..
+
+df.groupby(['col1','col2']).size() ## similar to sql query for groupby...
+agg_df = df.groupby("id").agg({'col1':list,'col2':list,'col3':first})   ## id,ls1,ls2,col3 ## aggregation w/ groupby id....
+df = df.groupby("id")[["pvt_ip","pub_ip"]].apply(lambda x: x.to_dict(orient="records")).reset_index(name="json") ## id1,{pvt:ipX,pub:ipY} = json column
+
+df['col3'] = df.apply(lambda x: {x['col1']: x['col2']}, axis=1) creating a json column from existing columns
+agg_df = agg_df.apply(lambda x: {k:v for k,v in zip(x[col1],x[col2])}, axis=1)
+--------------
 
 Insert to DB from a csv file....... ## python3 -m pip install mysql-connector-python ## install with "--user <>" if any errors of file permissions
 conn = mysql.connector.connect(host="<fqdn>",user="<>",passwd="<>",database="<>")
@@ -180,11 +199,15 @@ except Exception as e:
 conn.close()
 ==========================================================================================================================
 
-import concurrent.futures
-with concurrent.futures.ThreadPoolExecutor(max_workers=(os.cpu_count() - 1) * 2) as exec:
-       exec.map(method, ls) ## method(arg), method iterates through out the list, every line as a arg. 
-       ## exec.map(method, ls1, ls2) ## method(a,b) ==> method(ls1[x],ls2[x]) where x=0,1,2,3,4...
-       
+import concurrent.futures as cf
+with cf.ThreadPoolExecutor(max_workers=os.cpu_count() * 2) as exec:
+	results = exec.map(method, ls) ## method(arg), method iterates through out the list, every line as a arg.
+if results: [res for res in results] ## results is a list of returned items from the method
+if results: [ips_map.update(res) for res in results if res] ## res is a dict returned by the method
+
+## exec.map(method, zip(ls1, ls2)) ## method(a,b) ==> method(ls1[x],ls2[x]) indexes will go parallel in each list
+## exec.map(lambda args: method(*args),itertools.product(ls1,ls2)) ## itertools maps each item in a list with all items in the another list
+
 ls = [line.replace("\n","") for line in file]
  
 ==========================================================================================================================
