@@ -159,7 +159,12 @@ logger.info("") ## (info|warning|error)
 import pandas as pd
 df = pd.read_csv(csv_file)
 df = pd.DataFrame.from_dict(ips_map, orient='index').reset_index()
-df = df.sort_volues(by=col1) ## df.to_csv(file2,index=False), f.write(df.to_html(index=False)) ## f is a html file
+
+df.to_csv(file2,index=False) # creates a csvfile
+f.write(df.to_html(index=False)) ## f is a html file
+print(df.to_string()) ## expands all rows 
+
+df = df.sort_volues(by=col1) ## 
 merged_df = df.merge(x_df, on='id',how='left')
 
 df.columns # print headers
@@ -168,6 +173,8 @@ df.drop(df[<indexes>].index,inplace=True) ## indexes = df[col1].isin(ls)
 df.rename(columns={old_col:new_col})
 df = df[df["col1"] == "val1"]
 ls = df[col1].dropna().to_list()
+df[col1].isna() <or> df[col1].notna() ## gives true or false, 
+df[df[col1].notna()]['col1','col2','col3'] ## prints col2 and col3 only when col1 is not null
 
 df.iloc[0] / df['col1'].iloc[0:10]
 df["col1"] = df["col1"].apply(transform_col1) ## apply a function
