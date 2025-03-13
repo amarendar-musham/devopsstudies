@@ -6,11 +6,12 @@ summary on TIPS for best Promt writing
 3. Give examples
 4. Tell it the length of response you want
 5. Define the expected formats
-    - AI thinks logically+specifically...       :   "Let's think step by step"
-    - If AI arriving at inaccurate conclusion   :   "Thinking backwards"
-    - To match styles really well               :   "In the style of [famous person]"
-    - it knows what it knows-and what it doesn't:   "As a [insert profession/role]"
 6. Use of some of these handy expressions
+    - AI thinks logically+specifically...           :   "Let's think step by step"
+    - If AI arriving at inaccurate conclusion       :   "Thinking backwards"
+    - To match styles really well                   :   "In the style of [famous person]"
+    - it knows what it knows-and what it doesn't    :   "As a [insert profession/role]"
+
 7. Use proper grammar
 8. Be concise
 9. Proofread
