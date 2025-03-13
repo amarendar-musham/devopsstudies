@@ -1,1 +1,44 @@
-wer
+-------------------
+summary on TIPS for best Promt writing
+
+1. Offer Context...
+2. Include helpful information upfront
+3. Give examples
+4. Tell it the length of response you want
+5. Define the expected formats
+    - AI thinks logically+specifically...       :   "Let's think step by step"
+    - If AI arriving at inaccurate conclusion   :   "Thinking backwards"
+    - To match styles really well               :   "In the style of [famous person]"
+    - it knows what it knows-and what it doesn't:   "As a [insert profession/role]"
+6. Use of some of these handy expressions
+7. Use proper grammar
+8. Be concise
+9. Proofread
+
+------------------
+VERBS in prompts, users can instruct the Al to perform specific tasks, such as analyzing data, explaining concepts, or brainstorming ideas.
+
+ - Analyze, Answer, Argue, Brainstorm, Change, Clarify, Combine, Come up, 
+ - Compare, Compile, Conclude, Craft, Create, Criticize, Critique, Debug, 
+ - Defend, Define, Describe, Develop, Differentiate, Discuss, Expand, Generate,
+ - Give me, Illustrate, Include, Infer, List, Make, Narrow your focus, Outline,
+ - Predict, Produce, Propose, Provide, Recommend, Rephrase, Reword, Rewrite,
+ - Sum up, Summarize, Suggest, Translate, Write
+
+-------------------
+TONE OF VOICE for AI prompts
+When crafting Al prompts, it's important to consider the tone of voice you want to convey to your audience. (personality of your brand = It can greatly impact how your audience perceives your content)
+By choosing a consistent and appropriate tone of voice for your Al prompts, you can strengthen your brand identity, build trust with your audience, and create a more engaging and effective user experience.
+
+ - Approachable, Excited, Playful, Assertive, Formal, Poetic, Bold, Friendly Positive, 
+ - Candid, Funny, Scientific, Powerful, Caring, Gentle, Professional, Casual, 
+ - Helpful, Humorous, Commanding, Informal, Respectful, Comprehensive
+
+-------------------
+Top 3 commands to tell AI to 10X results
+ #1 Pretend you are an expert...
+ #2 Play devil's advocate.... - To get unique answer to specific problem(ex: find flaws in a website)
+ #3 Pretend you're my consultant.... - chatGPT thinks much in-depth into the problem(ex: imagine Ur my public speaking coach)
+
+
+
