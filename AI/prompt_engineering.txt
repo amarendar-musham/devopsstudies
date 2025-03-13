@@ -1,21 +1,27 @@
 -------------------
 summary on TIPS for best Promt writing
 
-1. Offer Context...
-2. Include helpful information upfront
-3. Give examples
-4. Tell it the length of response you want
-5. Define the expected formats
-6. Use of some of these handy expressions
+1. Offer Context... - provide a prompt that's tailored specifically to context
+
+2. Include helpful information upfront - specific details..
+
+3. Give examples - Example conversation, Current conversation(where you need help)
+
+4. Tell it the length of response you want 
+
+5. Define the expected formats - Tell the format of both your input and your desired output
+
+6. Use of some of these handy expressions -  finding the exact phrase
     - AI thinks logically+specifically...           :   "Let's think step by step"
     - If AI arriving at inaccurate conclusion       :   "Thinking backwards"
     - To match styles really well                   :   "In the style of [famous person]"
     - it knows what it knows-and what it doesn't    :   "As a [insert profession/role]"
 
-7. Use proper grammar
-8. Be concise
-9. Proofread
+7. Use proper grammar - also write in complete sentences.
 
+8. Be concise - Avoid asking multiple questions in one prompt and keep your questions short and to the point
+
+9. Proofread - Before submitting, proofread your prompt to ensure that it is grammatically correct and well-written
 ------------------
 VERBS in prompts, users can instruct the Al to perform specific tasks, such as analyzing data, explaining concepts, or brainstorming ideas.
 
