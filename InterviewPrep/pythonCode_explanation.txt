@@ -215,6 +215,15 @@ if results: [ips_map.update(res) for res in results if res] ## res is a dict ret
 ## exec.map(method, zip(ls1, ls2)) ## method(a,b) ==> method(ls1[x],ls2[x]) indexes will go parallel in each list
 ## exec.map(lambda args: method(*args),itertools.product(ls1,ls2)) ## itertools maps each item in a list with all items in the another list
 
+
+with cf.ThreadPoolExecutor(max_workers=os.cpu_count() * 2) as exec: ## results =[]
+	futures =[]
+	for args in args_iterable:
+		futures.append(executor.submit(target_func, *args))
+	for future in cf.as_completed(futures):
+            results.append(future.result())
+return results
+
 ls = [line.replace("\n","") for line in file]
  
 ==========================================================================================================================
