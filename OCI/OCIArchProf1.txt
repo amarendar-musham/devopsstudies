@@ -92,7 +92,7 @@ Two main metrics to measure the effectiveness of a Disaster Recovery setup => Re
 DR options w/ cost => backup&restore(OCI)($) > Standby(replicatedata w/ minServices) ($$) > Active/Active(readytoTakeOver) ($$$) 
 DB strategies for DR: ActiveDataGuard(physical-replica-RO), GoldenGate(more replica features)
 
-supported components: compute-instances, boot/block-vols/vol-groups, Exa-DB/EnterpriceDB, Autonomous-DB on shared-Exa infrastruction. 
+supported components/Member in DRPG: compute IaaS, Storage Services(BSS/FSS/OSS), DB PaaS, LB, OKE 
 The components not listed here can be taken through custom automation. 
 Components and Dependencies in App-stack: Application, DB, Infra(VCN,LB,DNS,VM,FSS,OSS,BV)
 
