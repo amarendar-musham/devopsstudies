@@ -103,8 +103,18 @@ Scenario: choose region, Recreate the Network components in standby region(use: 
 DR components&concepts: DRPG,DR-PLans/plan-groups
 DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); Members=Resources which need DR(ex:volume groups,DB)
 DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
-	types:[switchover=planned transition, failover=unplanned transition], new[start-DR-drill = dry run, stop-DR-drill = tear down workload at standby]
 
+DR Types:
+	1. Failover(Planned transition) 
+	2. Switchover(unplanned transition) in action: 
+		1. Activate Volumes
+		2. Failover Data guard  ## clone-DB for DR-drill
+		3. Activate Buckets
+		4. Instance Launch
+		5. Custom Scripts
+		6. Update LB Backend Sets
+	3. start DR drill in action: same as above but clones DB instead of replication...
+	4. stop DR drill in action: reverts all changes that start-DR-drill performed. (tear down workload at standby)
 
 ------------- note: same compartment across the regions. 
 1. Migration&DR/DRPG service - create drpg and choose bucket for logs in primary-region1(Ashburn) and standby-region2(Phoenix), 
