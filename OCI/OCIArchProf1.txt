@@ -249,7 +249,7 @@ Function scheduling-> using resource-scheduler(form-based/cron-tab) ## DG - ALL(
 Functions Configuration => Memory,timeout(max-5min in oci),env-vars, service-limits 
 Function Observability => Metrics, Logs, Traces, Troubleshooting(error-code, resolution-steps) ; (metric|logs will be sent to OCI Monitoring|Logging Service )	
 Using Other services => oss|ADB|secrets|compute|n/w ; granular access control|func.s resource principal|ServiceGateway(private)|InternetG(public)
-
+-----------
 Elements of API: Description(Swagger/postman/spotlight), policies(APIGateway), Implementation(OKE/Functions/APEX)
 API Gateway networking -> VCN(pvt/pub.subnet=regional only), SecurityLists, RouteTables
 	policies-> Group policies(n/w resources, API gateways, func, logging), Resource policies(functions)
@@ -258,7 +258,48 @@ Functions/API Gateway -> create one api-gateway, add resp. policies for that com
 Functions/APIs -> create api(FieldService), upload swagger.yaml for the description.
 					create deployment for above api, choose above api-gateway. Add get/post methods for static type or attach functions...
 				Now the api can be accessed from the api-gateway endpoint....... ex: <endpoint>/fs/v1/tickets
+API Gateway: Benefits
+	Enhanced Security and Privacy
+	Simplified API Development and Management
+	Centralized API Management
+	Improved Monitoring and Observability
+	Increased Productivity and Reduced Latency
+	Streamlined Service Delivery
+	Efficient Billing for Monetized APIs
+	Support for Legacy Applications
 
+API deployment = deploying API on an APl gateway, Single API gateway can host multiple API deployments
+
+Front ends = how requests reach API Gateway (public IP / private endpoint in VCN)
+Back ends = how gateway routes requests to services
+	• Access to VCN for private endpoints
+	• OCI services (e.g., OCI Functions) as back ends
+
+API Providers - Designs, delivers, and operates APIs
+API Consumers - Uses APIs to build apps/services (API clients)
+API Clients - Application/device that invokes the API at runtime
+End Users - Customer of the API consumer, interacts only through API client
+
+
+Usage Plan: Defines API access and usage limits. Multiple API deployments can be included in different plans
+Entitlements: Includes rate limits, quotas, and target API deployments
+Subscriber Resource: Defines API consumer access
+Specify the location where the client token will be passed in the requests. Client tokens are only for usage plan reporting purposes
+
+Route: mapping between a path, one or more methods(GET/POST/PUT), and a back-end service
+
+API Gateway policies differ from IAM policies.
+	Request Policy - Actions on incoming requests
+	Response Policy - Actions on outgoing responses
+	Logging Policy - Tracks request/response data
+
+
+Prerequisites for using API Gateway
+	Access to OCI tenancy
+	Sufficient quota on resource (service limits) 
+	Ready-to-deploy compartment
+	Configuring network resources (VCN with public/private regional subnet w/ IG, RouteTable, SecurityLists; API Gateway requires stateful-ingress=443)
+	DHCP Options & DNS Resolver, Policies
 ================================================================================= doc: https://developer.hashicorp.com/terraform/tutorials
 
 
