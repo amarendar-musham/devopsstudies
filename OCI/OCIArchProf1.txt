@@ -101,8 +101,9 @@ DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyD
 DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
 	types:[switchover=planned transition, failover=unplanned transition]
 
-Scenario: Recreate the n/w components in standby region(use: ResourceMgr/Terraform), Create a bucket for FSDR logs.
-	Replications:Volume-group(BVs)&OSS,  Autonomous Data Gaurd(physical replica of DB) 
+Preparing for FSDR: --------summary: n/w components + replications-----------
+Scenario: choose region, Recreate the Network components in standby region(use: ResourceMgr/Terraform), Create a bucket for FSDR logs.
+	Replications: Volume-group(BVs)&OSS,  Autonomous Data Gaurd(physical replica of DB) 
 
 ------------- note: same compartment across the regions. 
 1. Migration&DR/DRPG service - create drpg and choose bucket for logs in primary-region1(Ashburn) and standby-region2(Phoenix), 
