@@ -101,6 +101,7 @@ Scenario: choose region, Recreate the Network components in standby region(use: 
 	Replications: Volume-group(BVs)&OSS,  Autonomous Data Gaurd(physical replica of DB) 
 
 DR components&concepts: DRPG,DR-PLans/plan-groups
+movable/non-movable compute = replication for BootVolume + BlockVolume = movable, only BlockVolume = non-movable
 DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); Members=Resources which need DR(ex:volume groups,DB)
 DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
 
@@ -117,8 +118,8 @@ DR Types:
 	4. stop DR drill in action: reverts all changes that start-DR-drill performed. (tear down workload at standby)
 
 ------------- note: same compartment across the regions. 
-1. Migration&DR/DRPG service - (create drpg and choose bucket for logs) in both regions. ## primary-region1(Ashburn) and standby-region2(Phoenix), 
-peering=associate both protection-groups by choosing which needs primary-role and which needs standby role. 
+1. Migration&DR/DRPG service - (create drpg and choose bucket for logs) in both regions. ## primary-region1(Ashburn) and standby-region2(Phoenix)
+	Associate roles Primary/Secondary. In one DRPG choose a role(primary), select peer-region/peer-DRPG 
 
 2. DRPG-Resources/Members (in Ashburn/primary) => Add members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
 
