@@ -116,17 +116,18 @@ DR Plan Types:
 	3. start DR drill in action: same as above but clones DB instead of replication...
 	4. stop DR drill in action: reverts all changes that start-DR-drill performed. (tear down workload at standby)
 
-------------- note: same compartment across the regions. 
-1. Migration&DR/DRPG service - (create drpg and choose bucket for logs) in both regions. ## primary-region1(Ashburn) and standby-region2(Phoenix)
+------------- Migration&DR/DRPG service ----------- note: same compartment across the regions. 
+1. (create DRPG and choose bucket for logs) in both regions. ## primary-region1(Ashburn) and standby-region2(Phoenix)
 	Associate roles Primary/Secondary. In one DRPG choose a role(primary), select peer-region/peer-DRPG 
 
-2. DRPG-Resources/Members (in Ashburn/primary) => Add members for [compute, vol-groups, autonomous-DB, LB] where all it needs recovery. In standby-region, add ADB/LB members. compute and vol-groups automatically monitored in drpg. ## compute=+vnic-mapping(choose subnet/vcn), LB=sourc/dest-backendSets
+2. DRPG-resources/Members 
+	primary => Add [compute, vol-groups, ADB, LB] member where all it needs recovery. 
+	standby => add [ADB, LB] members. compute and vol-groups automatically monitored in drpg. ## compute=+vnic-mapping(choose subnet/vcn), LB=sourc/dest-backendSets
 
-3. DRPG-resources/Plans (in Phoenix/standby) => create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be auto-added under plan groups for defined members. 
+3. DRPG-resources/Plans (plans must be created in standby region)
+	=> create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be auto-added under plan groups for defined members. 
 
-4. DRPG => Run Prechecks by selecting plan(above one-switchover), check logs after prechecks are green/red. 
-
-5. DRPG => Execute Plan, after execution try to access the application from a LB in standby-region. 
+4. Run Prechecks & Execute Plan ## check logs of pre-check if any error. access the application from a LB in standby-region after execution. 
 =================================================================================
 
 OCIR repository, image-path: <region-key>.ocir.oi/<tenancy-namespace>/<repo-name>:<tag> ## region-key = phx.ocir.io/iad.ocir.io
