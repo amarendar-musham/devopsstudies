@@ -117,7 +117,7 @@ DR Types:
 	4. stop DR drill in action: reverts all changes that start-DR-drill performed. (tear down workload at standby)
 
 ------------- note: same compartment across the regions. 
-1. Migration&DR/DRPG service - create drpg and choose bucket for logs in primary-region1(Ashburn) and standby-region2(Phoenix), 
+1. Migration&DR/DRPG service - (create drpg and choose bucket for logs) in both regions. ## primary-region1(Ashburn) and standby-region2(Phoenix), 
 peering=associate both protection-groups by choosing which needs primary-role and which needs standby role. 
 
 2. DRPG-Resources/Members (in Ashburn/primary) => Add members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
