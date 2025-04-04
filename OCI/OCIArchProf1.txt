@@ -103,9 +103,8 @@ Scenario: choose region, Recreate the Network components in standby region(use: 
 DR components&concepts: DRPG,DR-PLans/plan-groups
 movable/non-movable compute = replication for BootVolume + BlockVolume = movable, only BlockVolume = non-movable
 DRPG(protection groups)=Peer association b/w regions - primaryDRPG(phx),StandbyDRPG(iad); Members=Resources which need DR(ex:volume groups,DB)
-DRP(Plans)=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
-
-DR Types:
+DR Plans=workflows associated with DRPGroups, and defined in StandbyDRPGs. 
+DR Plan Types:
 	1. Failover(Planned transition) 
 	2. Switchover(unplanned transition) in action: 
 		1. Activate Volumes
@@ -121,7 +120,7 @@ DR Types:
 1. Migration&DR/DRPG service - (create drpg and choose bucket for logs) in both regions. ## primary-region1(Ashburn) and standby-region2(Phoenix)
 	Associate roles Primary/Secondary. In one DRPG choose a role(primary), select peer-region/peer-DRPG 
 
-2. DRPG-Resources/Members (in Ashburn/primary) => Add members for compute, vol-groups, autonomous-DB where all it needs recovery. In standby-region, add ADB member. compute and vol-groups automatically monitored in drpg. 
+2. DRPG-Resources/Members (in Ashburn/primary) => Add members for [compute, vol-groups, autonomous-DB, LB] where all it needs recovery. In standby-region, add ADB/LB members. compute and vol-groups automatically monitored in drpg. ## compute=+vnic-mapping(choose subnet/vcn), LB=sourc/dest-backendSets
 
 3. DRPG-resources/Plans (in Phoenix/standby) => create plan choose switchover. Under DRPG/DRPlans, the recovery steps will be auto-added under plan groups for defined members. 
 
