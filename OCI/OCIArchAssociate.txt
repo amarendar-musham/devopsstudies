@@ -582,8 +582,7 @@ service log category: each service has diff category for diff resources
 service connector hub: move log data to other services like archived-logs to OSS (ex: logging->monitoring, logging->OSS)
 unified monitoring agent(UMA): fluentd-based agent runs on OCIinstance to help ingest custom logs.
 Agent configuration: UMA config that specifies how custom logs are ingested
-
-Audit: records api calls to OCIapi public endpoints as log events. 
+Audit: records api calls to OCI public-api endpoints as log events. 
 
 Service log format: unified envelope(generic-like version), Oracle-specific metadata(logid,groupid,tenant,comp), data section(msg)
       - Object storage logs: write event = put,post,delete ; read event = get,list,head
