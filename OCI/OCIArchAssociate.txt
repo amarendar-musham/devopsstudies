@@ -547,21 +547,24 @@ Max permissions throubh iam policies in tenancy level: read metrics, manage alar
 Storage limits: Metric-definitions=upto14days, Alarm-history=upto90days
 
 Alarm Def: CPUusage = Select { compartment, metricNamespace+Metric(cpu), staticstic(max), inteval(1m) }, Trigger rule(condition when cpu reaches 50%), Notification+Topic
-IMP=======:components in MQL expression: [[ Metric, Interval, statistic ]] ; Optional: Dimensions, Grouping, Comparision operation=====================
-Syntax: metric[interval].statistic -> ex: CpuUtilization[5m].max() = basic query with mandatory components
- - metric[interval]{dimensionname="dimensionval"}.statistic -> ex: CpuUtilization[5m]{availabilityDomain = "<>"}.max()
- - metric [interval].groupingfunction.statistic CpuUtilization[5m].grouping().max () # groupBy(shape).max()
-Nested Query: (CpuUtilization[5m].max() > 80).grouping().max()
+IMP=======:::::
+Components in MQL expression: [[ Metric, Interval, statistic ]] ; Optional: Dimensions, Grouping, Comparision operation=====================
+Syntax: 
+ - metric[interval].statistic           ## basic query(w/ mandatory components) 
+ - metric[interval]{dimensionname="dimensionval"}.statistic
+ - metric [interval].groupingfunction.statistic
+Examples:
+  CpuUtilization[5m].max()
+  CpuUtilization[5m]{availabilityDomain = "<>"}.max()
+  CpuUtilization[5m].grouping().max() ## CpuUtilization[5m].groupBy(shape).max()
+  (CpuUtilization[5m].max() > 80).grouping().max()  ## Nested query
 
-iMP: Retention period: metric-def(14days), Alarm-history(90days), dimensions=resource-filter
+Storage Limits: metric-definitions/Alarm-history(90days), dimensions=resource-filter
 
 IAM policies for access: 
   Alarm-viewers=read alarms/metrics; Alarm-admins=manage alarms/ons-topics, 
   Metric-readers, Metric-Viewers(inspect), Metric-Developers(use metrics)
   condition: in compartment ABC where target.metrics.namespace='oci_computeagent' ## 'mycustomnamespace'
-
-Storage Limits: metric definitions & alarm history stored upto 90days
-
 
 -----------------------------------------------------------------------------------------------------
 
