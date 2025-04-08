@@ -584,23 +584,34 @@ Logging concepts:
   unified monitoring agent(UMA): fluentd-based agent runs on OCIinstance to help ingest custom logs.
   Agent configuration: UMA config that specifies how custom logs are ingested
   Audit: records api calls to OCI public-api endpoints as log events. 
-
-Service log format: 3-key-sections = 
-        unified envelope(generic-like version,type,subject), 
-        Oracle-specific metadata(logid,log-groupid,tenant,comp)=OCIDs, 
-        data section(log-msg, service-ocids)
+---
+Service log: 
+  Log format: 3-key-sections = 
+      - unified envelope(generic-like version,type,subject), 
+      - Oracle-specific metadata(logid,log-groupid,tenant,comp)=OCIDs, 
+      - data section(log-msg, service-ocids)
 
   - Object storage logs: Log-categories=Write/Read access events
         Write data.requestAction = PUT,POST,DELETE ; Read data.requestAction = GET,LIST,HEAD
   - LB logs: log-resource=loadbalancer, log-category = Accesslogs,Errorlogs
   - VCN Flow logs: log-resource=VCNsubnet, log-categories=ALL(Accept,reject records)
       troubleshoot traffic in/out of vnics & traffic accepted/rejected based on security rules
+---
+Custom-logs: 
+  Ingested from compute instances or external environments (2methods) -
+    1. API Put Logs, 
+    2. unified-monitoring-agent/fluentd-agent (enable pugin = oci-console/Instance-page/oracle-cloud-agent/custom-log-monitoring)
+     - create custom log = {name, compartment, loggroup}
+     - Agent Configuration - { 
+        select DG & add policy
+        loginput=filepath:/var/log/messages, 
+        log-destination=compartment/loggroup/logobject,
+        parser=json/csv/syslog/auditd }
 
-Custom-logs: Ingested using APIPutLogs, unified monitoring agent(can be manual installation or from cloud agent in oci console)
-     - Instance/cloud agent, enable custom-logs plugin; DG(with instance.id)
-     - create custom log = {name, compartment, loggroup}, agent-configuration:{ select DG & add policy, loginput=filepath:/var/log/messages}
-  Ex-use-case: install UMA on k8s worker nodes. create DynamicGroup(w/ nodes), add IAM logging policies, configure custom-logs, and view logs.
+DG Rule: ANY{instance.id = 'ocidl.instance...', instance.compartment.id = 'ocidi.compartment...'} Policy: allow dynamic-group <DG> to use log-content in tenancy
+Ex-use-case: install UMA on k8s worker nodes. create DynamicGroup(w/ nodes), add IAM logging policies, configure custom-logs, and view logs.
 
+---
 oci logging-search search-logs --search-query "search <>" --time-start --time-end
 Logging Query: includes log-streams, fields, datatypes, operators, expressions 
      <log_stream> := "<compartment_ocid>(/<log_goup_ocid>(/<log_object_ocid>)? )?" # ex: search "compartmentocid" # () are optional
