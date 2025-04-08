@@ -558,6 +558,8 @@ iMP: Retention period: metric-def(14days), Alarm-history(90days), dimensions=res
 IAM policies for access: 
   Alarm-viewers=read alarms/metrics; Alarm-admins=manage alarms/ons-topics, 
   Metric-readers, Metric-Viewers(inspect), Metric-Developers(use metrics)
+  condition: in compartment ABC where target.metrics.namespace='oci_computeagent' ## 'mycustomnamespace'
+
 -----------------------------------------------------------------------------------------------------
 
 Observability and Management - Logging -------------------------LogGroups(searchable,restrict-access)----svcConnectorHub----------
