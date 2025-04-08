@@ -554,6 +554,10 @@ Syntax: metric[interval].statistic -> ex: CpuUtilization[5m].max() = basic query
 Nested Query: (CpuUtilization[5m].max() > 80).grouping().max()
 
 iMP: Retention period: metric-def(14days), Alarm-history(90days), dimensions=resource-filter
+
+IAM policies for access: 
+  Alarm-viewers=read alarms/metrics; Alarm-admins=manage alarms/ons-topics, 
+  Metric-readers, Metric-Viewers(inspect), Metric-Developers(use metrics)
 -----------------------------------------------------------------------------------------------------
 
 Observability and Management - Logging -------------------------LogGroups(searchable,restrict-access)----svcConnectorHub----------
