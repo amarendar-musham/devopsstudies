@@ -584,7 +584,7 @@ Logging concepts:
   unified monitoring agent(UMA): fluentd-based agent runs on OCIinstance to help ingest custom logs.
   Agent configuration: UMA config that specifies how custom logs are ingested
   Audit: records api calls to OCI public-api endpoints as log events. 
----
+---------------
 Service log: 
   Log format: 3-key-sections = 
       - unified envelope(generic-like version,type,subject), 
@@ -596,7 +596,7 @@ Service log:
   - LB logs: log-resource=loadbalancer, log-category = Accesslogs,Errorlogs
   - VCN Flow logs: log-resource=VCNsubnet, log-categories=ALL(Accept,reject records)
       troubleshoot traffic in/out of vnics & traffic accepted/rejected based on security rules
----
+-------------
 Custom-logs: 
   Ingested from compute instances or external environments (2methods) -
     1. API Put Logs, 
@@ -611,14 +611,44 @@ Custom-logs:
 DG Rule: ANY{instance.id = 'ocidl.instance...', instance.compartment.id = 'ocidi.compartment...'} Policy: allow dynamic-group <DG> to use log-content in tenancy
 Ex-use-case: install UMA on k8s worker nodes. create DynamicGroup(w/ nodes), add IAM logging policies, configure custom-logs, and view logs.
 
----
-oci logging-search search-logs --search-query "search <>" --time-start --time-end
-Logging Query: includes log-streams, fields, datatypes, operators, expressions 
-     <log_stream> := "<compartment_ocid>(/<log_goup_ocid>(/<log_object_ocid>)? )?" # ex: search "compartmentocid" # () are optional
-     Fields: <field_паmе> := <identifier> (DOT <identifier>) * # data.resourceId = 'ocid..'
-     Datatypes: search with strings, numbers, arrays, booleans, timestamps, and interval ; also with wild-card pattern
-Search logs: select logs to search = { Compartment, then log group, then logname } # advanced search is same as above logging query. 
+-------------
+Log Search: 
+  1. console  => Basic/Advanced search
+  2. api      => SearchLogs
+  3. cli      => oci logging-search search-logs --search-query 'search "<>"' --time-start <> --time-end <>
 
+- Logging Query includes log-streams, fields, datatypes, operators, expressions 
+
+   LogStreams: < log_stream> := "<compartment_ocid> (/<log_goup_ocid> (/<log_object_ocid> )? )?" ## defines logs to be searched
+      Examples
+      • search "compartmentOcid"
+      • search "compartmentOcid/logGroupNamerOcid"
+      • search "compartmentOcid/logGroupNameOrOcid/logNameOrOcid"
+      • search "compartmentocid/logGroupNameOrOcid/10gName0rOcid", "compartmentocid_2/10gGroupNameOrOcid_2"
+ 
+  Fields: «field_name> := «identifier> (DOT «identifier>)* ## fields to be searched within log streams
+    Examples
+      • type = 'com. oraclecloud. von.flowlogs.DataEvent'
+      • data.action != 'ACCEPT'
+      • data message = 'Get Instance failed'
+      • data. resourceld = 'ocidl.instance.ocl...'
+
+  Datatypes: search with strings, Numbers, Arrays, Booleans, Bimestamps, and Interval ; also with wild-card pattern
+
+  Tabular Operators = • search • where • top • sort • dedup • select
+      • search "application" | where level = 'ERROR'
+      • search "application" | top 3 by impact 
+      • search "application" | sort by impact desc
+      • search "application" | select level, host, impact+10 as impact, timestamp
+
+  Scalar Operators: Arithmetic(+ - * /), Boolean(and or), comparison(> >= <= < == !=)
+    Examples
+    • search "ocidl.compartment..." | 1ogContent='*10.0.0.200*' | sort by datetime desc
+    • search "ocidl.compartment..." | (data requestAction='DELETE' or data. requestAction='PUT') and data.bucketName ='ProductionBucket' | sort by datetime asc
+
+
+
+----------------
 Service Connector: Source(ex: logging) --> Task(optional, ex: filter, function) --> Target(ex: monitoring) 
      # For source logging, select comp|loggroup|logname ; Log filter task(optional): where data.requestAction=PUT
      # For target monitoring, select comp|metricNamespace|metric ; add optional dimensions if any.
