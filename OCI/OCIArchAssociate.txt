@@ -646,11 +646,24 @@ Log Search:
     • search "ocidl.compartment..." | 1ogContent='*10.0.0.200*' | sort by datetime desc
     • search "ocidl.compartment..." | (data requestAction='DELETE' or data. requestAction='PUT') and data.bucketName ='ProductionBucket' | sort by datetime asc
 
-
-
 ----------------
-Service Connector: Source(ex: logging) --> Task(optional, ex: filter, function) --> Target(ex: monitoring) 
-     # For source logging, select comp|loggroup|logname ; Log filter task(optional): where data.requestAction=PUT
+OCI Connector Hub / Service Connector Hub:
+   = orchestrates data movement between source and destination OCl services
+  Concepts:
+    - Source(ex: logging)
+    - Target(Function/Monitoring/Notifications/ObjectStorage/Streams/*LoggingAnalytics) 
+    - Task(optional, ex: filter, function)
+
+  Take Actions for Use Cases (Integrating with other Oracle services)
+      Write to Stream
+      Archive to object storage
+      Invoke Oracle function (remediation)
+      OCI Monitoring metric
+      Notification support (alerting)
+      Logging Analytics (for deeper data analysis ingest data into logging analytics)
+      & more!
+
+# For source logging, select compartment|logGroup|logObject ; Log filter task(optional): where data.requestAction=PUT
      # For target monitoring, select comp|metricNamespace|metric ; add optional dimensions if any.
      Another example logging to Object storage(Target, select comp|bucket). 
      ## After service creation, first example=verify in monitoring console, another example=verify in OSS bucket if archieved logs stored. 
