@@ -670,12 +670,21 @@ Target: monitoring, configuration = select compartment|metricNamespace|metric ; 
 Target: Object storage, configuration = select compartment|bucket
 
 ## After service creation, first example=verify in monitoring console, another example=verify in OSS bucket if archieved logs stored. 
--------------------------------------------------------------------------------------------------------------------
+-------------------
+Audit Logs: 
+	Tracks Security Audit Events Records all OCl public REST API calls automatically(console/CLI/SDK/ociServices/customClients)
+	
+	• (policy = read audit-events)
+	• Audit Retention: 365 days (tenancy level)
+	• It can take up to 15 minutes before an audit log is appended for an event.
 
+Reasons to use Audit logs
+	Perform diagnostics
+	Track resource usage
+	Monitor compliance
+	Collect security-related events
 
-
-
-
+Note: similar to Log search, you can search/filter everything in Audit page. 
 
 
 
