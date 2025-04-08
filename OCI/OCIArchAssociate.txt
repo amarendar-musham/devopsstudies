@@ -537,9 +537,9 @@ Summary:
 Observability and Management - Monitoring (Per compartment) -------------------MetricNamespaces(predefined groups)----------------
 
 1. Metrics: grouped within MetricNamespaces(predefined - ex:oci-computeagent), service|custom metrics, Filter by Dimensions(ex:shape,AD,FD,region) and Time period, 
-     -> Data aggregation with Interval and Statistic(peak), Metric streams and grouping; Grouping-function: groupBy(), grouping()
+     -> Data aggregation with Interval and Statistic(peak), Metric streams and grouping(#instances); Grouping-function: groupBy(), grouping()
      - Metric statistics: absent, avg, count, increment, max, min, mean, percentile rate, sum()
-2. Alarm: oci-services -> metrics -> monitoring -> (ifHighCPU)Notifications ->  message -> topic -> email|function|https|slack
+2. Alarm: oci-services -> metrics -> monitoring -> (ifHighCPU)Notifications ->  message -> topic -> subscriptions(email|function|https|slack)
      Alarm States: OK, Firing, Reset, Repeat ; Suppression: avoid alarms during maintenance. 
 
 CLI: oci monitoring metric|alarm list --compartment-id <> # metric-data post, alarm create, suppression remove --alarm-id <> ;
