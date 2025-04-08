@@ -662,11 +662,14 @@ OCI Connector Hub / Service Connector Hub:
       Notification support (alerting)
       Logging Analytics (for deeper data analysis ingest data into logging analytics)
       & more!
+Demo:
+Source: Logging, configuration = select compartment|logGroup|logObject ; Log filter task(optional): where data.requestAction=PUT
+Task: Function(optional)
+Target: monitoring, configuration = select compartment|metricNamespace|metric ; add optional dimensions if any.
+---
+Target: Object storage, configuration = select compartment|bucket
 
-# For source logging, select compartment|logGroup|logObject ; Log filter task(optional): where data.requestAction=PUT
-     # For target monitoring, select comp|metricNamespace|metric ; add optional dimensions if any.
-     Another example logging to Object storage(Target, select comp|bucket). 
-     ## After service creation, first example=verify in monitoring console, another example=verify in OSS bucket if archieved logs stored. 
+## After service creation, first example=verify in monitoring console, another example=verify in OSS bucket if archieved logs stored. 
 -------------------------------------------------------------------------------------------------------------------
 
 
