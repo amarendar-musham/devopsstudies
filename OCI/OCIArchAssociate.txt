@@ -560,6 +560,9 @@ IAM policies for access:
   Metric-readers, Metric-Viewers(inspect), Metric-Developers(use metrics)
   condition: in compartment ABC where target.metrics.namespace='oci_computeagent' ## 'mycustomnamespace'
 
+Storage Limits: metric definitions & alarm history stored upto 90days
+
+
 -----------------------------------------------------------------------------------------------------
 
 Observability and Management - Logging -------------------------LogGroups(searchable,restrict-access)----svcConnectorHub----------
