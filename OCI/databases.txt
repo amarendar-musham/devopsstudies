@@ -205,9 +205,25 @@ Backup-Based DR: less cost, more RTO than AuDG; preferred for non-prod DBs. no-a
 By default, AuDB will have DR enabled w/ Type=backup-based,peer-role=backup-copy
 =====================================================================================================================================
 
+Oracle Database Autonomous Recovery Service(RCV) = centralized backup management service designed for Oracle databases on OCI. It leverages Oracle’s proven Zero Data Loss Recovery Appliance technology, providing enterprise-grade backup protection with modern security standards.
 
+	Sub-second RPO:			Zero Data Loss Autonomous Recovery Service (ZRCV):
+	Forever incremental:		backups = Encrypted, Immutable, Continuously validated, compressed
+	Automatic Backup Management
+	Centralized Monitoring:		A dashboard provides insights into backup health, space usage, recovery points, and retention policies
+	Retention policy &lock			
+				- Platinum(95 days), Gold(65), Silver(35), Bronze(14), Custom policies(14–95) ; 
+				- retention lock: 14days delay to apply the policy.
+				- Retained for 72 hours before deletion
+	Integrated OCI monitoring and alerts
 
+RCV supports: BaseDB,Exa,ADB, GCP, Azure ; DB versions = 19c,21c,23ai
+note: Encryption keys remain managed within the database nob by recovery service
 
+You can also create long-term backups, independent of automatic backups, stored in OCI Object Storage (infrequent access tier), and retained for up to 10 years.
+🔐 Note: Long-term backups can only be used to create new databases and must be restored within their retention period.
+
+=====================================================================================================================================
 
 
 
