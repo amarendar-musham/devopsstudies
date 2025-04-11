@@ -55,6 +55,6 @@ Creating OCI IAM Resources: Create an Identity-Domain(w/ a Administrator), Group
 
 Cluster creation: 
 		name, compartment, openSearch version, security(administrator), 
-		#nodes(data,leader,dashboard)(ocpu,memory,storage), profile(development, applicationSearch, logAnalytics)
+		#nodes(data,leader,dashboard)(ocpu,memory,storage), node-profile(development, applicationSearch, logAnalytics)
 		VCN, subnet
 		
