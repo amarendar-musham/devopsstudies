@@ -1,0 +1,60 @@
+-------------------------------------OCI Search with OpenSearch-------------------------------------
+
+Basic Search:		Entering keywords into a Search engine to find relevant information
+		
+		=> Crawling(web pages) -> Indexing -> Ranking (Retrieval) -> Delivery (highly indexed results)
+
+OpenSearch:			open-source search and analytics suite that includes: [ OpenSearch Engine + Dashboards] originated from ElasticSearch
+
+OpenSearch supports: Text, images, logs, metrics, Sentiment analysis, structured/unstructured data
+
+It’s useful for:
+	Log analytics
+	Real-time application monitoring
+	Website and enterprise search
+
+It uses a Query DSL (Domain Specific Language), a flexible JSON-based syntax to define complex queries.
+
+
+OCI Search with OpenSearch Key aspects:
+	Fully managed(deployment, provisioning, patching, scaling, backup, and security)
+	Secure
+	Generative AI
+	Automated HA
+	Powerful Insight
+
+Open Search Core Concepts:::::
+
+	Cluster:	A group of nodes running OpenSearch(1 primary node) = nodes X-ADs
+		Data Node: Stores and processes data, performs indexing and search operations
+		Leader Node: Manages cluster operations, node coordination, and metadata
+		Dashboard Node: Hosts and serves OpenSearch Dashboards
+
+	Index:	A data structure that speeds up search operations
+		Index storage: Structured data references
+		Index population: Feeding search data into OpenSearch
+		Reduced resource usage: Lower CPU and memory through indexing
+
+	Dashboard
+		Visualization tool for real-time analytics
+		User interface for interacting with OpenSearch data and plugins
+
+	Private Endpoints
+		Provide secure, VCN-internal access to OpenSearch clusters and dashboards
+		Ensure traffic stays within the OCI network
+
+
+Prerequisites for OCI Search Cluster Setup:
+	OCI Account, Compartments, VCN/Subnet, IAM policies
+
+
+Creating OCI IAM Resources: Create an Identity-Domain(w/ a Administrator), Group, Users
+
+	Allow group search-opensearch-admins to manage virtual-network-family in tenancy
+	Allow group search-opensearch-admins to manage opensearch-family in tenancy
+
+Cluster creation: 
+		name, compartment, openSearch version, security(administrator), 
+		#nodes(data,leader,dashboard)(ocpu,memory,storage), profile(development, applicationSearch, logAnalytics)
+		VCN, subnet
+		
