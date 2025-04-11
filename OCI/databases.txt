@@ -47,6 +47,31 @@ BaseDB cloning: Oracle-Databases/BaseDB/DB-system-details,
 
 Database upgrades are not rolling and require downtime
 Database Encryption Keys: Encryption key must be AES-256 (Oracle-managed/customer-managed keys)
+
+--- Security – Oracle Zero Trust Packet Routing (ZPR)
+ZPR = Security framework that enforces strict policies between resources, Works independently of network config, reducing attack surface
+
+Key Features:
+	Blocks unauthorized inter-resource communication
+	Requires security attributes + ZPR policies
+	Evaluated after networking setup
+
+Example ZPR Policy Flow : Only Science-tagged apps in VCN=prod can connect to the sensitive DB.
+
+. Steps to Configure a VM DB System
+	Select Shape:				Choose processor type, OCPU, memory, and storage needs.
+	Choose Storage Management:		ASM or LVM = Configure storage size
+	Configure DB Edition:			Standard, Enterprise, High Perf, or Extreme Perf (needed for RAC)
+	License Type:				Oracle license or BYOL (Bring Your Own License)
+	Set Network:				Provide VCN, Subnet, Hostname
+	Enable Diagnostics:			For health monitoring, log collection
+	Assign Security Attributes (ZPR):	
+				- Add key-value tags (e.g., db=sensitive), 
+				- Define policies to control access
+
+⚠️ Note:
+ZPR attributes won't work without policies, Default behavior(if security attribute created) = deny all, even if allowed at network layer.
+
 =====================================================================================================================================
 
 Exadata DB system configuration: The fastest and most-available DB platform. Infra deployed/managed by Oracle ## for mission-critical/analytics workloads
