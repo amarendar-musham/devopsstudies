@@ -1,0 +1,281 @@
+===================================Migrate Workloads to OCI===================================================
+
+Migration = Customer's Data Center  ----->  OCI Compute
+
+Comparatively oracle-cloud-migration is effective migration than OCVS(software-defined datacenter) migration.
+
+Oracle Cloud Migrations(OCM) - Centralized Service for Migrations
+
+	Phases(OCM) ==> 
+		summary = Discover external VMS -> Group/Organize VMs --> Project Cost --> Replicate VM data --> Launch as OCI compute
+
+	1. Connect & Discover	-> external assets(VMs) on VMware-vSphere
+	2. Build Inventory 	-> Annotate and group assets (selecting which VMs are to be migrated into the OCI target)
+	3. Assess and Plan 	-> metrics/compatiblity-assessment/shape-size/cost-estimates
+	4. Replicate			-> VMDK snapshot->OSS->BlockVolume
+	5. Launch				-> ResourceManager(terraform-stacks)-> OCI compute
+
+Assets types => External asset, Inventory asset --|-- Migration asset, Target asset
+
+-----------------------OCM process-----------------
+	summary = External Env-> Agent registration -> 	VDDK(Virtual Disk Development Kit) -> Inventory(in OCI) -> group/organize -> MigrationProject -> Replication
+---
+1. External Environment(DataCenter): 
+	(Remote Agent appliance = OracleCloudBridge/OCB) discovers VMs in source
+		- download from OCM service and install it on external environment, to make resources discoverable.
+	 	- OCB(plugins: discovery/replication/health-monitoring)
+---
+2. OCM Service:
+Remote connections -> Agent+dependency, Discover+Inverntory for assets
+	Source-environment	
+		Agent registration in OCM -> Remote-ConnectionS-Agent - give IP of computeVM w/ above agent installation
+		Agent dependency(VDDK) - select file from OSS. used for replication plugin
+		
+	Discovery/Asset-source creation
+		-> select vCenter-endpoint/creds-from-vaultSecret
+		-> select Source-environment
+		
+	Run Discovery.... from asset-source page.
+	Inventory -> check the dicovered details in the inventory page.
+
+3. Migration Project -> Assets(Inventory + Replication), Plans(strategy)
+	Migration Assets
+	• Add assets (Inventory > Migration)
+	• Choose replication schedule, replication location
+	Migration Plans
+	• Select strategy=CPU/Memory(Asis, Peak, Avg, %), select VCN/subnet
+	• Target asset - recommended shape, Asset compatibility, cost estimate
+
+4. Replicate & Launch ## 
+	Migration-project: Replicate
+	 - replication-plugin of OCB, replicates snapshot(full/incremental) from customerEnvironment to OCI(OSSbucket)
+	 - hydration Agent = Transfer data from OSS replication bucket -> BV (a temp ComputeVM, automatically provisioning/terminate)
+	migration-plan-> Generate/Deploy RMS stack(ResourceManager) 
+
+	Launch target instance(get ip from created resources in the project)
+
+---------------------------------------
+Database Migration 
+	=> Env change(On-prem to cloud) / DB-Character-set(UTF-8) change / Architecture change(non-container to multi-tenant) / DB Type (non-oracle to Oracle)
+
+Business Goals
+	Infrastructure Modernization - retire legacy systems, gain competitive edge.
+	Agile Platform - Rapid development,
+	Performance Improvement - Boost application response time.
+	Consolidation - Optimize resource utilization and cost.
+	Downtime - Least impact on business
+	TCO Reduction - Cost savings over CAPEX and OPEX
+	Choice of Target DB - Supports required and advanced features
+
+Factors Influencing Database Migration (Technical factors)
+	DB type (Oracle, MS SQL), DB version, Data types compatibility, Size(source DB)
+	Conversion of routines to their equivalents in target DB 
+	Network bandwidth b/w environments for data transfer
+	Possible fallback option to avoid business disruption
+	Additionally --> DB Character set, Data encryption, Data loss protection for source DB
+
+Avoiding DB Migration Pitfalls ==> Cost overrun, DB migration failure (Poor migration strategy)
+
+Oracle DB Migration to OCI Benefits = Simpler Management, Reliability, Scalability, Security, Automation, Integrated Platform
+
+-------------------------Migration Modes--------------------------
+::
+	Offline Migration - source application=offline/frozen(no-access) # more downtime
+	Online Migration - source app+DB accessible during migration, Target DB will be in syn at end of migration ## zero/near-zero downtime
+
+
+Migration Types:
+	Physical Migration 
+		- Block-wise copy is made of physical DB files. 
+		- DB version must be same in src & dest. 
+		- filteration of sourceDB objects not possible
+	Logical Migration 
+		- Copy of database logical objects and data is created in compatible target database. 
+		- DB version can be different. - filteration possible. 
+
+Migration Advisors: https://apexadb.oracle.com/ords/r/dbexpert/dbsn/home
+
+	Service Advisor (OCI DB)
+		Which database service should I choose? Decide based on - 
+			Service Type, Deployment Type, Workload Types, Management Model, Data Sensitivity, Security Needs, Availability
+
+	Methods Advisor (OCM)
+		Which migration method would be best for this scenario? based on - 
+			Migration Mode (Online / Offline), Migration Type (Physical / Logical)	
+
+	Cloud Premigration Advisor Tool (CPAT)
+		Determines suitability, analyzes source DB metadata compatibility w/ target DB(OCI)
+		Integrated w/ DB migration tools. 
+
+		How does this work? 
+			- Download & Setup Java-binary for Windows/Linux and connect to DB to perform check DB-objects + conditions
+			- Generates Reports(results and actions required if any), remediation scripts 
+
+	Cloud Migration Advisor Tool (used by Oracle only)
+		Workflow? Collect(estate info) -> Load(extract) -> More Details(downtime,host + n/w) -> Customize(migration scenario) -> Solution
+		Extractors = CPAT, CSV Exporter, Excel, OEM collector
+
+	Oracle Estate Explorer Tool(OEE) - Helps optimize oracle database migration plan
+		Analyze results w/ visualization(APEX)
+
+------------------------------Migration Methods---------------------
+
+Recovery Manager (RMAN) Oracle Database's Backup and Recovery Client-----
+	Backup -> Restore and Recover -> Automate and Administer Backup Strategy
+
+	Is a physical migration method
+	Copies used blocks in database files to backup sets
+	Takes full and incremental backups with security enabled
+
+
+	Prerequisites to Migrate Oracle Database Using RMAN
+		- Character set compatibility b/w source & target DB(OCI)
+		- Source DB should be in archive log mode.
+		- Platform migration support
+		- Freeze source DB changes for complete migration. (READ ONLY mode)
+		- Faster network bandwidth between source and OCI availability domain
+
+	RMAN Migration Options (target OCI platform = little endian = significant byte at the end)
+		RMAN Cross-Platform Data Transport Using Backup Sets(DB,files,tablespaces)	#Source platform can be little/big endian
+		RMAN Convert Transportable Tablespace with Data Pump 						#Source platform can be little/big endian
+
+		RMAN Transportable Tablespace with Data Pump ## w/o conversion	#Source platform must be little endian (OCI DB platform)
+		RMAN Cross-Platform Transportable PDB							#Source platform must be little endian (OCI DB platform)
+		RMAN Duplicate from Active Database's							#Source platform must be little endian (OCI DB platform)
+
+Data Pump Migration Utility---- (offline=READ ONLY), (Supports OCI Base DB, Exadata DB, and ADB service as target)
+
+	- (offline=READ ONLY) = source DB tablespace must be Freezed for changes = READ ONLY mode
+	Logical migration method
+	No dependency on endianness
+	Character set independent
+	Control over migration of database objects
+	Requires more downtime for migration (slower)
+
+	Options
+		Data Pump Transportable tablespace			#Source DB platform must be little endian (OCI DB platform)		
+			- Compatible Character Set = src DB charset same/subset of target DB(OCI)
+			- Faster (copy DB files & metadata export of tablespaces)
+			- supports Base DB, Exadata, Public Cloud, C@C(Cloud @Customer DataCenter)
+
+		Data Pump - Full Transportable (entire DB migration method)
+			- Compatible Character Set = src DB charset same/subset of target DB(OCI)
+			- Full Transportable Is a 12c Feature
+
+Remote Cloning --------(offline=READ ONLY), (Migrate to Base DB & Exadata DB in public cloud & C@C)
+	Source DB platform must be little endian (OCI DB platform)	
+	
+	- Clones Source to target DB using a Database Link
+
+	Source database can be PDB(pluggable) or non-CDB(non-container) (12.1.0.2 and later)
+	Source DB character sets and national character sets must be compatible with target DB in OCI
+	.
+	Note: cloning remote non-CDB to OCI DB: execute noncdb_to_pdb.sql in target PDB before opening it.
+
+
+Unplug and Plug -------- (Migrate to Base DB & Exadata DB in public cloud & C@C)
+	Source DB platform must be little endian.
+
+	- unplugs source pDB and plugs in to 12c CDB in OCI
+
+	Source database can be PDB or non-CDB (12.1.0.2 and later).
+	Source DB character sets and national character sets must be compatible with target DB in OCI.
+
+
+	PDB --> OCI DB service
+		close & unplug, generate [XML metadata file, data files], transfer them to target OCI DB service compute, create PDB using these files. 
+
+	non-CDB --> OCI DB service
+		READ ONLY, generate [metadata, data files], transfer to target compute, create PDB using files, execute noncdb_to_pdb.sql
+
+
+UI Based Oracle DB Migration Tools ---------- provides Guided workflow to perform oracle DB migration
+	1. Enterprise Manager Migration Workbench (enterprise only = no standard version of it) (minimal downtime)
+		Plan (identify DBs) -> Migrate (DataPump / RMAN Transportable Tablespace) -> Analyze (Monitor migration tasks, cleanup migration files post migration)
+
+	2. Oracle SQL Developer (migration wizard) - Selectively Migrate schema, data and database objects. 
+		Use Data Pump, SQL*Loader, Insert Statements
+			- Online Capture
+			- Offline Capture (.bat,,sql, .ocp)
+
+Oracle Data Guard --------- a DisasterRecovery feature [replication primary <-> standby], but can be used as a migration method (failover/switchover capabiility)
+
+	Supported Source = Endian: Little, Platform: {Linux, Windows}, Arch : x86-64
+
+	Physical Online Migration Method, Meet zero or near zero-downtime requirement
+
+Oracle Golden Gate --------- Real Time data replication solution, Built on microservices architecture
+	Replication => On-premises -dataPump-export-> OSS -dataPump-import->OCI
+
+	- Leverage for logical online migration, Meet zero or near-zero migration requirement
+
+Zero-Downtime Migration(ZDM) Method ------------ End-to-End oracle DB migration automation tool (zero to minimal downtime <15min)
+	
+	How it works? 
+		ZDM Host = download ZDM binary and configure
+		Migration Orchestration = configure source + target connection (ssh,sudo, ports, dump destination, CPAT, dry-run)
+		Customize Migration Workflow using response file custom plug-ins with user actions
+
+
+OCI Database Migration Service ------ Fully-managed oracle database migration service in OCI
+	- Compliant with Oracle Maximum Availability Architecture (MAA)
+	- Driven by ZDM(Zero-Downtime Migration) Engine
+	- Configure workflow and control migration job, directly from OCI Console - pause, resume, rerun, terminate, pre-check etc
+	- Integrated with other OCI services
+
+
+	Supports: online/offline oracle DB migration in OCI DB services, Migrate Oracle DB from 11.2.0.4 release and above (Std/Ent Edn.)
+		- Source Oracle DB Platform - Linux, Oracle Solaris, AIX
+		- Source DB Environments - On-premises, OCI, and non-oracle cloud (3rdparty=AWS/Azure)
+		- Target DB - OCI DB services in public cloud (Base, Exa, ADB)
+	flow:
+		sourceDB -dataPump-export-> OSS -dataPump-import-> OCI # DB link for export + import
+		Note: +Golden Gate for online migration
+
+
+#####################################################################################
+------------------DATA transfer-------------------------
+Types of DATA Transfers ## encryption:AES256, NIST standard to erase data after copy.
+	1. Disk-Based Data Transfer 			## customer-supplied storage devide
+	2. i) Appliance-Based Data Transfer 	## Oracle-supplied transfer appliance
+	   ii) Appliance-Based Data Export 		## oracle-supplied.... <= 34TB
+
+Disk-Based data transfer: 
+	process:
+	Customer-provided commercial hard disk drive, purchase disk
+	Send your data as files on encrypted USB 2.0/3.0 disk to an Oracle transfer site
+	Operators at the Oracle transfe site upload the files into your designated OSS bucket in your tenancy.
+	The disk is shipped back to you after the data is successfully uploaded.
+
+	data import concepts:
+	import-disk, transfer-disk(logical), transfer-package, transfer-job
+	Data-transfer-utility: command-line-software to prepare transfer disk
+	Bucket: OSS to upload data
+	Data-Host: a linux machine stores the data, you intend to copy to disk.
+	Data-transfer upload user: temporary IAM user, permissions to upload data from disk to bucket
+
+Appliance-Based Data Transfer: 
+	process:
+	Secure, high-capacity, Oracle-supplied storage appliances & software
+	Migrate petabyte-scale datasets to OCI.
+	Operators at the Oracle transfer site upload the files into your designated OSS bucket in your tenancy.
+
+	data import concepts:
+	Data Transfer Appliance
+	Terminal Emulation Host - to communicate w/ import appliance
+	Control Host - to perform data-transfer service tasks
+	Transfer Job - logical representation of data migration to oci
+
+	how data transfer works:
+	Create a Transfer job (Console or CLI).
+	Request one or more appliances.
+	Connect appliance to the network, via serial console and assign IP.
+	Retrieve encryption key using the data transfer utility/CLI.
+	Prepare the appliance, Create Datasets (mount point).
+	'Seal' data set to generate manifest filee. 'Finalize' the Transfer Appliance.
+	Ship the Transfer Appliance back to Oracle.
+------------------------------------------------------------------------
+#####################################################################################
+
+
+
