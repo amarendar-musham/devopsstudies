@@ -18,6 +18,10 @@ BaseDB system => VM options - choice of AMD Flex/Intel shapes
 	single-instance DB on VM => Upto (64 ocpus, 1TB memory, 80TB block-volume)
 	RAC DB on VMs(2-node-RAC) => Upto (128 ocpus, 2TB memory, 80TB block-volume, Extreme performance edition)
 	VM DB Storage architecture: Block storage -> LVM (or) ASM
+		LVM (Logical Volume Manager) = Combines physical disks into logical volumes (Simpler use, flexible sizing)
+		ASM (Automatic Storage Management) = Oracle-specific storage manager, auto-balancing	(High availability, RAC)
+			Note: ASM storage default split – 80% Data, 20% RECO (recovery).
+
 		ASM(Grid infrastructure) => BV -> ASM-Disk-group(+DATA,+RECO) -> AVM
 
 BaseDB managed Features: Launching VM DB System <-> pub.key.ssh|policies, VCN|IG, OSS(backup/patch), Compartment
