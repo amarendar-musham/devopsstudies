@@ -225,8 +225,103 @@ You can also create long-term backups, independent of automatic backups, stored 
 
 =====================================================================================================================================
 
+-------- Oracle Globally Distributed Autonomous Database  = fully managed distributed database service
+
+It provides:
+	Automated data distribution and redistribution
+	Compliance with data residency requirements
+	Cloud-scale performance
+	High availability through data replication across OCI regions or availability zones in a multi-cloud setup
+	Integration with Autonomous Database Select AI, enabling natural language queries on distributed data without needing to know the data location or structure
+
+Key Use Cases
+	Ultimate Scalability and Survivability 
+		- (Data is spread across multiple databases) horizontal scaling(HA) and fault tolerance (Replication X regions/ADS) 
+	Data Sovereignty Compliance
+		- Enterprises can enforce data residency rules by storing customer data within the country of operations, aligning with regional data privacy regulations.
+
+Service Architecture
+	single logical database = multiple independent databases called shards, each hosting a subset of the data.(multiple Data centers)
+
+Shards: Independent databases with “shared nothing” architecture; each shard can scale independently and be replicated for HA.
+Shared Catalog: Automates shard deployment, manages centralized configuration, and stores the golden schema copy.
+Query Coordinator: Handles distributed query execution across shards.
+Sharding Director: Maintains a topology map and routes connections based on the sharding key.
+Shard Space: A shard assigned a specific key range or list in user-managed distribution setups, with its own replica.
+
+Data Distribution Models
+	Automated Distribution:		Uses consistent hash partitioning to evenly distribute data across shards.
+	User-Managed Distribution:	Users define how data is distributed to meet performance, compliance, or regulatory needs.
 
 
+Deployment Options 	- You can deploy shards in different configurations based on your needs:
+	Standalone Servers: A cost-effective option with one shard per server.
+	Exadata Clusters: For ultra-fast performance and high availability within a region.
+	Flexible Placement: Shards can be hosted in OCI, on-premises, or multi-cloud environments with independent deployment options per shard.
+
+Deployment Strategies:
+	For Performance: Place multiple shards in one availability domain.
+	For High Availability: Spread across availability domains or regions.
+	For Data Sovereignty: Place shards according to country-specific data residency requirements.
+
+
+Replication Mechanisms (for HA, DR)
+	Shard-Level Replication (Oracle Data Guard)
+		Supported w/ ADB on dedicated Exadata infrastructure (19c and 23ai)
+		Creates physical standby databases for each shard
+		Standbys can be local or remote and are automatically deployed during shard creation
+
+	Chunk Set-Level Replication (Raft Replication – introduced in 23ai)
+		Uses Raft consensus protocol for chunk-level replication across shards
+		Delivers fast failover, zero data loss, and automatic maintenance of replication factors
+		Requires no manual reconfiguration when shards are added/removed
+
+-------- OCI Cache --------------------------------------------------------------------------------
+OCI Cache is a fully managed, in-memory, distributed caching service (HA)
+
+Key Features of OCI Cache: auto-scaling, HA, and monitoring
+
+
+Key Benefits of Using OCI Cache
+	⚡ Faster Application Response: Retrieves frequently accessed data quickly, improving user experience.
+	🌐 Reduced Network Load: Minimizes repeated database calls, saving bandwidth.
+	💾 Less Disk I/O: Fetches data from memory rather than disk (even SSD), enhancing performance.
+	🔁 Improved System Throughput: Lowers latency, increases overall efficiency of data processing.
+
+
+Implementing OCI Cache
+
+	Prerequisites: OCI Account(admin), Compartment, VCN/Subnet, IAM policy(access/manage), Access to OCI Cache via the OCI navigation menu
+	note: OCI Cache service should have permissions to manage the selected VCN and subnet
+
+OCI cache - create cluster(#nodes/memory,bandwidth-Gbps)
+
+
+------------------------------OCI Zero Trust Packet Routing (ZPR)------------------------------
+
+Key Features of OCI Zipper
+	Intent-Based Policies (similar to IAM policies)
+	Separation of Security from Network Configuration
+	Packet-Level Enforcement (Every packet is evaluated against zipper policies)
+	Continuous Monitoring
+
+Implementing ZPR:
+Step 1: Assign Security Attributes (for resources like VCNs or VMs, DBs) Ex: app:science, database:sensitive vcn:prod
+Step 2: Write a Zipper Policy 
+		#ZPRpolicy = in networks: carconet VCN allow apps:tele-app endpoints to connect to db: tele-db endpoints
+
+Source and destination security attributes are checked at the network layer.
+	If allowed by zipper policy → Packet forwarded
+	If not → Packet dropped
+
+Demo: 
+create namepace, policy, security attributes(adding network labels=key-value)
+ex:
+In ZPRDemo.network.vcn01 VCN allow ZPRDemo.app.vm01 endpoints to connect to ZPRDemo.app:vm02 endpoints with protocol='tcp/22'
+in ZPRDemo.network.vcn01 VCN allow 10.0.0.0/0 to connect to ZPRDemo.app:vm01 endpoints with protocol=*tcp/22'
+## ZPRDemo.network.vcn01 is security attribute attached to a vcn
+Note: security attributes are isolated in namespace. You can see them in Protected Resources section. 
+=====================================================================================================================================
 
 
 
