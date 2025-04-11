@@ -214,7 +214,7 @@ Oracle Database Autonomous Recovery Service(RCV) = centralized backup management
 	Retention policy &lock			
 				- Platinum(95 days), Gold(65), Silver(35), Bronze(14), Custom policies(14–95) ; 
 				- retention lock: 14days delay to apply the policy.
-				- Retained for 72 hours before deletion
+				- Option to Retain DB for 72 hours after deletion
 	Integrated OCI monitoring and alerts
 
 RCV supports: BaseDB,Exa,ADB, GCP, Azure ; DB versions = 19c,21c,23ai
