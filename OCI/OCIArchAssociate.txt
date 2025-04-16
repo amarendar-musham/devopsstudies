@@ -145,7 +145,10 @@ OCI LB, load balancing policy to distribute traffic :----
 
 Content-based routing(app-based-LB) - Host based: Listener=host:port, Path based: routing paths. 
 Backendsets: backends=servers(Web|DB), Health check: confirms availability of backends. 
-LB -> Listener(max:16) -> Backend Set
+
+LB -> Listener(max:16) -> Backend Set(default = / = root path) + RoutingPolicy(condition+Action) 
+	create Listener(name, port/protocal(HTTP), routing policy, backendset(root path=/))
+	## create RoutingPolicy = condition.ex: pathStartsW=/apihandler, action.ex: route to Backendset1
 
 Network LB, load balancing policy to disctribute traffic to backends :---- 2(source,destIP) 3(+protocol),5(+source,destPort)
 5-Tupple hash (sourceIP & port, destIP & port, protocol), 3-Tupple hash (sourceIP, destIP, protocol), 2-Tupple hash(sourceIP, destIP); preserves-source|destIP, port. 
