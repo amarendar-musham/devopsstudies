@@ -547,7 +547,6 @@ Observability and Management - Monitoring (Per compartment) -------------------M
 
 CLI: oci monitoring metric|alarm list --compartment-id <> # metric-data post, alarm create, suppression remove --alarm-id <> ;
 Max permissions throubh iam policies in tenancy level: read metrics, manage alarms and ons-topics ; condition: where target.metrics.namespace='oci_computeagent'
-Storage limits: Metric-definitions=upto14days, Alarm-history=upto90days
 
 Alarm Def: CPUusage = Select { compartment, metricNamespace+Metric(cpu), staticstic(max), inteval(1m) }, Trigger rule(condition when cpu reaches 50%), Notification+Topic
 IMP=======:::::
