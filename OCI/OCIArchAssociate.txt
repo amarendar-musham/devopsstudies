@@ -390,7 +390,7 @@ Exports controls which filesystems are available for given mountTargets.
 
 iam: allow group storageAdmins to manage file-family in tenancy (create/delete/manage filesystems)
      allow group managers to (manage file-systems)|(read mount-targets) in tenancy (create filesystem)
-Create FileSystem = name: demofs(AD1,compartmentA), ExportPath: /demofs, MountTarget: mt1/VCN1/subnetA ## ExportPath -> edit nfs-export options
+Create FileSystem = name: demofs(AD1,compartmentA), ExportPath: /demofs, MountTarget: mt1/VCN1/subnetA ## ExportPath -> edit nfs-export options to add IP-ranges to whitelist
 
 SL1 for VCN: Stateful Ingress from All Ports(inSourceCIDR) to TCP/111|2048|2049|2050 & UDP/111|2048 = source:(10.0.0.0/24:AllPorts-filesystem=10.0.0.7:/demofs)
 SL2 for VCN: Stateful Egress from TCP & UDP all ports to ports 111|2048|2049|2050 & 111 = Dest:10.0.0.0/24:AllPorts-filesystem
