@@ -172,6 +172,10 @@ Delegation = name server where DNS is hosted and managed.
 privateDNs -> 1) create privatezone, give domain name + new DNSPrivateView, add A-record publicIP of any app. 
 2) add DNSPrivateView to a VCN, where you want to access the app ; 3) curl/ping inside the VCN. 
 
+For understanding: VCN -> dns-resolver(default=Private-View) -> private-zones(for each subnet) 
+	(DNS records: ex: k8s worker node private IPs will get added to this zone for A-records)
+	Each zone will have one NS &  one SOA record
+
 Traffic Management Steering policy -> LB (to optimize performance), GeoLocation (diff-regions), Failover, IP prefix steering
 After OCI zone is created, NS(NameServer) record needs to take to Domain-name registrar. Oracle provides four NS records. 
 A listening endpoint is needed(in VCN) to receive DNS queries from other VCN dns-resolvers. 
