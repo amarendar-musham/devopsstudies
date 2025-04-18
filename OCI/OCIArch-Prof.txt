@@ -228,17 +228,19 @@ minimum_required_number_of_IP_addresses = functionA(max_memory_required * max_#e
 ---------------------
 Function/Applications -> create application(helloworld-app) by selecting a VCN and pub.subnet
 Cloud shell =>  fn list context
-		fn use context us-ashburn-1
+		fn use context us-ashburn-1 ## fn update context oracle.region us-ashburn-1
+		fn inspect context
 		fn update context oracle.compartment-id <ocid1.compartment.oc1.>
 		fn update context oracle.image-compartment-id <ocid1.compartment.oc1.> ## function images will be pushed here...
 		in update context registry <region>.ocir.io/namespace/[repo-name-prefix]
 		docker login phx.ocir.io -u <tenancy-namespace>/<user> -p <auth-token>
 		fn list apps
 
-fn init hello-java --runtime java  
+fn init hello-java --runtime java  ## if there is no function directory already
 		## initializes function and create a dir/hello-java with files: func.yaml, pom.xml ,src/code/java...
-fn -v deploy -app helloworld-app 
-		## deploys function to the existing-application(helloworld-app), also builds container-image(w/ base-images build/runtime defined in func.yaml), and pushes to registry
+fn -v deploy -app helloworld-app ## current dir, you should see something like = func.yaml, requirements.txt, func.py
+## deploys function to the existing-application(helloworld-app), also builds container-image(w/ base-images build/runtime defined in func.yaml), and pushes to registry
+
 fn invoke helloworld-app hello-java  ## Hello World! ## fn invoke <application> <function>
 		## echo -n "Amar" | fn invoke helloworld-app hello-java  ## Hello Amar! 
 
