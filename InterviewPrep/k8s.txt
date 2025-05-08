@@ -249,7 +249,12 @@ https://github.com/ContainerSolutions/k8s-deployment-strategies/tree/master/cana
 
 https://www.cncf.io/wp-content/uploads/2020/08/CNCF-Presentation-Template-K8s-Deployment.pdf
 
-
+---------
+ingress, nginx-ingress-controller, LB-service
+create LB, service.type:LoadBalancer(ports:80,443) k apply -f <> ## creates LB in OCI
+create Ingress, ingress.rules ~ OCI LB routing rules (which path to route the traffic)
+ingress-nginx(ingress controller) = connects LB to the ingress in K8S(annotations), controller runs as a pod. k logs -n <> <ingress-controller-pod-name>
+---------
 How pvc and pv connected?
 ingress?
 statefulSet - https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/ ## ex-usecase = databases
