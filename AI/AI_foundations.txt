@@ -10,3 +10,10 @@ Types of ML ============
 | Supervised    | Learn from labeled data                | Credit scoring, fraud detection      |
 | Unsupervised  | Find hidden patterns/clusters          | Customer segmentation, market trends |
 | Reinforcement | Learn by trial & error, using feedback | Game AI, autonomous driving          |
+
+AI Domains & Tasks ===========
+|   Domain     |   Tasks                                             |   Models                      |
+| ------------ | --------------------------------------------------- | ----------------------------- |
+| Language     | Translation, summarization, Q\&A, entity extraction | RNN, LSTM, Transformers       |
+| Audio/Speech | Speech-to-text, speaker ID, voice synthesis         | RNN, LSTM, Transformers, VAEs |
+| Vision       | Image classification, object detection, generation  | CNN, YOLO, GAN                |
