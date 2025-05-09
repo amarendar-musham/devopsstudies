@@ -1,43 +1,46 @@
 AI, ML & DL Cheatsheet
+AI vs ML vs DL
 
-| Category    | Description                 | Examples                   |
-|-------------|-----------------------------|----------------------------|
-| AI          | Machines mimic humans       | Self-driving cars, chatbots |
-| ML (AI)     | Learn from data             | Spam filters, credit scoring |
-| DL (ML)     | Deep neural networks        | Image recognition, ChatGPT  |
+AI: Machines mimic human abilities
+Examples: Self-driving cars, chatbots
+ML (Subset of AI): Learn from data
+Examples: Spam filters, credit scoring
+DL (Subset of ML): Deep neural networks
+Examples: Image recognition, ChatGPT
+Types of Machine Learning
 
-| ML Type      | How It Works               | Examples                   |
-|--------------|----------------------------|----------------------------|
-| Supervised   | Labeled data               | Fraud detection, approvals  |
-| Unsupervised | Find patterns in data      | Customer clusters, trends   |
-| Reinforcement| Trial & error learning     | Game AI, autonomous driving |
+Supervised: Learn from labeled data
+Examples: Fraud detection, approvals
+Unsupervised: Find patterns in unlabeled data
+Examples: Customer clusters, trends
+Reinforcement: Learn via trial & error
+Examples: Game AI, autonomous driving
+AI Domains & Tasks
 
-| Domain      | Tasks                       | Models                      |
-|-------------|-----------------------------|-----------------------------|
-| Language    | Translation, Q&A, summary   | RNN, LSTM, Transformers     |
-| Audio       | Speech-to-text, synthesis   | RNN, LSTM, VAEs, Transformers|
-| Vision      | Image classification        | CNN, YOLO, GAN              |
+Language: Translation, Q&A, summarization
+Models: RNN, LSTM, Transformers
+Audio/Speech: Speech-to-text, synthesis
+Models: RNN, LSTM, VAEs, Transformers
+Vision: Image classification, detection
+Models: CNN, YOLO, GAN
+Core Data Concepts
 
-| Data Type   | Notes                       |
-|-------------|-----------------------------|
-| Text        | Tokenization, embeddings    |
-| Audio       | Sample rate, bit depth      |
-| Images      | Pixels, features            |
+Text: Tokenization, embeddings, padding
+Audio: Sample rate, bit depth
+Images: Pixels, grayscale/color, features
+Special Applications
 
-| Special Task    | Use Case                 |
-|-----------------|--------------------------|
-| Anomaly Detect | Fraud, failures           |
-| Recommendations| Product suggestions       |
-| Forecasting    | Weather, stock trends     |
-| Generative AI  | Text, image, music        |
+Anomaly Detection: Fraud, machine failures
+Recommendations: Product/content suggestions
+Forecasting: Weather, stock predictions
+Generative AI: Text, image, music generation
+Model Summary
 
-| Model        | Purpose                    |
-|-------------|----------------------------|
-| RNN         | Sequential data            |
-| LSTM        | Long-term sequence memory  |
-| Transformers| Contextual parallel use    |
-| CNN         | Visual recognition         |
-| YOLO        | Object detection           |
-| GAN         | Data generation            |
+RNN: Sequential data (text, audio)
+LSTM: Long-term sequence retention
+Transformers: Contextual parallel processing
+CNN: Visual pattern recognition
+YOLO: Real-time object detection
+GAN: Realistic data generation
+Key Points: AI ⊃ ML ⊃ DL; align tasks with correct data & models; focus on real-world applications.
 
-**Summary:** AI ⊃ ML ⊃ DL → match tasks to data & models → focus on real-world uses.
