@@ -1,24 +1,24 @@
-# 🧠 AI vs ML vs DL Cheatsheet
+# AI vs ML vs DL Cheatsheet
 
 | **Category**    | **Description**                                    | **Examples**                      |
 |------------------|----------------------------------------------------|------------------------------------|
-| **AI**          | Machines mimic human intelligence                  | Self-driving cars, chatbots        |
-| **ML**          | Subset of AI; machines learn from data             | Spam filter, credit approval       |
-| **DL**          | Subset of ML; deep neural networks learn patterns  | Image recognition, ChatGPT         |
+| AI             | Machines mimic human intelligence                  | Self-driving cars, chatbots        |
+| ML             | Subset of AI; machines learn from data             | Spam filter, credit approval       |
+| DL             | Subset of ML; deep neural networks learn patterns  | Image recognition, ChatGPT         |
 
 ---
 
-## ⚙ Types of ML
+## Types of Machine Learning
 
-| **Type**            | **How It Works**                            | **Examples**                         |
-|----------------------|--------------------------------------------|---------------------------------------|
-| Supervised          | Learn from labeled data                    | Credit scoring, fraud detection      |
-| Unsupervised        | Find hidden patterns/clusters              | Customer segmentation, market trends |
-| Reinforcement       | Learn by trial & error, using feedback     | Game AI, autonomous driving          |
+| **Type**        | **How It Works**                            | **Examples**                         |
+|------------------|--------------------------------------------|---------------------------------------|
+| Supervised      | Learn from labeled data                    | Credit scoring, fraud detection      |
+| Unsupervised    | Find hidden patterns or clusters           | Customer segmentation, market trends |
+| Reinforcement   | Learn by trial & error, using feedback     | Game AI, autonomous driving          |
 
 ---
 
-## 📊 AI Domains & Tasks
+## AI Domains & Tasks
 
 | **Domain**   | **Tasks**                                          | **Models**                         |
 |--------------|-----------------------------------------------------|-------------------------------------|
@@ -28,7 +28,7 @@
 
 ---
 
-## 🔑 Core Data Concepts
+## Core Data Concepts
 
 | **Data Type** | **Key Details**                                     |
 |---------------|-----------------------------------------------------|
@@ -38,31 +38,31 @@
 
 ---
 
-## ✨ Special Applications
+## Special Applications
 
-| **Task**           | **Use Case**                                   |
-|---------------------|-----------------------------------------------|
-| Anomaly Detection  | Fraud, system failures                        |
-| Recommendations    | Product/user suggestions                      |
-| Forecasting        | Weather, stock predictions                    |
-| Generative AI      | Create text, images, music (ChatGPT, DALL·E)  |
-
----
-
-## 🏗 Main Model Types
-
-| **Model**    | **Used For**                  |
-|-------------|--------------------------------|
-| RNN         | Sequential data (text, audio) |
-| LSTM        | Long-term sequence memory      |
-| Transformers| Parallel, context-rich tasks   |
-| CNN         | Image features, visual tasks  |
-| YOLO        | Real-time object detection    |
-| GAN         | Realistic image/video generation |
+| **Task**            | **Use Case**                                   |
+|----------------------|-----------------------------------------------|
+| Anomaly Detection   | Fraud, system failures                        |
+| Recommendations     | Product/user suggestions                      |
+| Forecasting         | Weather, stock predictions                    |
+| Generative AI       | Create text, images, music (ChatGPT, DALL·E)  |
 
 ---
 
-✅ **Summary Takeaways:**  
+## Main Model Types
+
+| **Model**      | **Used For**                  |
+|---------------|--------------------------------|
+| RNN           | Sequential data (text, audio) |
+| LSTM          | Long-term sequence memory      |
+| Transformers  | Parallel, context-rich tasks   |
+| CNN           | Image features, visual tasks  |
+| YOLO          | Real-time object detection    |
+| GAN           | Realistic image/video generation |
+
+---
+
+**Summary Takeaways:**  
 - AI ⊃ ML ⊃ DL (nested relationship)  
-- Match the **task type** to the right **model & data**  
-- Understand key **applications** across industries
+- Match the task type to the right model & data  
+- Understand key applications across industries
