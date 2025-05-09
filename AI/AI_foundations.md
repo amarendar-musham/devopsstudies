@@ -44,62 +44,51 @@ Model Summary
 | YOLO         | Real-time object detection     |
 | GAN          | Realistic data generation      |
 
-**Key Points**: AI ⊃ ML ⊃ DL; align tasks with correct data & models; know real-world applications.
+**Key Points  : AI ⊃ ML ⊃ DL; align tasks with correct data & models; know real-world applications.
 
-
-# Reinforcement Learning Overview
-
-<p style="font-size:10px;">
-
-| **Term**              | **Description**                                                                              |
+Reinforcement Learning Overview
+|   Term                |   Description                                                                                |
 | --------------------- | -------------------------------------------------------------------------------------------- |
-| **Agent**             | Learner/decision-maker interacting with the environment.                                     |
-| **Environment**       | External system the agent interacts with (e.g., road for self-driving car).                  |
-| **State**             | Current situation or configuration of the environment.                                       |
-| **Actions**           | Possible decisions or moves the agent can take in a state.                                   |
-| **Policy**            | Strategy or mapping that tells the agent which action to take in a given state.              |
-| **Rewards/Penalties** | Feedback from the environment, rewarding desirable outcomes and penalizing undesirable ones. |
+|   Agent               | Learner/decision-maker interacting with the environment.                                     |
+|   Environment         | External system the agent interacts with (e.g., road for self-driving car).                  |
+|   State               | Current situation or configuration of the environment.                                       |
+|   Actions             | Possible decisions or moves the agent can take in a state.                                   |
+|   Policy              | Strategy or mapping that tells the agent which action to take in a given state.              |
+|   Rewards/Penalties   | Feedback from the environment, rewarding desirable outcomes and penalizing undesirable ones. |
 
-### Real-World Examples:
-
-| **Application**            | **Description**                                                                                  |
+Real-World Examples:
+|   Application              |   Description                                                                                    |
 | -------------------------- | ------------------------------------------------------------------------------------------------ |
-| **Autonomous Vehicles**    | RL helps self-driving cars make real-time decisions based on sensor data and traffic conditions. |
-| **Smart Home Devices**     | RL adapts virtual assistants like Alexa, Google Assistant, and Siri to users' preferences.       |
-| **Industrial Automation**  | RL optimizes robots and control systems in manufacturing, enhancing efficiency.                  |
-| **Gaming & Entertainment** | RL creates intelligent NPCs that learn from player behavior to increase game difficulty.         |
+|   Autonomous Vehicles      | RL helps self-driving cars make real-time decisions based on sensor data and traffic conditions. |
+|   Smart Home Devices       | RL adapts virtual assistants like Alexa, Google Assistant, and Siri to users' preferences.       |
+|   Industrial Automation    | RL optimizes robots and control systems in manufacturing, enhancing efficiency.                  |
+|   Gaming & Entertainment   | RL creates intelligent NPCs that learn from player behavior to increase game difficulty.         |
 
-### Key Concepts:
+Key Concepts:
+*   Exploration vs. Exploitation  : Balancing new actions (exploration) vs. known rewarding actions (exploitation).
+*   Discount Factor  : Future rewards are discounted to prioritize immediate rewards.
 
-* **Exploration vs. Exploitation**: Balancing new actions (exploration) vs. known rewarding actions (exploitation).
-* **Discount Factor**: Future rewards are discounted to prioritize immediate rewards.
-
-### Example of Training a Self-Driving Car:
-
-| **Component**   | **Description**                                      |
+Example of Training a Self-Driving Car:
+|   Component     |   Description                                        |
 | --------------- | ---------------------------------------------------- |
-| **Agent**       | Self-driving car                                     |
-| **Environment** | Road and surroundings                                |
-| **State**       | Camera images of the road                            |
-| **Actions**     | Steer left, right, or keep straight                  |
-| **Policy**      | Strategy the car learns to follow for driving safely |
+|   Agent         | Self-driving car                                     |
+|   Environment   | Road and surroundings                                |
+|   State         | Camera images of the road                            |
+|   Actions       | Steer left, right, or keep straight                  |
+|   Policy        | Strategy the car learns to follow for driving safely |
 
-### RL in Robotics Example:
-
-| **Component**         | **Description**                                    |
+RL in Robotics Example:
+|   Component           |   Description                                      |
 | --------------------- | -------------------------------------------------- |
-| **Agent**             | Robotic arm                                        |
-| **Environment**       | Warehouse with items to place                      |
-| **State**             | Arm’s position, item location                      |
-| **Actions**           | Move the arm to pick up or place items             |
-| **Rewards/Penalties** | Reward for correct placement, penalty for mistakes |
+|   Agent               | Robotic arm                                        |
+|   Environment         | Warehouse with items to place                      |
+|   State               | Arm’s position, item location                      |
+|   Actions             | Move the arm to pick up or place items             |
+|   Rewards/Penalties   | Reward for correct placement, penalty for mistakes |
 
-### Algorithms:
-
-| **Algorithm**       | **Description**                                                            |
+Algorithms:
+|   Algorithm         |   Description                                                              |
 | ------------------- | -------------------------------------------------------------------------- |
-| **Q-Learning**      | Learns values of actions in states to find the optimal policy.             |
-| **Deep Q-Learning** | Uses deep neural networks to approximate the values in large state spaces. |
-
-</p>
+|   Q-Learning        | Learns values of actions in states to find the optimal policy.             |
+|   Deep Q-Learning   | Uses deep neural networks to approximate the values in large state spaces. |
 
