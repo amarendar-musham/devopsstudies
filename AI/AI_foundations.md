@@ -46,7 +46,8 @@ Model Summary
 
 Key Points  : AI ⊃ ML ⊃ DL; align tasks with correct data & models; know real-world applications.
 
-Machine Learning Concepts Overview
+## Machine Learning Concepts Overview
+
 Supervised Learning
 |   Term              |   Description   |
 |---------------------|-----------------|
