@@ -5,3 +5,8 @@
 | DL       | Subset of ML; deep neural networks learn patterns | Image recognition, ChatGPT   |
 
 
+| **Category** | **Description**                                   | **Examples**                 |
+| ------------ | ------------------------------------------------- | ---------------------------- |
+| **AI**       | Machines mimic human intelligence                 | Self-driving cars, chatbots  |
+| **ML**       | Subset of AI; machines learn from data            | Spam filter, credit approval |
+| **DL**       | Subset of ML; deep neural networks learn patterns | Image recognition, ChatGPT   |
