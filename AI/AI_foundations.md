@@ -4,7 +4,7 @@
 | ML       | Subset of AI; machines learn from data            | Spam filter, credit approval |
 | DL       | Subset of ML; deep neural networks learn patterns | Image recognition, ChatGPT   |
 
-Types of ML ==========
+## Types of ML ==========
 | Type          | How It Works                           |   Examples                           |
 | ------------- | -------------------------------------- | ------------------------------------ |
 | Supervised    | Learn from labeled data                | Credit scoring, fraud detection      |
