@@ -46,49 +46,77 @@ Model Summary
 
 **Key Points  : AI ⊃ ML ⊃ DL; align tasks with correct data & models; know real-world applications.
 
-Reinforcement Learning Overview
-|   Term                |   Description                                                                                |
-| --------------------- | -------------------------------------------------------------------------------------------- |
-|   Agent               | Learner/decision-maker interacting with the environment.                                     |
-|   Environment         | External system the agent interacts with (e.g., road for self-driving car).                  |
-|   State               | Current situation or configuration of the environment.                                       |
-|   Actions             | Possible decisions or moves the agent can take in a state.                                   |
-|   Policy              | Strategy or mapping that tells the agent which action to take in a given state.              |
-|   Rewards/Penalties   | Feedback from the environment, rewarding desirable outcomes and penalizing undesirable ones. |
+# Machine Learning Concepts Overview
 
-Real-World Examples:
-|   Application              |   Description                                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------ |
-|   Autonomous Vehicles      | RL helps self-driving cars make real-time decisions based on sensor data and traffic conditions. |
-|   Smart Home Devices       | RL adapts virtual assistants like Alexa, Google Assistant, and Siri to users' preferences.       |
-|   Industrial Automation    | RL optimizes robots and control systems in manufacturing, enhancing efficiency.                  |
-|   Gaming & Entertainment   | RL creates intelligent NPCs that learn from player behavior to increase game difficulty.         |
+<p style="font-size:10px;">
 
-Key Concepts:
-*   Exploration vs. Exploitation  : Balancing new actions (exploration) vs. known rewarding actions (exploitation).
-*   Discount Factor  : Future rewards are discounted to prioritize immediate rewards.
+## Supervised Learning
 
-Example of Training a Self-Driving Car:
-|   Component     |   Description                                        |
-| --------------- | ---------------------------------------------------- |
-|   Agent         | Self-driving car                                     |
-|   Environment   | Road and surroundings                                |
-|   State         | Camera images of the road                            |
-|   Actions       | Steer left, right, or keep straight                  |
-|   Policy        | Strategy the car learns to follow for driving safely |
+| **Term**            | **Description** |
+|---------------------|-----------------|
+| **Supervised Learning** | A machine learning technique where the model is trained on labeled data (input-output pairs). |
+| **Regression**      | Predicts continuous output. Example: House price prediction based on square footage. |
+| **Classification**  | Predicts categorical output. Example: Email classification as spam or not spam. |
+| **Logistic Regression** | A model for binary classification using a sigmoid function to predict probabilities. |
+| **Iris Dataset**    | A famous dataset used for multi-class classification with flower types (Setosa, Versicolor, Virginica) based on features like sepal/petal size. |
 
-RL in Robotics Example:
-|   Component           |   Description                                      |
-| --------------------- | -------------------------------------------------- |
-|   Agent               | Robotic arm                                        |
-|   Environment         | Warehouse with items to place                      |
-|   State               | Arm’s position, item location                      |
-|   Actions             | Move the arm to pick up or place items             |
-|   Rewards/Penalties   | Reward for correct placement, penalty for mistakes |
+**Key Points:**
+- Supervised learning learns the mapping from inputs to outputs.
+- Linear regression uses a straight line to predict continuous values.
+- Logistic regression uses an S-shaped curve (sigmoid) for classification.
+  
+## Unsupervised Learning
 
-Algorithms:
-|   Algorithm         |   Description                                                              |
-| ------------------- | -------------------------------------------------------------------------- |
-|   Q-Learning        | Learns values of actions in states to find the optimal policy.             |
-|   Deep Q-Learning   | Uses deep neural networks to approximate the values in large state spaces. |
+| **Term**            | **Description** |
+|---------------------|-----------------|
+| **Unsupervised Learning** | A machine learning technique where the model learns from unlabeled data, identifying patterns on its own. |
+| **Clustering**      | Groups similar data points. Common algorithms: K-Means, DBSCAN. |
+| **Outlier Analysis** | Identifies unusual data points that do not belong to any cluster. |
+| **Recommendation Systems** | Suggests items based on clustering of user preferences (e.g., Netflix movie recommendations). |
+
+**Examples:**
+- **Market Segmentation**: Identifying groups of customers with similar purchasing behavior.
+- **Fraud Detection**: Detecting outliers in financial transactions that may indicate fraud.
+
+**Process:**
+1. **Data Preparation**: Preprocess and normalize the data.
+2. **Similarity Metrics**: Measures such as Euclidean or Manhattan distance to quantify similarities.
+3. **Clustering Algorithm**: Assigns data to clusters based on similarity.
+4. **Evaluation & Iteration**: Clustering is iterative, as there are no labeled outputs to verify the results.
+
+## Reinforcement Learning
+
+| **Term**            | **Description** |
+|---------------------|-----------------|
+| **Reinforcement Learning** | A machine learning technique where an agent learns through interactions with the environment, receiving rewards or penalties based on actions. |
+| **Agent**           | The decision-maker or learner that interacts with the environment. |
+| **Environment**     | The external system the agent interacts with. |
+| **State**           | The current situation of the agent in the environment. |
+| **Actions**         | The set of possible moves the agent can make in a state. |
+| **Policy**          | The strategy used by the agent to decide which action to take. |
+
+**Real-World Examples:**
+- **Autonomous Vehicles**: Self-driving cars use reinforcement learning to make decisions based on sensor data.
+- **Smart Home Devices**: Virtual assistants (Alexa, Google Assistant) learn user preferences to improve interactions.
+- **Robotics in Manufacturing**: RL helps robots optimize task completion such as moving items in a warehouse.
+
+**Training Process:**
+1. **Environment Setup**: Define the agent, state space, actions, and rewards.
+2. **Learning**: Agent explores different actions and receives feedback (rewards or penalties).
+3. **Optimal Policy**: Over time, the agent learns the best policy to maximize rewards.
+
+**Example - Self-Driving Car**:
+- **Agent**: Car
+- **Environment**: Road with obstacles
+- **State**: Camera feed of the road
+- **Actions**: Steer left, right, or keep straight
+- **Policy**: Decision-making process based on current view to navigate safely.
+
+**Algorithms**:
+- **Q-Learning**: Learns the value of actions in states to find the optimal policy.
+- **Deep Q-Learning**: Uses deep neural networks to approximate action values in complex environments.
+
+</p>
+
+
 
