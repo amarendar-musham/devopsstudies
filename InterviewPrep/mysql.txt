@@ -231,8 +231,8 @@ SELECT dbms_metadata.get_ddl('INDEX', index_name) from all_indexes where table_n
 ---
 latest row for ocids...
 	select * from (
-	    select assets_fss.*, 
-	        ROW_NUMBER() OVER (PARTITION BY ocid order by timestamp desc) AS rn from assets_fss )
+	    select tb1.*, 
+	        ROW_NUMBER() OVER (PARTITION BY ocid order by timestamp desc) AS rn from tb1 )
 	where rn = 1;
 
 
