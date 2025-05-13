@@ -228,7 +228,12 @@ Data definition language (DDL) describes the portion of SQL that creates, alters
 select dbms_metadata.get_ddl('TABLE', '<table_name>') from dual ## create table definition.
 SELECT dbms_metadata.get_ddl('INDEX', index_name) from all_indexes where table_name = <tb1> ## create index definition
 
-
+---
+latest row for ocids...
+	select * from (
+	    select assets_fss.*, 
+	        ROW_NUMBER() OVER (PARTITION BY ocid order by timestamp desc) AS rn from assets_fss )
+	where rn = 1;
 
 
 
