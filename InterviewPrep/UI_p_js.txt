@@ -1,4 +1,12 @@
 // page attribute for headers = css-inline: th a { white-space: nowrap; text-transform: uppercase; }
 // column formatting = HTML expression:  <div style="white-space: nowrap;">#REGION#</div>
 
+//Below javascript can be bookmarked......
+  javascript:function check(){let id = prompt("ID");window.open('https://<>/' + id + '?arg1=val');}check()
+  javascript:function check(){let id = prompt("ID");const regex = new RegExp('1000[0-9]{9}');if(regex.test(id)){url='<1>'}else{url=<2>};window.open(url+id);}check()
+
+function preflight_url(id){
+const regex = new RegExp('1000[0-9]{9}');
+if (regex.test(id)) { url = '<1>' } else { url = '<2>' } ; 
+window.open(url + id) ; }
 
