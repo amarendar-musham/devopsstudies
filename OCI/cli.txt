@@ -5,6 +5,9 @@ Resource Explorer:
 export http_proxy=http://<>:80
 export https_proxy=http://<>:80
 
+export OCI_CLI_AUTH=security_token ## alt: singer, api_key
+    export OCI_CLI PROFILE=DEFAULT
+
 oci iam tenancy get --tenancy-id ocid1.tenancy.oc1...
 oci iam region-subscription list --tenancy-id ocid1.tenancy.oc1..
 oci iam availability-domain list --region us-phoenix-1 --compartment-id ocid1.tenancy.oc1..
