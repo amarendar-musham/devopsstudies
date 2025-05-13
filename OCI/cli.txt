@@ -7,6 +7,7 @@ export https_proxy=http://<>:80
 
 export OCI_CLI_AUTH=security_token ## alt: singer, api_key
     export OCI_CLI PROFILE=DEFAULT
+oci session authenticate ## oci session refresh -> extends session by 30/40mins
 
 oci iam tenancy get --tenancy-id ocid1.tenancy.oc1...
 oci iam region-subscription list --tenancy-id ocid1.tenancy.oc1..
@@ -40,7 +41,12 @@ computeFQDN = <hostname-label>.<subnet-domain-name> or "{hostname-label}.{subnet
 oci network private-ip list --subnet-id <> # vnic-id, ip-address(/is-primary), hostname-label
 oci network public-ip list  --scope REGION --compartment-id <> 
 
+oci logging-search search-logs --search-query "search \"ocid1.compartment.oc1../ocid1.loggroup.oc1.phx.\" | logContent='test'" --time-start 2024-05-27T00:30:00.123456Z --time-end 2024-05-29T09:30:00.123456Z
 
+
+oci log-analytics namespace list --compartment-id $compartment_id
+oci log-analytics log-group list --compartment-id=$compartment_id --namespace-name=$namespace_name
+oci log-analytics query export --query-string "'Log Set' = <> | fields 'Original Log Content' " --compartment-id=$compartment_id --namespace-name=$namespace_name --sub-system=LOG --file=-
 
 
 
