@@ -1,0 +1,9 @@
+sudo dnf install -y httpd
+sudo systemctl enable httpd ## systemctl is-enabled httpd
+sudo systemctl start httpd
+sudo systemctl status httpd
+
+sudo groupadd apache
+sudo useradd -r -d /var/www -s /sbin/nologin -g apache apache
+sudo chown -R apache:apache /var/www
+sudo systemctl restart httpd
