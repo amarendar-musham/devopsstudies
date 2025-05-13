@@ -1,0 +1,43 @@
+Resource Explorer: 
+  query bucket resources
+  query fileSystem resources
+
+export http_proxy=http://<>:80
+export https_proxy=http://<>:80
+
+oci iam tenancy get --tenancy-id ocid1.tenancy.oc1...
+oci iam region-subscription list --tenancy-id ocid1.tenancy.oc1..
+oci iam availability-domain list --region us-phoenix-1 --compartment-id ocid1.tenancy.oc1..
+
+oci compute instance list  --compartment-id ocid1.compartment.oc1.. --availability-domain RZGO:PHX-AD-1 --region <>
+oci compute instance get --instance-id <> --region <>
+oci compute instance update --instance-id <instance_ocid> --metadata '{"user_data": "<base64_encoded_script>"}'
+oci compute image get --image-id <> --region <>
+oci compute volume-attachment list --compartment-id <compartment_ocid> --query "data[*].{ID:id, Instance:instance-id, Volume:volume-id, Type:attachment-type}"
+oci compute boot-volume-attachment list --compartment-id <compartment_ocid>
+
+oci os bucket get --bucket-name "bucket1" --namespace-name "<tenancy-namespace>"
+oci fs file-system list -c ocid1.compartment.oc1..  --availability-domain RZGO:PHX-AD-3 --all
+oci bv volume list --compartment-id ocid1.compartment.oc1..
+oci bv boot-volume list --compartment-id <> 
+
+oci streaming  admin stream list --compartment-id ocid1.compartment.oc1... ## get --stream-id <>
+
+export OCI_USAGE_API_ENDPOINT="https://usageapi.<region>.oci.oraclecloud.com"
+oci usage-api usage-summary request-summarized-usages -h
+oci usage-api usage-summary request-summarized-usages --from-json file:///home/amusham/temp/test.json --endpoint "$OCI_USAGE_API_ENDPOINT"
+oci usage-api usage-summary request-summarized-usages  --tenant-id="ocid1.tenancy.oc1.."   --time-usage-started="2024-10-01T00:00:00.000Z" --time-usage-ended="2024-12-24T00:00:00.000Z" --granularity="MONTHLY" --endpoint "$OCI_USAGE_API_ENDPOINT"
+
+oci compute vnic-attachment get --vnic-attachment-id <> -> subnet_id, vnic_id
+oci network subnet get --subnet-id <> # subnet-domain-name, display-name, vcn-id
+oci network vcn get --vcn-id <> ## display-name
+oci network vnic get --vnic-id <> # hostname-label, private-ip, public-ip
+computeFQDN = <hostname-label>.<subnet-domain-name> or "{hostname-label}.{subnet.dns_label}.oraclevcn.com"
+
+oci network private-ip list --subnet-id <> # vnic-id, ip-address(/is-primary), hostname-label
+oci network public-ip list  --scope REGION --compartment-id <> 
+
+
+
+
+
