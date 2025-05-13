@@ -3,23 +3,54 @@
 3. PromQL - query the metrics with <parameter>{instance="",job=""}, up, service_discovery
 4. Grafana - Edit panel, add PromQL query in..., query inspector to fill the initial data. 
 
-
-	./prometheus/prometheus.yaml
-	- job_name: ‘python_web_app’
-		- static_configs:
-		    - targets: [‘<fqdn>:8999’]
-
-      
+./prometheus/prometheus.yaml
+- job_name: ‘python_web_app’
+	- static_configs:
+	    - targets: [‘<fqdn>:8999’]
+  
 Kill -HUP <> ## restart prometheus process…
 ./promtool check config prometheus.yml ## check rules ex_rules.yml
 
-8080/monitor/index.jsp
-:9090/graph - prometheus
-9091 - push gateway
-3000 - grafana
 
+
+services:
+	cd /scratch/monitoring/prometheus/
+	- nohup ./prometheus > prometheus.log 2>&1 &
+	- nohup ./node_exporter --collector.textfile.directory=./textfile_collector > logs/$(hostname)_node_exporter.log 2>&1 &
+	- nohup ./pushgateway > logs/$(hostname)_pushgateway.log 2>&1 &
+	- crontab cron_job.txt 
+Ports:
+	Prometheus server: 9090
+	node-exporter: 9100/metrics
+	pushgateway: 9091/metrics
+
+Textfile Collector
+	node_exporter --collector.textfile.directory=/scratch/monitoring/node_exporter/textfile_collector
+	*/1 * * * * /scratch/monitoring/scripts/custom_metrics.sh > /scratch/monitoring/node_exporter/textfile_collector/custom_metrics.prom
+
+PromQL
+  df -h 
+    Total = node_filesystem_size_bytes 
+    Avail = node_filesystem_avail_bytes
+    Used %  = (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100
+  free -h
+    Total = node_memory_MemTotal_bytes
+    Avail = node_memory_MemAvailable_bytes
+    Used %  = (1- (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+  top
+    usage%  = 100 - (avg by (instance, cpu) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) ## remove cpu if core-wise not needed
 
 example promQL:
     probe_dns_lookup_time_seconds{job="key-websites"}
     probe_http_duration_seconds{job="key-websites"}
     sum by (instance) (probe_http_duration_seconds{job="key-websites"})
+
+APIs(available as web-service) called anywhere 
+curl -d 'jobname=linux-host&target='"`hostname -f`"':'"$INSTALL_PORT"'&email='"$USERID"'' -X POST ${PROMETHEUS_ENDPOINT}
+http://<fqdn-prometheus-server>:9090/api/v1/status/config
+
+Prepare inventory of systems:
+	code to build the json and write...ex: https.json / linux-host.json
+	file_sd_configs in prometheus.yml ## give the above json
+
+
