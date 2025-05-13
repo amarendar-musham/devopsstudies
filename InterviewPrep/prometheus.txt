@@ -1,0 +1,25 @@
+1. {node|DB} exporter (or) python gauge/ = Enables metrics on self host with "localhost:9100/metrics" endpoint
+2. prometheus.yaml - add target/metric_path along with job_name(is how python represents metrics to world) & reload
+3. PromQL - query the metrics with <parameter>{instance="",job=""}, up, service_discovery
+4. Grafana - Edit panel, add PromQL query in..., query inspector to fill the initial data. 
+
+
+	./prometheus/prometheus.yaml
+	- job_name: ‘python_web_app’
+		- static_configs:
+		    - targets: [‘<fqdn>:8999’]
+
+      
+Kill -HUP <> ## restart prometheus process…
+./promtool check config prometheus.yml ## check rules ex_rules.yml
+
+8080/monitor/index.jsp
+:9090/graph - prometheus
+9091 - push gateway
+3000 - grafana
+
+
+example promQL:
+    probe_dns_lookup_time_seconds{job="key-websites"}
+    probe_http_duration_seconds{job="key-websites"}
+    sum by (instance) (probe_http_duration_seconds{job="key-websites"})
