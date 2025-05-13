@@ -1,5 +1,5 @@
 where condition: all { request.principal.id='ocid1.flock.oc1..', request.principal.type='flock' }
 
-allow any-user to manage all-resources in tenancy  ## where cond if necessary
-Endorse any-user to manage all-resources in any-tenancy ## where
+allow any-user to manage all-resources in tenancy  ## where cond.
+Endorse any-user to manage all-resources in any-tenancy ## where cond.
 Admit any-user of any-tenancy to {SHEPHERD_FLOCK_APPLY_CREATE} in tenancy where all { request.principal.type='shepherd-rp-checker', target.resource.id='ocid1.flock.oc1..' }
