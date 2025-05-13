@@ -1,0 +1,4 @@
+// page attribute for headers = css-inline: th a { white-space: nowrap; text-transform: uppercase; }
+// column formatting = HTML expression:  <div style="white-space: nowrap;">#REGION#</div>
+
+
