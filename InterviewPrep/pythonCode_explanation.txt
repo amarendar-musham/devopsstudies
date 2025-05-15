@@ -25,6 +25,8 @@ Note: (loads=stores data as json ; dumps=stores data as string) loads|dumps => s
 for row in json_data: ls.append(row["col1"]) ## return sorted(ls) (or)
 ls = [{k:v for k,v in rec if k in selected_fields} for rec in json_data["data"]["items"]]  ## selected_fields = ["field1","f2"]
 
+cmd = ['ls', '-ltr']
+output_in_list = subprocess.run(" ".join(cmd), shell=True, capture_output=True, text=True).stdout.strip().split("\n")
 
 Program - Syntax::
 --------START
