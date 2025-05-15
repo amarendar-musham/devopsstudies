@@ -12,8 +12,9 @@ virtual_network_client = oci.core.VirtualNetworkClient(config)
 signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
 identity_client = oci.identity.IdentityClient(config={}, signer=signer)
 compute_client = oci.core.ComputeClient(config={}, signer=signer)
+network_client = oci.core.VirtualNetworkClient(config={}, signer=signer)
 
-## ---------------------------
+## Basic details of tenancy ====================
 tenancy_details = identity_client.get_tenancy(tenancy_id=ROOT_COMPARTMENT_ID)
 regions = identity_client.list_region_subscriptions(tenancy_id=ROOT_COMPARTMENT_ID).data
 
@@ -33,6 +34,29 @@ compartments = oci.pagination.list_call_get_all_results(
 compartment_map = { compartment.id:compartment.name for compartment in compartments.data}
 ## --------------------------------
 
-instance_details = compute_client.get_instance(INSTANCE_ID).data
-vnic_attachment = compute_client.get_vnic_attachment(vnic_attachment_id).data
-vnics = compute_client.list_vnic_attachments(compartment_id=COMPARTMENT_ID, instance_id=INSTANCE_ID).data
+instance_details = compute_client.get_instance(INSTANCE_ID).data 
+instances_list = oci.pagination.list_call_get_all_results(
+                compute_client.list_instances,compartment_id=compartment_id).data
+
+compute_client.base_client.set_region(image_id.split('.')[3])
+image_details = compute_client.get_image(image_id=image_id).data
+
+vnic_attachment_details  = compute_client.get_vnic_attachment(vnic_attachment_id).data
+vnic_attachments_4instance = compute_client.list_vnic_attachments(compartment_id=COMPARTMENT_ID, instance_id=INSTANCE_ID).data
+vnic_attachments_4compartment = oci.pagination.list_call_get_all_results(
+                compute_client.list_vnic_attachments, compartment_id=compartment_id).data
+
+
+vnic_details = network_client.get_vnic(vnic_id).data
+
+subnet_details = network_client.get_subnet(subnet_id).data
+vcn_details = network_client.get_vcn(subnet_details.vcn_id).data
+private_ips = oci.pagination.list_call_get_all_results(
+                network_client.list_private_ips, subnet_id=subnet_id).data
+public_ips = oci.pagination.list_call_get_all_results(
+                network_client.list_public_ips, scope="REGION", compartment_id=compartment_id).data
+
+
+
+
+
