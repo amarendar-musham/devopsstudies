@@ -187,6 +187,8 @@ df = df.groupby("id")[["pvt_ip","pub_ip"]].apply(lambda x: x.to_dict(orient="rec
 
 df['col3'] = df.apply(lambda x: {x['col1']: x['col2']}, axis=1) creating a json column from existing columns
 agg_df = agg_df.apply(lambda x: {k:v for k,v in zip(x[col1],x[col2])}, axis=1)
+
+response = requests.post(url, headers={'Content-Type':'application/json'}, data=df.to_json(orient="records")) ## post entire dataframe
 --------------
 
 Insert to DB from a csv file....... ## python3 -m pip install mysql-connector-python ## install with "--user <>" if any errors of file permissions
