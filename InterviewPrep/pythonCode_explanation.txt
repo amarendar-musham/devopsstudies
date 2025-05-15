@@ -33,7 +33,9 @@ from_date_map = {
     "last_30_days": (today - timedelta(days=30)).strftime("%m-%d-%y"),
     "last_90_days": (today - timedelta(days=90)).strftime("%m-%d-%y")
 }
+from_date = from_date_map.get(from_date_option, today.strftime("%m-%d-%y")) ## map.get() gives value if only key exists/doesn't error out
 
+------
 Program - Syntax::
 --------START
 import statements....
