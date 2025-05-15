@@ -228,9 +228,31 @@ WHEN OTHERS THEN
         APEX_JSON.close_object;
 
 end;
+=========================Apex Collection creation=======================================
+begin apex_collection.create_or_truncate_collection('COMBINED_TABLE');
+  for rec in ( with combined_table as ( -- combined query)
+    select * from combined_table) loop 
+    apex_collection.add_member(
+      p_collection_name => 'COMBINED_TABLE',
+      p_c001 => rec.col1, -- string content
+      p_n001 => rec.col3, -- integer content
+    );
+  end loop;
+end;
+====================VIEW creation============================================
+CREATE OR REPLACE FORCE EDITIONABLE VIEW "example_view" AS 
+  with owner_cte as ( -- complex query that joins multiple tables
+    ),
+ranked_cte as (
+    select o.*, 
+           row_number() over (partition by o.ocid order by case when o.derived_owner is not null then 1 else 2 end) as rn
+    from owner_cte o
+)
+select o.* from ranked_cte o
+left join org_chart c on lower(o.derived_owner) = lower(c.email)
+where o.rn = 1;
+
 ================================================================
-
-
 Calculate Size of a Table ==> select segment_name, bytes/(1024*1024) from user_segments where segment_name in (select table_name from user_tables)
 
 ================================================================
