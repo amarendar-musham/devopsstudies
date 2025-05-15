@@ -207,14 +207,25 @@ begin
   FOR i IN 1 .. apex_json.get_count(p_path =>'.',p_values=>l_json_array) LOOP
     v_id := apex_json.get_number(p_path=>'[%d].id',p0=>i,p_values=>l_json_array);
     v_compartment_id := apex_json.get_varchar2(p_path=>'[%d].compartment_id',p0=>i,p_values=>l_json_array);
-    
-    insert into TB1 (id,compartment_id)
-    values (v_id,v_compartment_id) ; 
+
+    update TB1 set compartment_id = v_compartment_id where id = v_id ;
+
+    if sql%rowcount = 0 then -- insert if no update from above statement
+    	insert into TB1 (id,compartment_id) values (v_id,v_compartment_id) ; 
+
   END LOOP;
 
-  apex_json.open_object;
-  apex_json.write('status', 'success');
-  apex_json.close_object;
+-- return success
+	apex_json.open_object;
+	apex_json.write('status', 'success');
+	apex_json.close_object;
+EXCEPTION
+WHEN OTHERS THEN
+-- Return error response
+        APEX_JSON.open_object;
+        APEX_JSON.write('status', 'error');
+        APEX_JSON.write('message', SQLERRM); -- Capture the error message
+        APEX_JSON.close_object;
 
 end;
 ================================================================
