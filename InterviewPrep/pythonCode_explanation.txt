@@ -28,7 +28,9 @@ ls = [{k:v for k,v in rec if k in selected_fields} for rec in json_data["data"][
 ## subprocess module for shell commands.
 cmd = ['ls', '-ltr']
 output_in_list = subprocess.run(" ".join(cmd), shell=True, capture_output=True, text=True).stdout.strip().split("\n")
+
 ## read from map/dictionary
+today = datetime.today()
 from_date_map = {
     "last_30_days": (today - timedelta(days=30)).strftime("%m-%d-%y"),
     "last_90_days": (today - timedelta(days=90)).strftime("%m-%d-%y")
