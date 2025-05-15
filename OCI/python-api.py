@@ -13,6 +13,15 @@ signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
 identity_client = oci.identity.IdentityClient(config={}, signer=signer)
 compute_client = oci.core.ComputeClient(config={}, signer=signer)
 network_client = oci.core.VirtualNetworkClient(config={}, signer=signer)
+fs_client = oci.file_storage.FileStorageClient(config={}, signer=signer)
+object_storage_client = oci.object_storage.ObjectStorageClient(config={}, signer=signer)
+
+streaming_endpoint = f"https://streaming.{region}.oci.oraclecloud.com"  ## for each region diff - ep
+streaming_client = oci.streaming.StreamAdminClient(config={}, signer=signer, service_endpoint=streaming_endpoint)
+
+usage_api_client = oci.usage_api.UsageapiClient(config={}, signer=signer)
+usage_api_client.base_client.endpoint = f"https://usageapi.{home_region}.oci.oraclecloud.com"
+
 
 ## Basic details of tenancy ====================
 tenancy_details = identity_client.get_tenancy(tenancy_id=ROOT_COMPARTMENT_ID)
@@ -46,7 +55,6 @@ vnic_attachments_4instance = compute_client.list_vnic_attachments(compartment_id
 vnic_attachments_4compartment = oci.pagination.list_call_get_all_results(
                 compute_client.list_vnic_attachments, compartment_id=compartment_id).data
 
-
 vnic_details = network_client.get_vnic(vnic_id).data
 
 subnet_details = network_client.get_subnet(subnet_id).data
@@ -56,7 +64,38 @@ private_ips = oci.pagination.list_call_get_all_results(
 public_ips = oci.pagination.list_call_get_all_results(
                 network_client.list_public_ips, scope="REGION", compartment_id=compartment_id).data
 
+fs_client.base_client.set_region(dict["region"])
+file_systems = fs_client.list_file_systems(compartment_id=compartment, availability_domain=ad)
 
+namespace = object_storage_client.get_namespace(compartment_id=ROOT_COMPARTMENT_ID).data
+buckets = object_storage_client.list_buckets(namespace_name=namespace,compartment_id=compartment_id).data
+bucket = object_storage_client.get_bucket(namespace_name=namespace,bucket_name=bucket_details.name).data
+
+
+streams = oci.pagination.list_call_get_all_results(streaming_client.list_streams ,compartment_id=compartment_id).data 
+for strm in streams:
+	stream_pool = streaming_client.get_stream_pool(strm.stream_pool_id).data
+	stream = streaming_client.get_stream(strm.id).data 
+
+## cost usage
+try:
+    params=oci.usage_api.models.RequestSummarizedUsagesDetails(
+	#tenant_id=signer.tenancy_id,
+	tenant_id=ROOT_COMPARTMENT_ID,
+	time_usage_started=start_date.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+	time_usage_ended=end_date.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+	granularity="MONTHLY",
+	#is_aggregate_by_time=True,
+	group_by=["resourceId"],
+	filter=oci.usage_api.models.Filter(
+	    operator="AND",
+	    dimensions=[ 
+		oci.usage_api.models.Dimension(key="service", value="BLOCK_STORAGE")  ]
+	))
+    request_summarized_usages_response = usage_api_client.request_summarized_usages(request_summarized_usages_details=params)
+    dict = oci.util.to_dict(request_summarized_usages_response.data)
+    cost_df = pd.DataFrame(dict['items'])
+except: pass
 
 
 
