@@ -1,3 +1,4 @@
+Configure Apache::::
 sudo dnf install -y httpd
 sudo systemctl enable httpd ## systemctl is-enabled httpd
 sudo systemctl start httpd
@@ -7,3 +8,26 @@ sudo groupadd apache
 sudo useradd -r -d /var/www -s /sbin/nologin -g apache apache
 sudo chown -R apache:apache /var/www
 sudo systemctl restart httpd
+--------------------
+
+Configure FSS on apache::::
+mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.bak ## to avoid welcome page. 
+cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak ## backup configuration
+
+      #DocumentRoot "/var/www/html" ## comment default root
+      DocumentRoot "/mnt/fss" ## fss files to be indexed
+      <Directory "/mnt/fss">
+          Options Indexes FollowSymLinks
+          AllowOverride All
+          Require all granted
+      </Directory>
+  
+      Alias /lb-test /var/www/html # add context path lb-test
+      <Directory "/var/www/html">
+          Options Indexes FollowSymLinks
+          AllowOverride All
+          Require all granted
+      </Directory>
+
+sudo apachectl configtest ; sudo systemctl restart httpd
+-------------------------------
