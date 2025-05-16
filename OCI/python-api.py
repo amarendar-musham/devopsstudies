@@ -97,5 +97,21 @@ try:
     cost_df = pd.DataFrame(dict['items'])
 except: pass
 
-
-
+## ------
+announcement_client = oci.announcements_service.AnnouncementClient(config={}, signer=signer)
+announcement_details = announcement_client.get_announcement(a_id).data
+announcements = announcement_client.list_announcements(
+        compartment_id = ROOT_COMPARTMENT,
+        time_one_earliest_time = (today - timedelta(days=1)).strftime(%Y-%m-%dT%H:%M:%S.%fZ")
+        time_one_latest_time = today.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    ).data
+    announcement_ids = [announcement.id for announcement in announcements.items]
+## ------
+limits_client = oci.limits.LimitsClient(config={}, signer=signer)
+services = oci.pagination.list_call_get_all_results(limits_client.list_services, compartment_id=compartment_id).data
+for service in services:
+	sname = service.get("name")
+	limit_definition = oci.pagination.list_call_get_all_results(limits_client.list_limit_definitions, compartment_id=compartment_id, service_name=sname).data
+	limit_value = oci.pagination.list_call_get_all_results(limits_client.list_limit_values, compartment_id=compartment_id, service_name=sname).data
+resource_usage =  limits_client.get_resource_availability(service_name=service_name, limit_name=limit_name, compartment_id=compartment_id).data
+## ------
