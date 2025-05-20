@@ -3,6 +3,14 @@
 ##  (or) 
 ##        api-key of user-account/generic account(of OCI)
 
+## .oci/config contains below like content
+## key_file = oci_api_key.pem
+## tenancy = ocid1.tenancy.oc1..
+## region = us-phoenix-1
+## security_token_file = token	## specific to -> oci session authenticate
+## user = ocid1.user.oc1.. 	## specific to -> generic user
+
+
 ## using profile
 config = oci.config.from_file("~/.oci/config", "<profile-name>") ## example-profile for a tenancy
 compute_client = oci.core.ComputeClient(config)
