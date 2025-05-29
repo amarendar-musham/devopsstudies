@@ -111,5 +111,5 @@ Reinforcement Learning
 -   Q-Learning  : Learns the value of actions in states to find the optimal policy.
 -   Deep Q-Learning  : Uses deep neural networks to approximate action values in complex environments.
 
-
+![image](https://github.com/user-attachments/assets/9c195bd6-b3eb-487e-b394-5ec2dc308f69)
 
