@@ -117,7 +117,7 @@ Reinforcement Learning
 
 ![image](https://github.com/user-attachments/assets/7982317a-fa20-4579-b436-f8928cf35eed)
 
-# Transformer Architecture – Lesson 2 Summary
+Transformer Architecture
 
 Transformer architecture has two main parts:
  - Encoder: Processes input text and creates embeddings.
