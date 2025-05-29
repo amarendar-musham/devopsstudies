@@ -117,11 +117,12 @@ Reinforcement Learning
 
 ![image](https://github.com/user-attachments/assets/7982317a-fa20-4579-b436-f8928cf35eed)
 
-Transformer Architecture
+# Transformer Architecture 
 
 Transformer architecture has two main parts:
- - Encoder: Processes input text and creates embeddings.
- - Decoder: Uses embeddings to generate output text.
+
+Encoder: Processes input text and creates embeddings.
+Decoder: Uses embeddings to generate output text.
 
 Key Concepts:
 
@@ -153,5 +154,82 @@ Model Types and Use Cases:
 | Decoder-only    | Generate text             | Storytelling, summarization     |
 | Encoder-decoder | Translate input to output | Translation, question answering |
 
+Next topic will cover prompts and prompt engineering.
 
+# Prompt Engineering 
 
+Definition:
+Prompt: Input text to the LLM.
+Prompt Engineering: Iteratively refining the prompt to elicit a desired response.
+
+LLMs trained for text completion predict next words, not necessarily follow instructions.
+
+Instruction Tuning:
+Fine-tunes LLMs to follow instructions by using prompt-response examples.
+Involves Reinforcement Learning from Human Feedback (RLHF).
+RLHF uses human preferences to train a reward model that aligns LLM behavior.
+
+Prompting Techniques:
+
+In-Context Learning:
+Model uses context/examples provided in the prompt.
+No model weights are updated.
+
+Few-Shot Prompting:
+Providing few examples (0-shot, 1-shot, k-shot) to guide model behavior.
+Few-shot prompts generally perform better than zero-shot.
+
+Chain-of-Thought Prompting:
+Model is prompted to solve problems step-by-step.
+Includes intermediate reasoning before final answer.
+Useful for complex reasoning tasks.
+
+Hallucination:
+Model generates fluent but incorrect or ungrounded content.
+Hard to detect; mitigated with retrieval-augmented methods.
+
+Summary:
+Covers importance of prompts, challenges in engineering them, instruction tuning (including RLHF), and techniques like few-shot and chain-of-thought prompting. Ends with addressing hallucination issues.
+
+# Customizing LLMs with Your Own Data 
+
+Framework:
+
+* Two axes:
+
+  * Horizontal axis: **Context Optimization** – Adding specific, detailed information such as user order history.
+  * Vertical axis: **LLM Optimization** – Adapting LLMs for specific domains (e.g., legal) using fine-tuning.
+
+## Key Method Definitions
+
+**Retrieval-Augmented Generation (RAG)**
+RAG combines a retrieval system (like a vector database) with a language model. At query time, relevant documents are retrieved based on the query and passed into the LLM as additional context. This allows the model to generate responses grounded in up-to-date or private data **without retraining the model**.
+
+* **Key Idea:** Retrieve → Augment → Generate
+* **Benefit:** Reduces hallucination, uses real-time data
+* **Example:** A chatbot looks up company policy from a document database before answering a return request.
+
+**Fine-Tuning**
+Fine-tuning is the process of continuing training a pre-trained LLM on a smaller, **labeled**, domain-specific dataset. This adapts the model to perform better on tasks or in styles it wasn’t originally optimized for.
+
+* **Key Idea:** Customize model weights with domain-specific data
+* **Benefit:** Improves performance and relevance for specialized tasks
+* **Example:** Training an LLM on legal case documents to generate legal summaries in specific formats.
+
+## Comparison of Approaches:
+
+| Method             | Description                                              | When to Use                                         | Advantages                                      | Disadvantages                              |
+| ------------------ | -------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------- | ------------------------------------------ |
+| Prompt Engineering | Crafting and iterating prompts to guide output           | LLM already understands the domain                  | No training cost, fast iteration                | Limited control, may not generalize        |
+| RAG                | Augments prompts with context from private data sources  | When data changes often or to reduce hallucinations | Uses fresh/grounded data, no fine-tuning needed | Complex setup, needs good retrieval system |
+| Fine-Tuning        | Adapting model weights with domain-specific labeled data | When LLM underperforms on domain-specific tasks     | High performance, custom style/tone             | Costly, requires labeled data and compute  |
+
+Iterative Application:
+
+* Start with prompt engineering and evaluation.
+* Add few-shot examples if needed.
+* Move to RAG if external/private knowledge is required.
+* Fine-tune the model if style, format, or performance isn't sufficient.
+* Optimize RAG system and iterate further.
+
+This framework helps choose and combine methods to customize LLMs effectively for your own data.
