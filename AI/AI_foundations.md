@@ -121,8 +121,8 @@ Transformer Architecture
 
 🔹 Overview
 Transformer architecture is made of two main components:
- Encoder: Converts input text into embeddings (numerical representations).
- Decoder: Generates output text using embeddings.
+ - Encoder: Converts input text into embeddings (numerical representations).
+ - Decoder: Generates output text using embeddings.
 
 ---
 🔹 Key Concepts
