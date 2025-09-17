@@ -119,6 +119,7 @@ str="{c},{b},{a}".format(a=5,b=9,c=7) ## 7,9,5 ## named args.
 str="{0}{1}{0}".format("abra","cad") ## abracadabra..
 
 nums = [11, 22, 33, 44, 55]
+## ex: func = lambda x:x*3 ; list(map(func,nums))
 result = list(map(lambda x: x+5, nums)) # [16,27,38,49,60]
 res = list(filter(lambda x: x%2==0, nums)) # [22,44]
 
