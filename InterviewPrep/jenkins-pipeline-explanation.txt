@@ -89,7 +89,8 @@ def generateParallelJobSteps(int numJobs, def taskType) {
   return jobSteps
 }
 
-
+// User input to proceed
+input message: 'Review the parameters above. Do you want to proceed further?'
 ------------------
 Anchore engine supports using Jenkins plugin "Anchore Container Image Scanner", 
 need to provide anchore engine url and docker images list to it. 
