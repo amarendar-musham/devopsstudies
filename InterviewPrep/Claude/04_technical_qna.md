@@ -7,10 +7,12 @@
 ## KUBERNETES
 - **Pod vs Deployment vs ReplicaSet?** Pod = smallest unit (1+ containers). ReplicaSet = keeps N pod replicas. Deployment = manages ReplicaSets, enables rolling updates/rollback.
 - **Service types?** ClusterIP (internal), NodePort (port on each node), LoadBalancer (cloud LB), ExternalName. Ingress routes L7 HTTP to services.
+- **What's an Ingress?** L7 (HTTP/HTTPS) routing layer above Services. Requires Ingress Controller (Nginx/Traefik/cloud-native). Handles host/path-based routing, TLS termination. One Ingress (one LB) → many backend Services, cheaper than LB-per-service.
 - **How does a rolling update work?** Deployment spins up new-version pods, waits for readiness, terminates old ones per maxSurge/maxUnavailable. Rollback = revert to previous ReplicaSet.
 - **Liveness vs readiness vs startup probes?** Liveness = restart if failing. Readiness = remove from service endpoints until ready. Startup = for slow-starting apps, gates the other two.
 - **Requests vs limits?** Request = guaranteed/scheduled amount. Limit = hard cap (CPU throttled, memory → OOMKill).
-- **How does HPA work?** Scales pod count on observed metrics (CPU/mem/custom) vs target. Cluster Autoscaler scales nodes.
+- **How does HPA work?** Scales pod count on observed metrics (CPU/mem/custom) vs target. Formula: `desiredReplicas = ceil(currentReplicas * currentMetric/target)`. Queries metrics-server every 15s. External metrics via prometheus-adapter. Cluster Autoscaler scales nodes when pods are Pending.
+- **Canary vs blue-green?** Canary = deploy new version alongside stable, route small % traffic to it (via ingress weighted routing or replica-count ratio), ramp up gradually. Blue-green = two full envs, atomic switch (instant rollback, 2x capacity cost).
 - **What's a DaemonSet / StatefulSet?** DaemonSet = one pod per node (agents/logging). StatefulSet = stable identity + storage (databases).
 - **How do pods get config/secrets?** ConfigMaps (config), Secrets (sensitive, base64 — pair with Vault/CSI for real security).
 - **How does networking work?** Every pod gets an IP (CNI); Services provide stable virtual IP; kube-proxy / iptables/IPVS routes; CoreDNS for service discovery.
@@ -19,7 +21,6 @@
 ## CI/CD
 - **Scripted vs declarative Jenkins pipeline?** Declarative = structured, easier, `pipeline{}` block. Scripted = full Groovy, more flexible/complex.
 - **Where do you put security scanning?** SAST (Fortify) on code post-build, image scanning before publish, DAST (WebInspect) against a deployed test env. Fail the build on high/critical.
-- **Blue-green vs canary vs rolling?** Blue-green = two full envs, switch traffic (instant rollback, 2x cost). Canary = small % first, ramp up. Rolling = replace incrementally.
 - **What's GitOps?** Git is source of truth; a controller (ArgoCD/Flux) continuously reconciles cluster to match repo. Pull-based, auditable.
 - **How do you do artifact management?** Versioned artifacts in JFrog/Nexus/OCIR; immutable tags; promote same artifact across envs (don't rebuild).
 

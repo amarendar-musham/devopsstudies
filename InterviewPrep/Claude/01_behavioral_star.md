@@ -100,21 +100,62 @@
 | Automation / reduced toil | 1 (secret rotation), 6 (stale-VM) |
 | Security | 1 (rotation), 4 (IAM/least-privilege) |
 | Scale / high-stakes production | 2 (push upgrades) |
-| Built a tool others use | 3 (monitoring dashboard) |
+| Built a tool others use | 3 (monitoring dashboard), 11 (dashboard adoption) |
 | Architecture / design ownership | 4 (OCI), 5 (APEX) |
 | Cost optimization | 6 (stale-VM), 5 (cost platform) |
 | Process/pipeline improvement | 7 (Jenkins/Helm) |
 | Staying current / new tools | 8 (AI tooling) |
 | Biggest accomplishment | 4 (OCI architecture) or 1 (rotation) |
-| Failure / what went wrong | → prepare one honestly (see note below) |
+| Failure / what went wrong | 9 (validation bypass) |
+| Conflict / disagreement | 10 (Helm debate) |
+| Influence without authority | 11 (dashboard adoption) |
+| Leadership / mentoring | 12 (OKE project lead) |
 
 ---
 
-## GAPS TO PREPARE (no story yet — think through before interviews)
-1. **"Tell me about a failure / mistake."** Pick a real one, own it, show the lesson. Don't use a humblebrag. (e.g., an early rotation/pipeline bug caught in validation, what you changed.)
-2. **"A conflict / disagreement with a teammate or manager."** Have one where you disagreed technically, stayed professional, and reached a good outcome.
-3. **"A time you had to influence without authority."** Getting a team to adopt your Helm standard / dashboard.
-4. **Leadership / mentoring** (you were Project Lead at Oracle) — a story about guiding others or owning a team outcome.
+---
+
+## 9. Failure: Secret Rotation Validation Bypass (Salesforce)
+**Answers:** "Tell me about a failure / mistake" · "What did you learn from a setback"
+
+- **S:** I built a password rotation pipeline for 90+ Salesforce org service accounts. Early implementation didn't have a fail-closed validation gate — if the password change succeeded in Salesforce but validation failed (transient network issue), it would propagate the new password to 1Password/Vault anyway, causing a credential mismatch.
+- **T:** Caught this during testing when a single validation probe failed due to a rate-limit error, but the pipeline continued and wrote the new password to stores. The result: next run failed for that account because current password in stores didn't match Salesforce's actual password.
+- **A:** I redesigned the flow to be **fail-closed**: validation *must* succeed before propagation. If validation fails — network error, rate-limit, timeout — the pipeline leaves stores unchanged and reports failure. Added retry logic with exponential backoff for transient errors, and a reconciliation mode to resync stores when manual intervention is needed.
+- **R:** Zero credential-mismatch incidents in production. The pipeline now safely aborts on any validation failure, preventing cascading auth errors across the org.
+- **What I learned:** For credential/auth systems, **fail-closed is the only safe default**. An unvalidated secret propagated to stores is worse than a failed rotation because it breaks trust in the store itself. Always validate before write, and treat validation failures as hard stops.
+
+---
+
+## 10. Conflict: Helm vs Raw Manifests (Oracle)
+**Answers:** "Conflict / disagreement with a teammate" · "How you handle differing opinions"
+
+- **S:** When standardizing Kubernetes deployments at Oracle, I proposed adopting **Helm** for all apps (templating, rollback, consistency). Another senior engineer pushed back — argued Helm adds complexity, prefers plain YAML + kustomize, "we don't need another tool."
+- **T:** Resolve the disagreement without escalating to management, get alignment on a standard.
+- **A:** I listened first — understood his concern was onboarding friction and "magic" in templates. Then I **proposed a pilot**: we'd Helm-ize one app together, document it, and demo rollback + multi-env handling in Jenkins. If the team didn't see value after the pilot, we'd revisit. He agreed. We built the pilot chart collaboratively, and the rollback demo (instant revert to previous release) sold the team.
+- **R:** Helm became the standard. The other engineer became an advocate after seeing how much toil it eliminated (no more env-specific YAML duplication). The pilot approach turned a blocker into a collaborator.
+- **What I learned:** When someone resists a tool/process change, **it's often about risk, not the idea itself**. Show don't tell — a small, safe pilot lowers risk and builds trust. And listen first — his concern about template complexity led me to document better and keep charts simple.
+
+---
+
+## 11. Influence Without Authority: Monitoring Dashboard Adoption (GSPANN)
+**Answers:** "Influence without authority" · "Got buy-in for a change"
+
+- **S:** I built a **centralized monitoring dashboard** (Nagios + custom plugins) for 40+ clients and 200+ VMs, but the Ops team wasn't using it — they still relied on email alerts and manual checks, which meant delayed incident response.
+- **T:** Get the team to adopt the dashboard as their primary tool, without having any authority over them (I wasn't their manager).
+- **A:** I started by **shadowing their workflow** to understand the friction points — email alerts were noisy, and they didn't trust the dashboard's accuracy. So I: (1) **fixed the noise** by tuning alert thresholds with their input, (2) **added features they wanted** (filterable views by client/severity), and (3) **showed value in standups** by walking through a live incident the dashboard caught 10 minutes before email alerts would have fired. I made it *their* tool, not mine.
+- **R:** Within a month, the dashboard became the team's go-to for incident triage. Alert response time improved (measurably faster escalation), and the Ops lead asked me to train new hires on it.
+- **What I learned:** **Adoption = trust + convenience.** You can't force a tool on people — you have to meet them where they are, fix what frustrates them, and prove value in *their* workflows. And involve them early — co-ownership drives adoption.
+
+---
+
+## 12. Leadership: Project Lead for OCI Kubernetes Platform (Oracle)
+**Answers:** "Leadership / mentoring" · "Led a team / owned an outcome"
+
+- **S:** I was **Project Lead** for standing up Oracle's internal **OKE (Kubernetes) platform** for the ERP pre-prod environment — greenfield architecture, multi-region, HA, full IaC with Terraform. The team was 4 engineers (mix of junior and mid-level) plus me, and we had 3 months to deliver a production-ready cluster with CI/CD integration.
+- **T:** Own the technical direction, keep the team unblocked, and deliver on time without burning anyone out.
+- **A:** I broke the work into swim-lanes: networking (VCN/subnets/gateways), OKE cluster (3-master HA + worker pools), IAM/security (least-privilege policies, Bastion), and CI/CD (Jenkins integration + Helm). I assigned each engineer a lane based on their strengths, but stayed hands-on — reviewed every Terraform module, pair-programmed with the junior engineer on IAM policies, and ran weekly design reviews to keep everyone aligned. When we hit a blocker (OCI API rate-limits during Terraform apply), I debugged it myself and documented the fix for the team. I also ran a **blameless retro** mid-project to course-correct on communication gaps.
+- **R:** Delivered on time with zero security/compliance escalations. The platform became the standard for ERP pre-prod deployments, and one of the junior engineers later became the go-to Kubernetes SME for the org. Leadership recognized the work as a model for other teams.
+- **What I learned:** **Leadership is about unblocking, not just directing.** Stay close enough to the work to debug blockers yourself, but far enough to see cross-team dependencies. And invest in your team — the junior engineer I mentored became a force-multiplier for the org, which mattered more than any one technical win.
 
 ---
 

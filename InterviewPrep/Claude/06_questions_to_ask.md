@@ -13,6 +13,8 @@
 
 ## FOR ENGINEERS / PEERS (technical round)
 - What does your CI/CD and deployment flow look like today? Any pain points?
+- What's your deployment strategy — rolling updates, canary, blue-green? How do you measure canary health?
+- How do you handle autoscaling — HPA on what metrics (CPU, custom, external)? Do you run Cluster Autoscaler?
 - How mature is your IaC / GitOps adoption?
 - What's your observability stack, and how do you handle incidents/postmortems?
 - What's the biggest piece of tech debt the team wants to tackle?
